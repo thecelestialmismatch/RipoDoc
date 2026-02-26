@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { motion } from "framer-motion";
 import {
   Shield,
   ShieldAlert,
@@ -198,7 +199,11 @@ export function LiveScanner() {
 
       {/* Results */}
       {result && colors && (
-        <div className="space-y-4 animate-fade-in-up">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-4"
+        >
           {/* Risk Level Banner */}
           <div className={`glass-card p-5 border ${colors.border}`}>
             <div className="flex items-center justify-between mb-4">
@@ -338,7 +343,7 @@ export function LiveScanner() {
             {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
             {copied ? "Copied JSON" : "Copy Full Result as JSON"}
           </button>
-        </div>
+        </motion.div>
       )}
 
       {/* Scan History */}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { motion } from "framer-motion";
 import { Inbox, RefreshCw, Download, Search, X } from "lucide-react";
 
 interface ComplianceEvent {
