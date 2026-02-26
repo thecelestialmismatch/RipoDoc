@@ -1,6 +1,20 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
+import { motion } from "framer-motion";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
 import {
   ShieldCheck,
   ShieldAlert,
@@ -96,9 +110,25 @@ function AnimatedValue({ target }: { target: number }) {
   return <>{display}</>;
 }
 
+function ChartTooltip({ active, payload, label }: any) {
+  if (active && payload && payload.length) {
+    return (
+      <div className="glass-card rounded-lg p-3 border border-white/10">
+        <p className="text-sm font-medium mb-1">{label}</p>
+        {payload.map((entry: any, index: number) => (
+          <p key={index} style={{ color: entry.color }} className="text-sm">
+            {entry.name}: {entry.value}
+          </p>
+        ))}
+      </div>
+    );
+  }
+  return null;
+}
+
 function ThreatChart({ events }: { events: any[] }) {
   const now = Date.now();
-  const hours = Array.from({ length: 12 }, (_, i) => {
+  const chartData = Array.from({ length: 12 }, (_, i) => {
     const hourStart = now - (11 - i) * 3600000;
     const hourEnd = hourStart + 3600000;
     const hourEvents = events.filter((e) => {
@@ -106,51 +136,77 @@ function ThreatChart({ events }: { events: any[] }) {
       return t >= hourStart && t < hourEnd;
     });
     return {
-      label: new Date(hourStart).toLocaleTimeString([], { hour: "2-digit" }),
+      hour: new Date(hourStart).toLocaleTimeString([], { hour: "2-digit" }),
       total: hourEvents.length,
       blocked: hourEvents.filter((e: any) => e.action_taken === "BLOCKED").length,
+      allowed: hourEvents.filter((e: any) => e.action_taken === "ALLOWED").length,
     };
   });
-  const maxVal = Math.max(...hours.map((h) => h.total), 1);
 
   return (
-    <div className="glass-card p-6">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3 }}
+      className="glass-card p-6"
+    >
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-sm font-medium text-white">Threat Activity</h3>
+          <h3 className="text-sm font-medium text-white font-heading">Threat Activity</h3>
           <p className="text-[11px] text-white/30">Last 12 hours</p>
         </div>
         <Activity className="w-4 h-4 text-brand-400" />
       </div>
-      <div className="flex items-end gap-1.5 h-24">
-        {hours.map((hour, i) => (
-          <div key={i} className="flex-1 flex flex-col items-center gap-1 group">
-            <div className="w-full flex flex-col-reverse" style={{ height: "80px" }}>
-              {hour.total > 0 && (
-                <div
-                  className="w-full rounded-sm bg-brand-500/30 hover:bg-brand-500/50 transition-colors relative"
-                  style={{ height: `${(hour.total / maxVal) * 100}%`, minHeight: "4px" }}
-                >
-                  {hour.blocked > 0 && (
-                    <div
-                      className="absolute bottom-0 left-0 right-0 bg-danger/40 rounded-sm"
-                      style={{ height: `${(hour.blocked / hour.total) * 100}%` }}
-                    />
-                  )}
-                </div>
-              )}
-            </div>
-            <span className="text-[8px] text-white/20 group-hover:text-white/40 transition-colors">
-              {hour.label}
-            </span>
-          </div>
-        ))}
+      <div className="h-[200px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={chartData}>
+            <defs>
+              <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+              </linearGradient>
+              <linearGradient id="colorBlocked" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#f43f5e" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <XAxis
+              dataKey="hour"
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "#A1A1AA", fontSize: 11 }}
+            />
+            <YAxis
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "#A1A1AA", fontSize: 11 }}
+              width={30}
+            />
+            <Tooltip content={<ChartTooltip />} />
+            <Area
+              type="monotone"
+              dataKey="total"
+              name="Total"
+              stroke="#6366f1"
+              fillOpacity={1}
+              fill="url(#colorTotal)"
+            />
+            <Area
+              type="monotone"
+              dataKey="blocked"
+              name="Blocked"
+              stroke="#f43f5e"
+              fillOpacity={1}
+              fill="url(#colorBlocked)"
+            />
+          </AreaChart>
+        </ResponsiveContainer>
       </div>
       <div className="flex items-center gap-4 mt-3 text-[10px] text-white/30">
-        <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-sm bg-brand-500/30" />Total</div>
-        <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-sm bg-danger/40" />Blocked</div>
+        <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-brand-500" />Total</div>
+        <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-danger" />Blocked</div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -160,10 +216,15 @@ function RecentThreats({ events }: { events: any[] }) {
     .slice(0, 4);
 
   return (
-    <div className="glass-card p-6">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.4 }}
+      className="glass-card p-6"
+    >
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-sm font-medium text-white">Recent Threats</h3>
+          <h3 className="text-sm font-medium text-white font-heading">Recent Threats</h3>
           <p className="text-[11px] text-white/30">Critical & high risk events</p>
         </div>
         <ShieldAlert className="w-4 h-4 text-danger" />
@@ -197,9 +258,11 @@ function RecentThreats({ events }: { events: any[] }) {
           ))
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
+
+const PIE_COLORS = ["#6366f1", "#8b5cf6", "#ec4899", "#3b82f6", "#10b981"];
 
 function ProviderBreakdown({ events }: { events: any[] }) {
   const providers = events.reduce((acc: Record<string, number>, e: any) => {
@@ -207,36 +270,59 @@ function ProviderBreakdown({ events }: { events: any[] }) {
     acc[p] = (acc[p] || 0) + 1;
     return acc;
   }, {});
-  const total = events.length || 1;
-  const entries = Object.entries(providers).sort((a, b) => b[1] - a[1]);
-  const colors = ["bg-brand-500", "bg-purple-500", "bg-pink-500", "bg-blue-500"];
+  const pieData = Object.entries(providers)
+    .sort((a, b) => b[1] - a[1])
+    .map(([name, value], i) => ({ name, value, color: PIE_COLORS[i % PIE_COLORS.length] }));
 
   return (
-    <div className="glass-card p-6">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.5 }}
+      className="glass-card p-6"
+    >
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-sm font-medium text-white">Provider Breakdown</h3>
+          <h3 className="text-sm font-medium text-white font-heading">Provider Breakdown</h3>
           <p className="text-[11px] text-white/30">Requests by AI provider</p>
         </div>
         <Zap className="w-4 h-4 text-brand-400" />
       </div>
-      <div className="space-y-3">
-        {entries.map(([provider, count], i) => (
-          <div key={provider}>
-            <div className="flex items-center justify-between text-xs mb-1">
-              <span className="text-white/60">{provider}</span>
-              <span className="text-white/40">{count} ({Math.round((count / total) * 100)}%)</span>
-            </div>
-            <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
-              <div
-                className={`h-full rounded-full ${colors[i % colors.length]} transition-all duration-1000`}
-                style={{ width: `${(count / total) * 100}%` }}
-              />
-            </div>
+      {pieData.length > 0 ? (
+        <div className="h-[180px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={pieData}
+                cx="50%"
+                cy="50%"
+                innerRadius={50}
+                outerRadius={75}
+                paddingAngle={4}
+                dataKey="value"
+              >
+                {pieData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip content={<ChartTooltip />} />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      ) : (
+        <div className="h-[180px] flex items-center justify-center text-white/30 text-sm">
+          No data to display
+        </div>
+      )}
+      <div className="flex flex-wrap justify-center gap-3 mt-3">
+        {pieData.map((entry, index) => (
+          <div key={index} className="flex items-center gap-1.5">
+            <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: entry.color }} />
+            <span className="text-[10px] text-white/40">{entry.name}</span>
           </div>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -322,8 +408,8 @@ export function ComplianceOverview() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 stagger-children">
-        {STAT_CARDS.map((card) => {
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        {STAT_CARDS.map((card, index) => {
           const Icon = card.icon;
           const value = stats?.[card.key] ?? 0;
           const total = stats?.total_events ?? 1;
@@ -332,7 +418,13 @@ export function ComplianceOverview() {
           const TrendIcon = isGood ? TrendingUp : TrendingDown;
 
           return (
-            <div key={card.key} className="glass-card p-5 group relative overflow-hidden">
+            <motion.div
+              key={card.key}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.08 }}
+              className="glass-card p-5 group relative overflow-hidden"
+            >
               <div className={`absolute inset-0 bg-gradient-to-br ${card.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
               <div className="relative z-10">
                 <div className="flex items-center justify-between mb-4">
@@ -346,12 +438,12 @@ export function ComplianceOverview() {
                     </div>
                   )}
                 </div>
-                <p className={`text-2xl font-bold ${card.valueColor} counter-value`}>
+                <p className={`text-2xl font-bold font-heading ${card.valueColor} counter-value`}>
                   <AnimatedValue target={value} />
                 </p>
                 <p className="text-xs text-white/40 mt-1">{card.label}</p>
               </div>
-            </div>
+            </motion.div>
           );
         })}
       </div>

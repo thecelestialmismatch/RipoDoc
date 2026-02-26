@@ -1,6 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&family=Manrope:wght@400;500;600&family=Syne:wght@700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --primary: #00E5FF;
+  --primary-foreground: #000000;
+  --accent: #7B2CBF;
+  --accent-foreground: #FFFFFF;
+  --muted-fg: #A1A1AA;
+  --border-subtle: #27272A;
+  --card-bg: rgba(20, 20, 20, 0.6);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --ring: #00E5FF;
+}
 
 @layer base {
   html {
@@ -10,8 +24,19 @@
   }
 
   body {
+    font-family: 'Manrope', 'Inter', ui-sans-serif, system-ui, sans-serif;
     background-color: #09090b;
     color: rgba(255, 255, 255, 0.85);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Syne', 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  code, pre, .mono {
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
   }
 
   *:focus-visible {
@@ -286,6 +311,62 @@
     animation-delay: -14s;
   }
 
+  /* ===== GLOW EFFECTS (SYNQRA) ===== */
+  .glow-primary {
+    box-shadow: 0 0 30px rgba(0, 229, 255, 0.3);
+  }
+  .glow-accent {
+    box-shadow: 0 0 30px rgba(123, 44, 191, 0.3);
+  }
+
+  /* ===== GRADIENT TEXT (SYNQRA) ===== */
+  .gradient-text-synqra {
+    background: linear-gradient(135deg, #00E5FF 0%, #7B2CBF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ===== INPUT FIELD (SYNQRA) ===== */
+  .input-field {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-subtle);
+    color: white;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    transition: all 0.3s ease;
+  }
+  .input-field:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.2);
+  }
+  .input-field::placeholder {
+    color: var(--muted-fg);
+  }
+
+  /* ===== RISK LEVEL BADGES (SYNQRA) ===== */
+  .risk-critical { background: #DC2626; color: white; padding: 0.125rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; }
+  .risk-high { background: #EA580C; color: white; padding: 0.125rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; }
+  .risk-medium { background: #CA8A04; color: black; padding: 0.125rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; }
+  .risk-low { background: #16A34A; color: white; padding: 0.125rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; }
+  .risk-safe { background: #059669; color: white; padding: 0.125rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; }
+
+  /* ===== SPINNER (SYNQRA) ===== */
+  .spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--border-subtle);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  /* ===== RECHARTS TOOLTIP ===== */
+  .recharts-tooltip-wrapper {
+    outline: none !important;
+  }
+
   /* ===== LIVE CODE BLOCK ===== */
   .code-block {
     background: rgba(17, 17, 20, 0.8);
@@ -426,6 +507,10 @@
 @keyframes pulse-ring {
   0% { transform: scale(0.33); opacity: 1; }
   80%, 100% { transform: scale(2.5); opacity: 0; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 /* ===== STAGGER CHILDREN ===== */

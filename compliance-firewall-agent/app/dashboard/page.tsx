@@ -207,7 +207,7 @@ export default function DashboardPage() {
             <Shield className="w-5 h-5 text-brand-400" />
           </div>
           <div>
-            <span className="text-base font-bold text-white tracking-tight block leading-tight">Kaelus</span>
+            <span className="text-base font-bold text-white tracking-tight block leading-tight font-heading">Kaelus</span>
             <span className="text-[10px] text-white/25 uppercase tracking-widest">AI Platform</span>
           </div>
         </div>

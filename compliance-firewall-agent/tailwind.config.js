@@ -52,6 +52,7 @@ module.exports = {
       },
       fontFamily: {
         sans: [
+          "Manrope",
           "Inter",
           "ui-sans-serif",
           "system-ui",
@@ -61,7 +62,14 @@ module.exports = {
           "Roboto",
           "sans-serif",
         ],
+        heading: [
+          "Syne",
+          "Inter",
+          "ui-sans-serif",
+          "sans-serif",
+        ],
         mono: [
+          "JetBrains Mono",
           "ui-monospace",
           "SFMono-Regular",
           "SF Mono",
