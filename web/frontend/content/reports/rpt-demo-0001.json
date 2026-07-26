@@ -1,0 +1,213 @@
+{
+  "reportId": "rpt-demo-0001",
+  "version": 3,
+  "title": "Quarterly Business Review",
+  "provider": "Northgate Managed IT",
+  "client": "Harbourview Legal",
+  "periodLabel": "Q2 2026 · 1 Apr – 30 Jun",
+  "publishedAt": "2026-07-02T09:15:00Z",
+  "recipient": {
+    "name": "Dana Whitfield",
+    "email": "dana.whitfield@harbourviewlegal.example"
+  },
+  "elements": [
+    {
+      "id": "tickets-resolved",
+      "kind": "kpi",
+      "label": "Tickets resolved",
+      "value": "412",
+      "caption": "+8% vs Q1 2026",
+      "evidence": {
+        "title": "Tickets resolved in Q2 2026",
+        "summary": "All 412 tickets closed between 1 Apr and 30 Jun 2026. Showing the 6 longest-running.",
+        "table": {
+          "columns": [
+            { "key": "ticket", "label": "Ticket" },
+            { "key": "summary", "label": "Summary" },
+            { "key": "owner", "label": "Resolved by" },
+            { "key": "hours", "label": "Hours", "align": "right" }
+          ],
+          "rows": [
+            { "ticket": "NG-40118", "summary": "Practice management server migration", "owner": "R. Okafor", "hours": 26.5 },
+            { "ticket": "NG-40233", "summary": "Document management re-indexing", "owner": "S. Lindqvist", "hours": 18 },
+            { "ticket": "NG-40407", "summary": "Conference room AV replacement", "owner": "M. Adeyemi", "hours": 12.25 },
+            { "ticket": "NG-40512", "summary": "Email archive retention rebuild", "owner": "R. Okafor", "hours": 9.75 },
+            { "ticket": "NG-40688", "summary": "VPN split-tunnel reconfiguration", "owner": "T. Brennan", "hours": 7.5 },
+            { "ticket": "NG-40771", "summary": "Scanner driver rollout, floor 3", "owner": "M. Adeyemi", "hours": 6 }
+          ]
+        },
+        "provenance": {
+          "sourceSystem": "PSA — ticket export",
+          "sourceQuery": "status = closed AND closed_at BETWEEN 2026-04-01 AND 2026-06-30",
+          "approvedBy": "Priya Raman (vCIO)",
+          "approvedAt": "2026-07-01T16:40:00Z"
+        }
+      }
+    },
+    {
+      "id": "sla-attainment",
+      "kind": "kpi",
+      "label": "SLA attainment",
+      "value": "97.4%",
+      "caption": "Target 95% · 11 breaches",
+      "evidence": {
+        "title": "SLA breaches in Q2 2026",
+        "summary": "11 of 412 tickets missed their response or resolution target. Every breach is listed.",
+        "table": {
+          "columns": [
+            { "key": "ticket", "label": "Ticket" },
+            { "key": "target", "label": "Target missed" },
+            { "key": "overBy", "label": "Over by" },
+            { "key": "cause", "label": "Cause" }
+          ],
+          "rows": [
+            { "ticket": "NG-40142", "target": "First response 1h", "overBy": "22m", "cause": "Out-of-hours volume spike" },
+            { "ticket": "NG-40190", "target": "Resolution 8h", "overBy": "3h 10m", "cause": "Vendor escalation" },
+            { "ticket": "NG-40266", "target": "First response 1h", "overBy": "8m", "cause": "Out-of-hours volume spike" },
+            { "ticket": "NG-40318", "target": "Resolution 8h", "overBy": "1h 45m", "cause": "Awaiting client access" },
+            { "ticket": "NG-40402", "target": "Resolution 24h", "overBy": "5h", "cause": "Hardware RMA delay" },
+            { "ticket": "NG-40559", "target": "First response 1h", "overBy": "14m", "cause": "Public holiday cover" }
+          ]
+        },
+        "provenance": {
+          "sourceSystem": "PSA — SLA report",
+          "sourceQuery": "sla_state = breached AND period = 2026-Q2",
+          "approvedBy": "Priya Raman (vCIO)",
+          "approvedAt": "2026-07-01T16:44:00Z"
+        }
+      }
+    },
+    {
+      "id": "assets-at-risk",
+      "kind": "kpi",
+      "label": "Assets at risk",
+      "value": "14",
+      "caption": "Out of warranty or unsupported OS",
+      "evidence": {
+        "title": "The 14 assets flagged at risk",
+        "summary": "Every asset counted in the headline figure, with the reason it was flagged.",
+        "table": {
+          "columns": [
+            { "key": "asset", "label": "Asset" },
+            { "key": "type", "label": "Type" },
+            { "key": "reason", "label": "Reason flagged" },
+            { "key": "age", "label": "Age (yrs)", "align": "right" }
+          ],
+          "rows": [
+            { "asset": "HV-WKS-014", "type": "Workstation", "reason": "Warranty expired 2026-02-11", "age": 5.4 },
+            { "asset": "HV-WKS-021", "type": "Workstation", "reason": "Warranty expired 2026-03-02", "age": 5.2 },
+            { "asset": "HV-WKS-033", "type": "Workstation", "reason": "Unsupported OS build", "age": 4.9 },
+            { "asset": "HV-WKS-047", "type": "Workstation", "reason": "Unsupported OS build", "age": 4.8 },
+            { "asset": "HV-NB-008", "type": "Laptop", "reason": "Warranty expired 2025-12-19", "age": 5.7 },
+            { "asset": "HV-NB-012", "type": "Laptop", "reason": "Battery health below 60%", "age": 4.1 },
+            { "asset": "HV-SRV-002", "type": "Server", "reason": "Extended support ends 2026-10-14", "age": 6.2 },
+            { "asset": "HV-SW-004", "type": "Switch", "reason": "End of vendor support", "age": 7.8 }
+          ]
+        },
+        "provenance": {
+          "sourceSystem": "RMM — asset inventory",
+          "sourceQuery": "warranty_end < today OR os_support = 'unsupported'",
+          "approvedBy": "Priya Raman (vCIO)",
+          "approvedAt": "2026-07-01T16:52:00Z"
+        }
+      }
+    },
+    {
+      "id": "tickets-by-month",
+      "kind": "bar-chart",
+      "label": "Ticket volume by month",
+      "caption": "Closed tickets per month, Q2 2026",
+      "series": [
+        { "label": "April", "value": 121 },
+        { "label": "May", "value": 148 },
+        { "label": "June", "value": 143 }
+      ],
+      "evidence": {
+        "title": "Ticket volume by month",
+        "summary": "Monthly totals with the split by request type behind each bar.",
+        "table": {
+          "columns": [
+            { "key": "month", "label": "Month" },
+            { "key": "incidents", "label": "Incidents", "align": "right" },
+            { "key": "requests", "label": "Requests", "align": "right" },
+            { "key": "projects", "label": "Project tasks", "align": "right" },
+            { "key": "total", "label": "Total", "align": "right" }
+          ],
+          "rows": [
+            { "month": "April 2026", "incidents": 54, "requests": 51, "projects": 16, "total": 121 },
+            { "month": "May 2026", "incidents": 71, "requests": 58, "projects": 19, "total": 148 },
+            { "month": "June 2026", "incidents": 63, "requests": 62, "projects": 18, "total": 143 }
+          ]
+        },
+        "provenance": {
+          "sourceSystem": "PSA — ticket export",
+          "sourceQuery": "GROUP BY month(closed_at), request_type WHERE period = 2026-Q2",
+          "approvedBy": "Priya Raman (vCIO)",
+          "approvedAt": "2026-07-01T16:58:00Z"
+        }
+      }
+    },
+    {
+      "id": "patch-compliance",
+      "kind": "claim",
+      "label": "Patch compliance held above 98% every week this quarter",
+      "caption": "Measured across 96 managed endpoints, weekly. Lowest week was 98.2% in the week of 18 May.",
+      "evidence": {
+        "title": "Weekly patch compliance",
+        "summary": "Compliance percentage for each of the 13 weeks. Six lowest weeks shown.",
+        "table": {
+          "columns": [
+            { "key": "week", "label": "Week commencing" },
+            { "key": "endpoints", "label": "Endpoints", "align": "right" },
+            { "key": "compliant", "label": "Compliant", "align": "right" },
+            { "key": "pct", "label": "Compliance", "align": "right" }
+          ],
+          "rows": [
+            { "week": "2026-05-18", "endpoints": 96, "compliant": 94, "pct": "98.2%" },
+            { "week": "2026-04-13", "endpoints": 95, "compliant": 93, "pct": "98.4%" },
+            { "week": "2026-06-15", "endpoints": 96, "compliant": 95, "pct": "98.9%" },
+            { "week": "2026-04-27", "endpoints": 95, "compliant": 94, "pct": "98.9%" },
+            { "week": "2026-06-01", "endpoints": 96, "compliant": 95, "pct": "99.0%" },
+            { "week": "2026-05-04", "endpoints": 96, "compliant": 95, "pct": "99.0%" }
+          ]
+        },
+        "provenance": {
+          "sourceSystem": "RMM — patch policy report",
+          "sourceQuery": "weekly rollup, policy = 'Harbourview standard'",
+          "approvedBy": "Priya Raman (vCIO)",
+          "approvedAt": "2026-07-01T17:03:00Z"
+        }
+      }
+    },
+    {
+      "id": "backup-verification",
+      "kind": "claim",
+      "label": "Every nightly backup was verified by restore test",
+      "caption": "91 nightly jobs, 91 verified restores. Two jobs required a re-run before passing.",
+      "evidence": {
+        "title": "Backup verification log",
+        "summary": "Nightly job outcomes. The two jobs that needed a re-run are listed first.",
+        "table": {
+          "columns": [
+            { "key": "date", "label": "Date" },
+            { "key": "job", "label": "Job" },
+            { "key": "result", "label": "Restore test" },
+            { "key": "attempts", "label": "Attempts", "align": "right" }
+          ],
+          "rows": [
+            { "date": "2026-05-09", "job": "HV-SRV-001 full", "result": "Passed on re-run", "attempts": 2 },
+            { "date": "2026-06-22", "job": "HV-SRV-002 full", "result": "Passed on re-run", "attempts": 2 },
+            { "date": "2026-06-29", "job": "HV-SRV-001 full", "result": "Passed", "attempts": 1 },
+            { "date": "2026-06-30", "job": "HV-SRV-002 full", "result": "Passed", "attempts": 1 }
+          ]
+        },
+        "provenance": {
+          "sourceSystem": "Backup platform — verification log",
+          "sourceQuery": "job_type = nightly AND period = 2026-Q2",
+          "approvedBy": "Priya Raman (vCIO)",
+          "approvedAt": "2026-07-01T17:07:00Z"
+        }
+      }
+    }
+  ]
+}
