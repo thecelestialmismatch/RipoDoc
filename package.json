@@ -1,0 +1,19 @@
+{
+  "name": "ripodoc",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Secure reporting delivery and evidence layer for MSPs \u2014 a normal PDF where every figure is clickable, recipient-bound and audited.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.6.0"
+  },
+  "scripts": {
+    "test": "node --test --experimental-strip-types \"tools/evidence-pdf/test/*.test.ts\"",
+    "typecheck": "cd web/frontend && npx tsc --noEmit",
+    "lint": "cd web/frontend && npx eslint",
+    "build:web": "npm --prefix web/frontend run build",
+    "build:pdf": "node --experimental-strip-types tools/evidence-pdf/src/cli.ts --manifest tools/evidence-pdf/fixtures/demo-report.json --out build/demo-report.pdf --origin https://ripodoc.com --ttl-days 14",
+    "build:pdf:local": "node --experimental-strip-types tools/evidence-pdf/src/cli.ts --manifest tools/evidence-pdf/fixtures/demo-report.json --out build/demo-report.local.pdf --origin http://localhost:3000 --ttl-days 365 --allow-loopback-http true",
+    "verify": "npm run typecheck && npm test && npm run build:web"
+  }
+}

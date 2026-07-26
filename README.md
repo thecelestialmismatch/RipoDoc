@@ -1,89 +1,89 @@
-# Compliance Firewall Agent
+# RipoDoc
 
-Blocks sensitive data (SSNs, credit cards, API keys, M&A info) from being sent to ChatGPT, Claude, and other LLM providers. Real-time interception with encrypted quarantine and audit trails.
+**A normal PDF where every figure is clickable.** Click a number in the report and the exact rows behind it open in your browser — scoped to you, expiring, revocable, and logged.
 
-## Quick Start
+Built for MSPs who send client reports and get asked "where did that number come from?"
+
+```
+┌─ The PDF (opens anywhere) ─────────┐        ┌─ The evidence page ──────────────┐
+│                                    │        │  The 14 assets flagged at risk   │
+│   412        97.4%       14        │        │  ────────────────────────────    │
+│   Tickets    SLA         At risk ──┼──────► │  How this figure was calculated  │
+│                          [VIEW DATA]        │  RMM — warranty_end < today …    │
+│                                    │        │  ┌──────────────────────────┐    │
+│   ▇▇  ▇▇▇  ▇▇▇  Ticket volume      │        │  │ HV-WKS-014  Workstation …│    │
+│                                    │        │  │ HV-WKS-021  Workstation …│    │
+└────────────────────────────────────┘        │  └──────────────────────────┘    │
+                                              │  Approved by Priya Raman · logged│
+                                              └──────────────────────────────────┘
+```
+
+## Why this is not just a link
+
+Every interactive element carries a standard PDF **link annotation** with an `https` URI action. That is the only PDF interaction mechanism supported by every viewer — Chrome, Safari, macOS Preview, Acrobat, iOS and Android.
+
+Embedded PDF JavaScript, the obvious alternative, is **Acrobat-only**. In Chrome or on a phone it does nothing, silently. So RipoDoc does not use it, and a test asserts it never appears in the output.
+
+The rows themselves never travel inside the PDF. Forwarding the file does not forward the data.
+
+Full design, viewer compatibility matrix and rejected alternatives: [`docs/02-product/interaction-spec.md`](docs/02-product/interaction-spec.md).
+
+## Security model
+
+| Control | Mechanism |
+| :--- | :--- |
+| Recipient binding | Email is **hashed** into an HMAC-signed token, never embedded |
+| Expiry | Signed into the token, checked on every request |
+| Revocation | Per-link token id — kill one link without rotating the key |
+| Version pinning | A token for v3 cannot open v4 |
+| Scoped disclosure | One page renders **one element**, never the whole report |
+| Audit | Every access, granted or denied, is recorded before rendering |
+| No indexing | Evidence routes are `noindex, noarchive, nocache` |
+
+## Quick start
 
 ```bash
-cd compliance-firewall-agent
-npm install
-# Edit .env.local with your Supabase keys (see setup below)
-npm run dev
-# Open http://localhost:3000
+npm run verify          # typecheck + 52 tests + production build
 ```
 
-## Setup (3 steps)
-
-### 1. Create Supabase project (free)
-- Go to supabase.com -> sign up -> "New Project"
-- Go to Settings -> API -> copy your URL + keys
-
-### 2. Set up database
-- Go to Supabase SQL Editor
-- Paste the contents of `compliance-firewall-agent/supabase/migrations/001_initial_schema.sql`
-- Click "Run"
-
-### 3. Configure environment
-- Open `compliance-firewall-agent/.env.local`
-- Replace the three SUPABASE values with your real keys
-
-## Test it
+Generate a clickable report:
 
 ```bash
-cd compliance-firewall-agent
-bash test-api.sh
+RIPODOC_EVIDENCE_SECRET="$(openssl rand -base64 32)" npm run build:pdf
 ```
 
-This sends 5 test prompts through the firewall:
-- Safe prompt -> ALLOWED
-- Prompt with SSN -> BLOCKED
-- Prompt with email -> QUARANTINED
-- Prompt with API key -> BLOCKED
-- M&A strategic data -> BLOCKED
+Run the evidence pages and generate a PDF that points at them:
 
-## Deploy (free)
-
-Push to GitHub, then import on vercel.com. See `DEPLOY-GUIDE.md` for details.
-
-## Project Structure
-
-```
-compliance-firewall-agent/
-  app/              # Next.js pages + API routes
-    api/
-      gateway/      # POST /api/gateway/intercept (main endpoint)
-      compliance/   # GET /api/compliance/events
-      quarantine/   # POST+GET /api/quarantine/review
-      reports/      # GET /api/reports/generate
-      policy/       # POST /api/policy/update (requires approval)
-    dashboard/      # Compliance dashboard UI
-  lib/              # Core engine
-    interceptor/    # Parses and routes LLM requests
-    classifier/     # Detects sensitive data (regex patterns)
-    quarantine/     # Encrypts + queues flagged prompts
-    audit/          # Immutable logging + hash chain
-    hitl/           # Human approval system
-    supabase/       # Database client + types
-  agents/           # Agent behavior definitions
-  supabase/         # Database migration SQL
-  ARCHITECTURE.md   # Full system design document
-  DEPLOY-GUIDE.md   # How to deploy for free
-  tasks.json        # 7-day development roadmap
-  test-api.sh       # API test script
+```bash
+echo "RIPODOC_EVIDENCE_SECRET=$(openssl rand -base64 32)" > web/frontend/.env.local
+npm run build:web && npm --prefix web/frontend run start   # http://localhost:3000
+npm run build:pdf:local                                     # build/demo-report.local.pdf
 ```
 
-## How it works
+Open `build/demo-report.local.pdf` and click any figure.
 
-1. Employee app sends LLM request to your gateway instead of directly to OpenAI/Anthropic
-2. Gateway scans the prompt for sensitive data (16 detection patterns)
-3. Safe prompts pass through. Dangerous ones get blocked or quarantined for review
-4. Everything is logged with tamper-proof cryptographic hashes
-5. Dashboard shows all activity. Reports satisfy compliance officers.
+## Layout
 
-## Cost
+```
+tools/evidence-pdf/     Dependency-free PDF 1.7 writer + report renderer + CLI
+web/frontend/           Next.js app: recipient-bound evidence pages
+  src/lib/evidence/     Manifest types, validation, tokens, audit, store
+  src/app/e/            /e/<token> and /e/<token>/<elementId>
+docs/01-research/       Market evidence, competitor map, MSPBots teardown
+docs/02-product/        PRD and the interaction spec
+IDEA.md                 Strategy, market, pricing, execution plan
+```
 
-| Service | Cost |
-|---------|------|
-| Vercel  | Free |
-| Supabase| Free |
-| **Total** | **$0/month** |
+## Environment
+
+| Variable | Required | Purpose |
+| :--- | :--- | :--- |
+| `RIPODOC_EVIDENCE_SECRET` | yes | HMAC key for evidence tokens. 32+ chars. No fallback — the app throws without it. |
+| `RIPODOC_REVOKED_JTIS` | no | Comma-separated revoked token ids |
+| `RIPODOC_ALLOW_EXPORT` | no | `false` disables CSV export for recipients |
+
+## Status
+
+Pre-revenue, validation phase. The interaction is implemented and verified end to end; the authoring UI, PSA connectors, and overlaying links onto an **uploaded** PDF are not yet built — see the limitations section of the interaction spec.
+
+Requires Node 22.6+ (native TypeScript execution).
