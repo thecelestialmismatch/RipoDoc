@@ -1,0 +1,32 @@
+{
+  "//": [
+    "The CLI tools run under `node --experimental-strip-types`, which erases",
+    "types without transforming them. `erasableSyntaxOnly` makes the type",
+    "checker reject anything Node could not strip — enums, namespaces,",
+    "parameter properties — so a construct that would fail at runtime fails in",
+    "CI instead.",
+    "",
+    "`noUncheckedIndexedAccess` is on because this code parses hostile input:",
+    "an out-of-range index in a PDF parser is a real, reachable state, not a",
+    "theoretical one."
+  ],
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "types": ["node"],
+    "typeRoots": ["../web/frontend/node_modules/@types"],
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "strict": true,
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true
+  },
+  "include": ["**/*.ts", "../web/frontend/src/lib/evidence/**/*.ts"]
+}
