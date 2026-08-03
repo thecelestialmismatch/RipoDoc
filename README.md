@@ -143,3 +143,22 @@ IDEA.md                Strategy, market, pricing, execution plan
 Pre-revenue, validation phase. The interaction and the overlay are implemented and verified end to end against both hand-built fixtures and a real word-processor PDF. Not built: the upload and review UI, PSA/RMM connectors, page rasterisation for a visual zone editor, and a database-backed manifest and audit store. Limits are listed explicitly in each spec.
 
 Requires Node 22.6+ (native TypeScript execution).
+
+## Documentation
+
+- [`docs/00-strategy/master-plan.md`](docs/00-strategy/master-plan.md) — **the one document to run the company from**: market potential, money, first-10-customer plan, positioning, tech stack, security, six-month execution, and anti-failure rules.
+- [`docs/01-research/`](docs/01-research/) — market evidence, competitor map, MSPBots teardown
+- [`docs/02-product/`](docs/02-product/) — PRD, interaction spec, overlay spec, API contracts, report template spec
+- [`docs/04-security/threat-model.md`](docs/04-security/threat-model.md) — threats & mitigations
+- [`docs/05-engineering/`](docs/05-engineering/) — architecture, test strategy, deployment runbook
+
+### Keeping the demo honest
+
+The demo manifest (`tools/evidence-pdf/fixtures/demo-report.json` + the served copy in `web/frontend/content/reports/`) is **generated**, not hand-edited. Every count KPI enumerates exactly the rows it claims — a KPI that reads 412 shows 412 rows, enforced by test. If you change the manifest:
+
+```bash
+npm run fixture:generate   # regenerate both copies deterministically
+npm test                   # verify the count-KPI invariants still hold
+```
+
+Both copies are byte-identical by construction — the PDF generator and the web app can never disagree.
