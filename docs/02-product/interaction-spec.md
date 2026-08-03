@@ -7,6 +7,8 @@
 > *"You claimed 14 assets were at risk. Show me the 14."*
 > Click the figure in the PDF. A browser window opens with exactly those 14 rows, the query that produced them, and who approved them.
 
+The PDF can be one RipoDoc rendered from a manifest, or **the customer's own report with links appended to it** ([`overlay-spec.md`](overlay-spec.md)) — the second is what makes "keep your existing tools" true.
+
 This is the interaction MSPBots offers inside its web dashboard — click a KPI, get a modal with a filter expression and a paginated grid ([`../01-research/mspbots-teardown.md`](../01-research/mspbots-teardown.md)). RipoDoc's difference is **where it lives**: not in a dashboard the client must visit, but in the PDF the MSP already emails them.
 
 ## Why this is hard, and how it is solved
@@ -127,6 +129,6 @@ The renderer asserts `linkCount === elements.length` before returning. A report 
 
 - **One page.** Multi-page pagination is not implemented; a manifest with many elements will overflow. The renderer does not yet detect this.
 - **Bar charts and KPIs only.** Line and pie charts are not implemented.
-- **Overlaying an existing uploaded PDF is not implemented.** Today the PDF is generated from a manifest. Adding evidence links to a customer's *existing* PDF requires an incremental update that appends annotations without re-rendering the original bytes — the natural next step, and the honest answer to "upload any PDF".
+- **Overlaying an existing uploaded PDF is implemented** — see [`overlay-spec.md`](overlay-spec.md). A customer's PDF is left byte-for-byte intact and the annotations are appended as an incremental update. What is *not* built is the visual authoring UI: zones are reviewed as JSON rather than by dragging a box over a rendered page.
 - **Manifests are files on disk.** `store.ts` is a read-only lookup with the interface a database implementation would replace.
-- **The audit sink writes structured JSON to stdout.** Durable storage is not implemented.
+- **The audit sink writes structured JSON to stdout**, and — when `RIPODOC_AUDIT_LOG` is set — a hash-chained append-only file (`audit-log.ts`, verifiable with `npm run audit:verify`). A database-backed sink is not implemented.

@@ -19,26 +19,2921 @@
       "caption": "+8% vs Q1 2026",
       "evidence": {
         "title": "Tickets resolved in Q2 2026",
-        "summary": "All 412 tickets closed between 1 Apr and 30 Jun 2026. Showing the 6 longest-running.",
+        "summary": "All 412 tickets closed between 1 Apr and 30 Jun 2026. Every one is listed below.",
         "table": {
           "columns": [
-            { "key": "ticket", "label": "Ticket" },
-            { "key": "summary", "label": "Summary" },
-            { "key": "owner", "label": "Resolved by" },
-            { "key": "hours", "label": "Hours", "align": "right" }
+            {
+              "key": "ticket",
+              "label": "Ticket"
+            },
+            {
+              "key": "summary",
+              "label": "Summary"
+            },
+            {
+              "key": "owner",
+              "label": "Resolved by"
+            },
+            {
+              "key": "hours",
+              "label": "Hours",
+              "align": "right"
+            },
+            {
+              "key": "resolvedAt",
+              "label": "Resolved"
+            }
           ],
           "rows": [
-            { "ticket": "NG-40118", "summary": "Practice management server migration", "owner": "R. Okafor", "hours": 26.5 },
-            { "ticket": "NG-40233", "summary": "Document management re-indexing", "owner": "S. Lindqvist", "hours": 18 },
-            { "ticket": "NG-40407", "summary": "Conference room AV replacement", "owner": "M. Adeyemi", "hours": 12.25 },
-            { "ticket": "NG-40512", "summary": "Email archive retention rebuild", "owner": "R. Okafor", "hours": 9.75 },
-            { "ticket": "NG-40688", "summary": "VPN split-tunnel reconfiguration", "owner": "T. Brennan", "hours": 7.5 },
-            { "ticket": "NG-40771", "summary": "Scanner driver rollout, floor 3", "owner": "M. Adeyemi", "hours": 6 }
+            {
+              "ticket": "NG-40412",
+              "summary": "Teams meeting recording retention",
+              "owner": "T. Brennan",
+              "hours": 2,
+              "resolvedAt": "2026-05-19T12:37:00Z"
+            },
+            {
+              "ticket": "NG-40411",
+              "summary": "User account unlock after lockout",
+              "owner": "S. Lindqvist",
+              "hours": 3.81,
+              "resolvedAt": "2026-04-15T13:38:00Z"
+            },
+            {
+              "ticket": "NG-40410",
+              "summary": "Vendor software upgrade — practice management",
+              "owner": "M. Adeyemi",
+              "hours": 5.2,
+              "resolvedAt": "2026-06-05T10:35:00Z"
+            },
+            {
+              "ticket": "NG-40409",
+              "summary": "Shared drive permissions for finance",
+              "owner": "S. Lindqvist",
+              "hours": 1.72,
+              "resolvedAt": "2026-06-16T12:47:00Z"
+            },
+            {
+              "ticket": "NG-40408",
+              "summary": "Endpoint antivirus definition update",
+              "owner": "M. Adeyemi",
+              "hours": 2.49,
+              "resolvedAt": "2026-05-10T13:50:00Z"
+            },
+            {
+              "ticket": "NG-40407",
+              "summary": "VPN certificate renewal",
+              "owner": "R. Okafor",
+              "hours": 2.61,
+              "resolvedAt": "2026-05-04T09:23:00Z"
+            },
+            {
+              "ticket": "NG-40406",
+              "summary": "Password reset for shared service account",
+              "owner": "R. Okafor",
+              "hours": 5.21,
+              "resolvedAt": "2026-06-09T14:53:00Z"
+            },
+            {
+              "ticket": "NG-40405",
+              "summary": "Vendor software upgrade — practice management",
+              "owner": "S. Lindqvist",
+              "hours": 6.1,
+              "resolvedAt": "2026-04-11T15:06:00Z"
+            },
+            {
+              "ticket": "NG-40404",
+              "summary": "Intranet certificate expiry fix",
+              "owner": "R. Okafor",
+              "hours": 0.78,
+              "resolvedAt": "2026-04-23T11:03:00Z"
+            },
+            {
+              "ticket": "NG-40403",
+              "summary": "Network switch config backup",
+              "owner": "T. Brennan",
+              "hours": 5.41,
+              "resolvedAt": "2026-04-11T09:53:00Z"
+            },
+            {
+              "ticket": "NG-40402",
+              "summary": "VPN certificate renewal",
+              "owner": "M. Adeyemi",
+              "hours": 0.62,
+              "resolvedAt": "2026-06-25T16:56:00Z"
+            },
+            {
+              "ticket": "NG-40401",
+              "summary": "Outlook mailbox re-indexing",
+              "owner": "M. Adeyemi",
+              "hours": 1.2,
+              "resolvedAt": "2026-04-09T15:45:00Z"
+            },
+            {
+              "ticket": "NG-40400",
+              "summary": "Teams meeting recording retention",
+              "owner": "T. Brennan",
+              "hours": 1.63,
+              "resolvedAt": "2026-06-12T14:01:00Z"
+            },
+            {
+              "ticket": "NG-40399",
+              "summary": "Citrix workspace reinstall",
+              "owner": "R. Okafor",
+              "hours": 4.8,
+              "resolvedAt": "2026-06-26T08:51:00Z"
+            },
+            {
+              "ticket": "NG-40398",
+              "summary": "Email alias creation for legal team",
+              "owner": "M. Adeyemi",
+              "hours": 1.64,
+              "resolvedAt": "2026-04-12T16:49:00Z"
+            },
+            {
+              "ticket": "NG-40397",
+              "summary": "Network switch config backup",
+              "owner": "T. Brennan",
+              "hours": 2.23,
+              "resolvedAt": "2026-05-04T09:50:00Z"
+            },
+            {
+              "ticket": "NG-40396",
+              "summary": "SharePoint list import for projects",
+              "owner": "S. Lindqvist",
+              "hours": 2.12,
+              "resolvedAt": "2026-05-10T11:47:00Z"
+            },
+            {
+              "ticket": "NG-40395",
+              "summary": "Intranet certificate expiry fix",
+              "owner": "M. Adeyemi",
+              "hours": 4.75,
+              "resolvedAt": "2026-06-25T10:28:00Z"
+            },
+            {
+              "ticket": "NG-40394",
+              "summary": "Email alias creation for legal team",
+              "owner": "M. Adeyemi",
+              "hours": 3.62,
+              "resolvedAt": "2026-06-01T12:55:00Z"
+            },
+            {
+              "ticket": "NG-40393",
+              "summary": "New workstation deployment, HR",
+              "owner": "T. Brennan",
+              "hours": 0.51,
+              "resolvedAt": "2026-06-17T15:56:00Z"
+            },
+            {
+              "ticket": "NG-40392",
+              "summary": "Citrix workspace reinstall",
+              "owner": "S. Lindqvist",
+              "hours": 2.89,
+              "resolvedAt": "2026-06-13T11:59:00Z"
+            },
+            {
+              "ticket": "NG-40391",
+              "summary": "Firewall rule request — partner VPN",
+              "owner": "S. Lindqvist",
+              "hours": 1.06,
+              "resolvedAt": "2026-04-24T12:25:00Z"
+            },
+            {
+              "ticket": "NG-40390",
+              "summary": "Password reset for shared service account",
+              "owner": "M. Adeyemi",
+              "hours": 3.63,
+              "resolvedAt": "2026-04-18T15:53:00Z"
+            },
+            {
+              "ticket": "NG-40389",
+              "summary": "Outlook mailbox re-indexing",
+              "owner": "M. Adeyemi",
+              "hours": 3.8,
+              "resolvedAt": "2026-04-07T10:29:00Z"
+            },
+            {
+              "ticket": "NG-40388",
+              "summary": "Vendor software upgrade — practice management",
+              "owner": "R. Okafor",
+              "hours": 2.08,
+              "resolvedAt": "2026-05-06T15:29:00Z"
+            },
+            {
+              "ticket": "NG-40387",
+              "summary": "Endpoint antivirus definition update",
+              "owner": "T. Brennan",
+              "hours": 1.02,
+              "resolvedAt": "2026-06-20T13:44:00Z"
+            },
+            {
+              "ticket": "NG-40386",
+              "summary": "OneDrive sync issue — user profile",
+              "owner": "S. Lindqvist",
+              "hours": 2.57,
+              "resolvedAt": "2026-05-18T13:30:00Z"
+            },
+            {
+              "ticket": "NG-40385",
+              "summary": "SharePoint list import for projects",
+              "owner": "M. Adeyemi",
+              "hours": 2.73,
+              "resolvedAt": "2026-04-07T15:47:00Z"
+            },
+            {
+              "ticket": "NG-40384",
+              "summary": "Outlook mailbox re-indexing",
+              "owner": "M. Adeyemi",
+              "hours": 2.14,
+              "resolvedAt": "2026-05-15T13:57:00Z"
+            },
+            {
+              "ticket": "NG-40383",
+              "summary": "File server share permission review",
+              "owner": "T. Brennan",
+              "hours": 0.89,
+              "resolvedAt": "2026-04-15T08:34:00Z"
+            },
+            {
+              "ticket": "NG-40382",
+              "summary": "New workstation deployment, HR",
+              "owner": "T. Brennan",
+              "hours": 3.09,
+              "resolvedAt": "2026-06-13T09:41:00Z"
+            },
+            {
+              "ticket": "NG-40381",
+              "summary": "Phone system voicemail-to-email setup",
+              "owner": "S. Lindqvist",
+              "hours": 6.04,
+              "resolvedAt": "2026-04-09T14:15:00Z"
+            },
+            {
+              "ticket": "NG-40380",
+              "summary": "Backup job failure on HV-SRV-002",
+              "owner": "R. Okafor",
+              "hours": 1.73,
+              "resolvedAt": "2026-04-07T09:47:00Z"
+            },
+            {
+              "ticket": "NG-40379",
+              "summary": "Shared mailbox permission fix",
+              "owner": "S. Lindqvist",
+              "hours": 2.9,
+              "resolvedAt": "2026-05-19T11:08:00Z"
+            },
+            {
+              "ticket": "NG-40378",
+              "summary": "File server share permission review",
+              "owner": "M. Adeyemi",
+              "hours": 1.58,
+              "resolvedAt": "2026-05-02T12:29:00Z"
+            },
+            {
+              "ticket": "NG-40377",
+              "summary": "Endpoint antivirus definition update",
+              "owner": "M. Adeyemi",
+              "hours": 6.04,
+              "resolvedAt": "2026-04-09T16:24:00Z"
+            },
+            {
+              "ticket": "NG-40376",
+              "summary": "Server patching window, HV-SRV-001",
+              "owner": "M. Adeyemi",
+              "hours": 4.55,
+              "resolvedAt": "2026-04-12T16:56:00Z"
+            },
+            {
+              "ticket": "NG-40375",
+              "summary": "OneDrive sync issue — user profile",
+              "owner": "T. Brennan",
+              "hours": 1.84,
+              "resolvedAt": "2026-05-22T13:37:00Z"
+            },
+            {
+              "ticket": "NG-40374",
+              "summary": "New starter laptop build",
+              "owner": "M. Adeyemi",
+              "hours": 3.95,
+              "resolvedAt": "2026-06-09T12:18:00Z"
+            },
+            {
+              "ticket": "NG-40373",
+              "summary": "Shared mailbox permission fix",
+              "owner": "T. Brennan",
+              "hours": 5.32,
+              "resolvedAt": "2026-04-16T14:59:00Z"
+            },
+            {
+              "ticket": "NG-40372",
+              "summary": "Endpoint antivirus definition update",
+              "owner": "T. Brennan",
+              "hours": 2.89,
+              "resolvedAt": "2026-06-20T11:04:00Z"
+            },
+            {
+              "ticket": "NG-40371",
+              "summary": "Desk phone provisioning, floor 1",
+              "owner": "S. Lindqvist",
+              "hours": 2.42,
+              "resolvedAt": "2026-04-14T11:56:00Z"
+            },
+            {
+              "ticket": "NG-40370",
+              "summary": "File server share permission review",
+              "owner": "T. Brennan",
+              "hours": 5.1,
+              "resolvedAt": "2026-04-03T13:39:00Z"
+            },
+            {
+              "ticket": "NG-40369",
+              "summary": "Email alias creation for legal team",
+              "owner": "T. Brennan",
+              "hours": 5.52,
+              "resolvedAt": "2026-04-06T15:15:00Z"
+            },
+            {
+              "ticket": "NG-40368",
+              "summary": "Citrix workspace reinstall",
+              "owner": "S. Lindqvist",
+              "hours": 2.12,
+              "resolvedAt": "2026-04-18T16:29:00Z"
+            },
+            {
+              "ticket": "NG-40367",
+              "summary": "File server share permission review",
+              "owner": "T. Brennan",
+              "hours": 5.39,
+              "resolvedAt": "2026-05-04T10:41:00Z"
+            },
+            {
+              "ticket": "NG-40366",
+              "summary": "Phone system voicemail-to-email setup",
+              "owner": "R. Okafor",
+              "hours": 3.92,
+              "resolvedAt": "2026-05-22T13:19:00Z"
+            },
+            {
+              "ticket": "NG-40365",
+              "summary": "Endpoint antivirus definition update",
+              "owner": "S. Lindqvist",
+              "hours": 4.29,
+              "resolvedAt": "2026-06-04T13:11:00Z"
+            },
+            {
+              "ticket": "NG-40364",
+              "summary": "Server patching window, HV-SRV-001",
+              "owner": "M. Adeyemi",
+              "hours": 1.36,
+              "resolvedAt": "2026-05-03T15:16:00Z"
+            },
+            {
+              "ticket": "NG-40363",
+              "summary": "Password reset for shared service account",
+              "owner": "T. Brennan",
+              "hours": 4.83,
+              "resolvedAt": "2026-06-04T08:21:00Z"
+            },
+            {
+              "ticket": "NG-40362",
+              "summary": "Outlook mailbox re-indexing",
+              "owner": "R. Okafor",
+              "hours": 2.91,
+              "resolvedAt": "2026-06-15T08:27:00Z"
+            },
+            {
+              "ticket": "NG-40361",
+              "summary": "Outlook add-in crash investigation",
+              "owner": "M. Adeyemi",
+              "hours": 4.8,
+              "resolvedAt": "2026-06-28T12:00:00Z"
+            },
+            {
+              "ticket": "NG-40360",
+              "summary": "Server patching window, HV-SRV-001",
+              "owner": "S. Lindqvist",
+              "hours": 3.91,
+              "resolvedAt": "2026-04-09T10:03:00Z"
+            },
+            {
+              "ticket": "NG-40359",
+              "summary": "Citrix workspace reinstall",
+              "owner": "M. Adeyemi",
+              "hours": 4.08,
+              "resolvedAt": "2026-06-08T10:56:00Z"
+            },
+            {
+              "ticket": "NG-40358",
+              "summary": "Backup job failure on HV-SRV-002",
+              "owner": "R. Okafor",
+              "hours": 3.09,
+              "resolvedAt": "2026-06-05T14:57:00Z"
+            },
+            {
+              "ticket": "NG-40357",
+              "summary": "VPN certificate renewal",
+              "owner": "T. Brennan",
+              "hours": 1.68,
+              "resolvedAt": "2026-05-09T16:13:00Z"
+            },
+            {
+              "ticket": "NG-40356",
+              "summary": "Laptop BIOS update, finance cohort",
+              "owner": "R. Okafor",
+              "hours": 4.45,
+              "resolvedAt": "2026-06-05T12:11:00Z"
+            },
+            {
+              "ticket": "NG-40355",
+              "summary": "Server patching window, HV-SRV-001",
+              "owner": "T. Brennan",
+              "hours": 5.67,
+              "resolvedAt": "2026-05-17T13:32:00Z"
+            },
+            {
+              "ticket": "NG-40354",
+              "summary": "Shared mailbox permission fix",
+              "owner": "M. Adeyemi",
+              "hours": 3.33,
+              "resolvedAt": "2026-06-01T15:53:00Z"
+            },
+            {
+              "ticket": "NG-40353",
+              "summary": "OneDrive sync issue — user profile",
+              "owner": "R. Okafor",
+              "hours": 1.88,
+              "resolvedAt": "2026-05-11T12:29:00Z"
+            },
+            {
+              "ticket": "NG-40352",
+              "summary": "OneDrive sync issue — user profile",
+              "owner": "S. Lindqvist",
+              "hours": 5.61,
+              "resolvedAt": "2026-06-25T15:19:00Z"
+            },
+            {
+              "ticket": "NG-40351",
+              "summary": "Server patching window, HV-SRV-001",
+              "owner": "M. Adeyemi",
+              "hours": 4.29,
+              "resolvedAt": "2026-04-02T13:07:00Z"
+            },
+            {
+              "ticket": "NG-40350",
+              "summary": "Network switch config backup",
+              "owner": "T. Brennan",
+              "hours": 3.68,
+              "resolvedAt": "2026-04-05T11:56:00Z"
+            },
+            {
+              "ticket": "NG-40349",
+              "summary": "OneDrive sync issue — user profile",
+              "owner": "T. Brennan",
+              "hours": 2.77,
+              "resolvedAt": "2026-04-13T12:07:00Z"
+            },
+            {
+              "ticket": "NG-40348",
+              "summary": "Wi-Fi dead zone survey, conference wing",
+              "owner": "R. Okafor",
+              "hours": 3.54,
+              "resolvedAt": "2026-05-15T16:32:00Z"
+            },
+            {
+              "ticket": "NG-40347",
+              "summary": "Outlook mailbox re-indexing",
+              "owner": "T. Brennan",
+              "hours": 5.74,
+              "resolvedAt": "2026-05-15T14:00:00Z"
+            },
+            {
+              "ticket": "NG-40346",
+              "summary": "Disk space investigation — email archive",
+              "owner": "R. Okafor",
+              "hours": 3.73,
+              "resolvedAt": "2026-05-07T08:23:00Z"
+            },
+            {
+              "ticket": "NG-40345",
+              "summary": "New workstation deployment, HR",
+              "owner": "S. Lindqvist",
+              "hours": 6.14,
+              "resolvedAt": "2026-05-27T08:04:00Z"
+            },
+            {
+              "ticket": "NG-40344",
+              "summary": "Disk space investigation — email archive",
+              "owner": "R. Okafor",
+              "hours": 3.59,
+              "resolvedAt": "2026-06-04T09:04:00Z"
+            },
+            {
+              "ticket": "NG-40343",
+              "summary": "Password reset for shared service account",
+              "owner": "T. Brennan",
+              "hours": 0.49,
+              "resolvedAt": "2026-05-05T15:03:00Z"
+            },
+            {
+              "ticket": "NG-40342",
+              "summary": "VPN certificate renewal",
+              "owner": "T. Brennan",
+              "hours": 5.39,
+              "resolvedAt": "2026-05-07T11:40:00Z"
+            },
+            {
+              "ticket": "NG-40341",
+              "summary": "Firewall rule request — partner VPN",
+              "owner": "R. Okafor",
+              "hours": 6.12,
+              "resolvedAt": "2026-04-26T10:54:00Z"
+            },
+            {
+              "ticket": "NG-40340",
+              "summary": "New starter laptop build",
+              "owner": "T. Brennan",
+              "hours": 1.89,
+              "resolvedAt": "2026-05-20T09:03:00Z"
+            },
+            {
+              "ticket": "NG-40339",
+              "summary": "Password reset for shared service account",
+              "owner": "R. Okafor",
+              "hours": 2.98,
+              "resolvedAt": "2026-06-06T09:47:00Z"
+            },
+            {
+              "ticket": "NG-40338",
+              "summary": "Wi-Fi dead zone survey, conference wing",
+              "owner": "T. Brennan",
+              "hours": 3.07,
+              "resolvedAt": "2026-06-11T10:51:00Z"
+            },
+            {
+              "ticket": "NG-40337",
+              "summary": "SharePoint list import for projects",
+              "owner": "R. Okafor",
+              "hours": 6.13,
+              "resolvedAt": "2026-05-03T15:23:00Z"
+            },
+            {
+              "ticket": "NG-40336",
+              "summary": "Shared drive permissions for finance",
+              "owner": "T. Brennan",
+              "hours": 0.72,
+              "resolvedAt": "2026-06-02T13:27:00Z"
+            },
+            {
+              "ticket": "NG-40335",
+              "summary": "Wi-Fi dead zone survey, conference wing",
+              "owner": "R. Okafor",
+              "hours": 2.63,
+              "resolvedAt": "2026-04-02T11:44:00Z"
+            },
+            {
+              "ticket": "NG-40334",
+              "summary": "Server patching window, HV-SRV-001",
+              "owner": "T. Brennan",
+              "hours": 0.97,
+              "resolvedAt": "2026-06-04T12:36:00Z"
+            },
+            {
+              "ticket": "NG-40333",
+              "summary": "Outlook add-in crash investigation",
+              "owner": "M. Adeyemi",
+              "hours": 2.3,
+              "resolvedAt": "2026-05-17T08:51:00Z"
+            },
+            {
+              "ticket": "NG-40332",
+              "summary": "Network switch config backup",
+              "owner": "M. Adeyemi",
+              "hours": 1.55,
+              "resolvedAt": "2026-06-22T11:44:00Z"
+            },
+            {
+              "ticket": "NG-40331",
+              "summary": "Phone system voicemail-to-email setup",
+              "owner": "M. Adeyemi",
+              "hours": 2.35,
+              "resolvedAt": "2026-04-01T08:13:00Z"
+            },
+            {
+              "ticket": "NG-40330",
+              "summary": "SharePoint list import for projects",
+              "owner": "M. Adeyemi",
+              "hours": 3.69,
+              "resolvedAt": "2026-05-18T12:16:00Z"
+            },
+            {
+              "ticket": "NG-40329",
+              "summary": "Laptop BIOS update, finance cohort",
+              "owner": "S. Lindqvist",
+              "hours": 4.36,
+              "resolvedAt": "2026-06-04T16:17:00Z"
+            },
+            {
+              "ticket": "NG-40328",
+              "summary": "MFA enrolment for new joiner",
+              "owner": "M. Adeyemi",
+              "hours": 5.86,
+              "resolvedAt": "2026-04-07T10:29:00Z"
+            },
+            {
+              "ticket": "NG-40327",
+              "summary": "SharePoint list import for projects",
+              "owner": "T. Brennan",
+              "hours": 5.71,
+              "resolvedAt": "2026-06-24T08:18:00Z"
+            },
+            {
+              "ticket": "NG-40326",
+              "summary": "Disk space investigation — email archive",
+              "owner": "S. Lindqvist",
+              "hours": 1.72,
+              "resolvedAt": "2026-04-27T12:52:00Z"
+            },
+            {
+              "ticket": "NG-40325",
+              "summary": "Disk space investigation — email archive",
+              "owner": "R. Okafor",
+              "hours": 2.93,
+              "resolvedAt": "2026-05-05T15:30:00Z"
+            },
+            {
+              "ticket": "NG-40324",
+              "summary": "Backup job failure on HV-SRV-002",
+              "owner": "S. Lindqvist",
+              "hours": 0.37,
+              "resolvedAt": "2026-05-20T10:49:00Z"
+            },
+            {
+              "ticket": "NG-40323",
+              "summary": "OneDrive sync issue — user profile",
+              "owner": "T. Brennan",
+              "hours": 4.97,
+              "resolvedAt": "2026-06-24T12:04:00Z"
+            },
+            {
+              "ticket": "NG-40322",
+              "summary": "Password reset for shared service account",
+              "owner": "R. Okafor",
+              "hours": 5.05,
+              "resolvedAt": "2026-06-01T09:27:00Z"
+            },
+            {
+              "ticket": "NG-40321",
+              "summary": "Printer driver update, floor 2",
+              "owner": "M. Adeyemi",
+              "hours": 0.58,
+              "resolvedAt": "2026-05-19T10:28:00Z"
+            },
+            {
+              "ticket": "NG-40320",
+              "summary": "Teams meeting recording retention",
+              "owner": "T. Brennan",
+              "hours": 3.44,
+              "resolvedAt": "2026-04-21T11:03:00Z"
+            },
+            {
+              "ticket": "NG-40319",
+              "summary": "New workstation deployment, HR",
+              "owner": "S. Lindqvist",
+              "hours": 1.17,
+              "resolvedAt": "2026-06-14T16:39:00Z"
+            },
+            {
+              "ticket": "NG-40318",
+              "summary": "Server patching window, HV-SRV-001",
+              "owner": "M. Adeyemi",
+              "hours": 2.86,
+              "resolvedAt": "2026-05-15T13:24:00Z"
+            },
+            {
+              "ticket": "NG-40317",
+              "summary": "Wi-Fi dead zone survey, conference wing",
+              "owner": "M. Adeyemi",
+              "hours": 4.24,
+              "resolvedAt": "2026-06-03T10:48:00Z"
+            },
+            {
+              "ticket": "NG-40316",
+              "summary": "Endpoint antivirus definition update",
+              "owner": "R. Okafor",
+              "hours": 1.85,
+              "resolvedAt": "2026-06-23T08:30:00Z"
+            },
+            {
+              "ticket": "NG-40315",
+              "summary": "Laptop BIOS update, finance cohort",
+              "owner": "T. Brennan",
+              "hours": 4.73,
+              "resolvedAt": "2026-04-11T14:16:00Z"
+            },
+            {
+              "ticket": "NG-40314",
+              "summary": "Scanner firmware update",
+              "owner": "T. Brennan",
+              "hours": 1.68,
+              "resolvedAt": "2026-05-27T16:18:00Z"
+            },
+            {
+              "ticket": "NG-40313",
+              "summary": "MFA enrolment for new joiner",
+              "owner": "T. Brennan",
+              "hours": 0.78,
+              "resolvedAt": "2026-05-11T13:04:00Z"
+            },
+            {
+              "ticket": "NG-40312",
+              "summary": "Outlook add-in crash investigation",
+              "owner": "R. Okafor",
+              "hours": 1.83,
+              "resolvedAt": "2026-05-15T13:33:00Z"
+            },
+            {
+              "ticket": "NG-40311",
+              "summary": "Desk phone provisioning, floor 1",
+              "owner": "T. Brennan",
+              "hours": 5.53,
+              "resolvedAt": "2026-05-19T11:09:00Z"
+            },
+            {
+              "ticket": "NG-40310",
+              "summary": "Phone system voicemail-to-email setup",
+              "owner": "M. Adeyemi",
+              "hours": 3.87,
+              "resolvedAt": "2026-04-16T08:30:00Z"
+            },
+            {
+              "ticket": "NG-40309",
+              "summary": "Server patching window, HV-SRV-001",
+              "owner": "R. Okafor",
+              "hours": 3.69,
+              "resolvedAt": "2026-04-02T10:35:00Z"
+            },
+            {
+              "ticket": "NG-40308",
+              "summary": "Backup job failure on HV-SRV-002",
+              "owner": "S. Lindqvist",
+              "hours": 5.7,
+              "resolvedAt": "2026-04-18T16:30:00Z"
+            },
+            {
+              "ticket": "NG-40307",
+              "summary": "Backup job failure on HV-SRV-002",
+              "owner": "S. Lindqvist",
+              "hours": 2.69,
+              "resolvedAt": "2026-05-17T14:55:00Z"
+            },
+            {
+              "ticket": "NG-40306",
+              "summary": "Outlook add-in crash investigation",
+              "owner": "S. Lindqvist",
+              "hours": 6.1,
+              "resolvedAt": "2026-04-27T08:02:00Z"
+            },
+            {
+              "ticket": "NG-40305",
+              "summary": "Laptop BIOS update, finance cohort",
+              "owner": "T. Brennan",
+              "hours": 1.09,
+              "resolvedAt": "2026-06-14T14:10:00Z"
+            },
+            {
+              "ticket": "NG-40304",
+              "summary": "Intranet certificate expiry fix",
+              "owner": "R. Okafor",
+              "hours": 2.35,
+              "resolvedAt": "2026-05-02T13:29:00Z"
+            },
+            {
+              "ticket": "NG-40303",
+              "summary": "Citrix workspace reinstall",
+              "owner": "S. Lindqvist",
+              "hours": 1.63,
+              "resolvedAt": "2026-05-22T13:45:00Z"
+            },
+            {
+              "ticket": "NG-40302",
+              "summary": "Intranet certificate expiry fix",
+              "owner": "T. Brennan",
+              "hours": 5.31,
+              "resolvedAt": "2026-04-04T15:02:00Z"
+            },
+            {
+              "ticket": "NG-40301",
+              "summary": "Teams meeting recording retention",
+              "owner": "T. Brennan",
+              "hours": 4.32,
+              "resolvedAt": "2026-05-06T08:29:00Z"
+            },
+            {
+              "ticket": "NG-40300",
+              "summary": "SharePoint list import for projects",
+              "owner": "R. Okafor",
+              "hours": 2.77,
+              "resolvedAt": "2026-06-23T11:18:00Z"
+            },
+            {
+              "ticket": "NG-40299",
+              "summary": "Backup job failure on HV-SRV-002",
+              "owner": "T. Brennan",
+              "hours": 3.3,
+              "resolvedAt": "2026-05-19T12:57:00Z"
+            },
+            {
+              "ticket": "NG-40298",
+              "summary": "SharePoint list import for projects",
+              "owner": "T. Brennan",
+              "hours": 3.88,
+              "resolvedAt": "2026-05-17T16:42:00Z"
+            },
+            {
+              "ticket": "NG-40297",
+              "summary": "Citrix workspace reinstall",
+              "owner": "R. Okafor",
+              "hours": 0.57,
+              "resolvedAt": "2026-06-27T14:32:00Z"
+            },
+            {
+              "ticket": "NG-40296",
+              "summary": "File server share permission review",
+              "owner": "S. Lindqvist",
+              "hours": 5.22,
+              "resolvedAt": "2026-06-15T12:10:00Z"
+            },
+            {
+              "ticket": "NG-40295",
+              "summary": "Phone system voicemail-to-email setup",
+              "owner": "S. Lindqvist",
+              "hours": 0.4,
+              "resolvedAt": "2026-06-17T15:10:00Z"
+            },
+            {
+              "ticket": "NG-40294",
+              "summary": "Server patching window, HV-SRV-001",
+              "owner": "T. Brennan",
+              "hours": 2.42,
+              "resolvedAt": "2026-05-13T11:04:00Z"
+            },
+            {
+              "ticket": "NG-40293",
+              "summary": "Outlook mailbox re-indexing",
+              "owner": "R. Okafor",
+              "hours": 0.48,
+              "resolvedAt": "2026-05-26T15:46:00Z"
+            },
+            {
+              "ticket": "NG-40292",
+              "summary": "SharePoint list import for projects",
+              "owner": "T. Brennan",
+              "hours": 5.69,
+              "resolvedAt": "2026-05-06T12:11:00Z"
+            },
+            {
+              "ticket": "NG-40291",
+              "summary": "File server share permission review",
+              "owner": "S. Lindqvist",
+              "hours": 5.76,
+              "resolvedAt": "2026-05-11T13:11:00Z"
+            },
+            {
+              "ticket": "NG-40290",
+              "summary": "VPN certificate renewal",
+              "owner": "M. Adeyemi",
+              "hours": 1.96,
+              "resolvedAt": "2026-06-25T10:42:00Z"
+            },
+            {
+              "ticket": "NG-40289",
+              "summary": "New starter laptop build",
+              "owner": "S. Lindqvist",
+              "hours": 4.88,
+              "resolvedAt": "2026-06-23T08:54:00Z"
+            },
+            {
+              "ticket": "NG-40288",
+              "summary": "Scanner firmware update",
+              "owner": "R. Okafor",
+              "hours": 3.79,
+              "resolvedAt": "2026-05-17T09:46:00Z"
+            },
+            {
+              "ticket": "NG-40287",
+              "summary": "New workstation deployment, HR",
+              "owner": "S. Lindqvist",
+              "hours": 6.23,
+              "resolvedAt": "2026-05-25T12:33:00Z"
+            },
+            {
+              "ticket": "NG-40286",
+              "summary": "Intranet certificate expiry fix",
+              "owner": "T. Brennan",
+              "hours": 3.33,
+              "resolvedAt": "2026-04-18T15:13:00Z"
+            },
+            {
+              "ticket": "NG-40285",
+              "summary": "New workstation deployment, HR",
+              "owner": "T. Brennan",
+              "hours": 3.23,
+              "resolvedAt": "2026-05-26T09:01:00Z"
+            },
+            {
+              "ticket": "NG-40284",
+              "summary": "Vendor software upgrade — practice management",
+              "owner": "T. Brennan",
+              "hours": 3.35,
+              "resolvedAt": "2026-06-04T13:29:00Z"
+            },
+            {
+              "ticket": "NG-40283",
+              "summary": "Password reset for shared service account",
+              "owner": "S. Lindqvist",
+              "hours": 0.52,
+              "resolvedAt": "2026-05-21T09:36:00Z"
+            },
+            {
+              "ticket": "NG-40282",
+              "summary": "New starter laptop build",
+              "owner": "S. Lindqvist",
+              "hours": 1.46,
+              "resolvedAt": "2026-05-16T12:24:00Z"
+            },
+            {
+              "ticket": "NG-40281",
+              "summary": "OneDrive sync issue — user profile",
+              "owner": "M. Adeyemi",
+              "hours": 3.28,
+              "resolvedAt": "2026-06-23T11:01:00Z"
+            },
+            {
+              "ticket": "NG-40280",
+              "summary": "File server share permission review",
+              "owner": "M. Adeyemi",
+              "hours": 0.99,
+              "resolvedAt": "2026-06-02T10:04:00Z"
+            },
+            {
+              "ticket": "NG-40279",
+              "summary": "Email alias creation for legal team",
+              "owner": "S. Lindqvist",
+              "hours": 3.29,
+              "resolvedAt": "2026-06-09T16:48:00Z"
+            },
+            {
+              "ticket": "NG-40278",
+              "summary": "OneDrive sync issue — user profile",
+              "owner": "M. Adeyemi",
+              "hours": 1.18,
+              "resolvedAt": "2026-05-25T08:34:00Z"
+            },
+            {
+              "ticket": "NG-40277",
+              "summary": "OneDrive sync issue — user profile",
+              "owner": "M. Adeyemi",
+              "hours": 3.24,
+              "resolvedAt": "2026-06-23T14:50:00Z"
+            },
+            {
+              "ticket": "NG-40276",
+              "summary": "Laptop BIOS update, finance cohort",
+              "owner": "M. Adeyemi",
+              "hours": 5.27,
+              "resolvedAt": "2026-05-08T10:28:00Z"
+            },
+            {
+              "ticket": "NG-40275",
+              "summary": "Laptop BIOS update, finance cohort",
+              "owner": "M. Adeyemi",
+              "hours": 6.11,
+              "resolvedAt": "2026-06-07T09:57:00Z"
+            },
+            {
+              "ticket": "NG-40274",
+              "summary": "Outlook add-in crash investigation",
+              "owner": "R. Okafor",
+              "hours": 3.44,
+              "resolvedAt": "2026-06-12T08:56:00Z"
+            },
+            {
+              "ticket": "NG-40273",
+              "summary": "Printer driver update, floor 2",
+              "owner": "T. Brennan",
+              "hours": 1.47,
+              "resolvedAt": "2026-06-12T16:13:00Z"
+            },
+            {
+              "ticket": "NG-40272",
+              "summary": "Shared mailbox permission fix",
+              "owner": "M. Adeyemi",
+              "hours": 1.04,
+              "resolvedAt": "2026-04-05T10:41:00Z"
+            },
+            {
+              "ticket": "NG-40271",
+              "summary": "Printer driver update, floor 2",
+              "owner": "S. Lindqvist",
+              "hours": 3.3,
+              "resolvedAt": "2026-05-19T15:00:00Z"
+            },
+            {
+              "ticket": "NG-40270",
+              "summary": "Shared drive permissions for finance",
+              "owner": "M. Adeyemi",
+              "hours": 3.17,
+              "resolvedAt": "2026-04-27T14:26:00Z"
+            },
+            {
+              "ticket": "NG-40269",
+              "summary": "MFA enrolment for new joiner",
+              "owner": "R. Okafor",
+              "hours": 4.19,
+              "resolvedAt": "2026-04-25T13:01:00Z"
+            },
+            {
+              "ticket": "NG-40268",
+              "summary": "New starter laptop build",
+              "owner": "S. Lindqvist",
+              "hours": 4.55,
+              "resolvedAt": "2026-05-26T16:50:00Z"
+            },
+            {
+              "ticket": "NG-40267",
+              "summary": "New starter laptop build",
+              "owner": "T. Brennan",
+              "hours": 1.93,
+              "resolvedAt": "2026-06-15T15:47:00Z"
+            },
+            {
+              "ticket": "NG-40266",
+              "summary": "VPN certificate renewal",
+              "owner": "R. Okafor",
+              "hours": 1.71,
+              "resolvedAt": "2026-04-21T16:37:00Z"
+            },
+            {
+              "ticket": "NG-40265",
+              "summary": "Shared drive permissions for finance",
+              "owner": "S. Lindqvist",
+              "hours": 4.1,
+              "resolvedAt": "2026-04-11T15:34:00Z"
+            },
+            {
+              "ticket": "NG-40264",
+              "summary": "Backup job failure on HV-SRV-002",
+              "owner": "T. Brennan",
+              "hours": 5.28,
+              "resolvedAt": "2026-05-17T16:06:00Z"
+            },
+            {
+              "ticket": "NG-40263",
+              "summary": "Outlook add-in crash investigation",
+              "owner": "M. Adeyemi",
+              "hours": 2.67,
+              "resolvedAt": "2026-04-06T11:37:00Z"
+            },
+            {
+              "ticket": "NG-40262",
+              "summary": "Disk space investigation — email archive",
+              "owner": "M. Adeyemi",
+              "hours": 4.24,
+              "resolvedAt": "2026-04-14T14:01:00Z"
+            },
+            {
+              "ticket": "NG-40261",
+              "summary": "Server patching window, HV-SRV-001",
+              "owner": "T. Brennan",
+              "hours": 1.33,
+              "resolvedAt": "2026-04-17T12:10:00Z"
+            },
+            {
+              "ticket": "NG-40260",
+              "summary": "Outlook add-in crash investigation",
+              "owner": "T. Brennan",
+              "hours": 2.38,
+              "resolvedAt": "2026-05-18T15:48:00Z"
+            },
+            {
+              "ticket": "NG-40259",
+              "summary": "Firewall rule request — partner VPN",
+              "owner": "R. Okafor",
+              "hours": 3.08,
+              "resolvedAt": "2026-04-06T11:18:00Z"
+            },
+            {
+              "ticket": "NG-40258",
+              "summary": "VPN certificate renewal",
+              "owner": "S. Lindqvist",
+              "hours": 5.57,
+              "resolvedAt": "2026-06-17T13:43:00Z"
+            },
+            {
+              "ticket": "NG-40257",
+              "summary": "Password reset for shared service account",
+              "owner": "M. Adeyemi",
+              "hours": 3.95,
+              "resolvedAt": "2026-06-22T16:19:00Z"
+            },
+            {
+              "ticket": "NG-40256",
+              "summary": "VPN certificate renewal",
+              "owner": "T. Brennan",
+              "hours": 4.4,
+              "resolvedAt": "2026-04-13T11:46:00Z"
+            },
+            {
+              "ticket": "NG-40255",
+              "summary": "Backup job failure on HV-SRV-002",
+              "owner": "R. Okafor",
+              "hours": 4.73,
+              "resolvedAt": "2026-06-11T09:48:00Z"
+            },
+            {
+              "ticket": "NG-40254",
+              "summary": "Shared mailbox permission fix",
+              "owner": "T. Brennan",
+              "hours": 5.49,
+              "resolvedAt": "2026-04-09T09:16:00Z"
+            },
+            {
+              "ticket": "NG-40253",
+              "summary": "Password reset for shared service account",
+              "owner": "S. Lindqvist",
+              "hours": 2.6,
+              "resolvedAt": "2026-06-19T15:45:00Z"
+            },
+            {
+              "ticket": "NG-40252",
+              "summary": "Phone system voicemail-to-email setup",
+              "owner": "S. Lindqvist",
+              "hours": 6.04,
+              "resolvedAt": "2026-04-20T08:14:00Z"
+            },
+            {
+              "ticket": "NG-40251",
+              "summary": "Outlook add-in crash investigation",
+              "owner": "T. Brennan",
+              "hours": 3.48,
+              "resolvedAt": "2026-05-04T13:51:00Z"
+            },
+            {
+              "ticket": "NG-40250",
+              "summary": "MFA enrolment for new joiner",
+              "owner": "S. Lindqvist",
+              "hours": 4.05,
+              "resolvedAt": "2026-04-03T08:03:00Z"
+            },
+            {
+              "ticket": "NG-40249",
+              "summary": "User account unlock after lockout",
+              "owner": "S. Lindqvist",
+              "hours": 5.35,
+              "resolvedAt": "2026-04-26T11:23:00Z"
+            },
+            {
+              "ticket": "NG-40248",
+              "summary": "New starter laptop build",
+              "owner": "M. Adeyemi",
+              "hours": 1.8,
+              "resolvedAt": "2026-04-14T15:10:00Z"
+            },
+            {
+              "ticket": "NG-40247",
+              "summary": "MFA enrolment for new joiner",
+              "owner": "R. Okafor",
+              "hours": 0.41,
+              "resolvedAt": "2026-05-17T15:56:00Z"
+            },
+            {
+              "ticket": "NG-40246",
+              "summary": "Outlook mailbox re-indexing",
+              "owner": "M. Adeyemi",
+              "hours": 0.92,
+              "resolvedAt": "2026-06-16T11:55:00Z"
+            },
+            {
+              "ticket": "NG-40245",
+              "summary": "Citrix workspace reinstall",
+              "owner": "R. Okafor",
+              "hours": 1.95,
+              "resolvedAt": "2026-04-23T10:52:00Z"
+            },
+            {
+              "ticket": "NG-40244",
+              "summary": "Email alias creation for legal team",
+              "owner": "M. Adeyemi",
+              "hours": 3.9,
+              "resolvedAt": "2026-04-20T11:43:00Z"
+            },
+            {
+              "ticket": "NG-40243",
+              "summary": "Shared drive permissions for finance",
+              "owner": "R. Okafor",
+              "hours": 1.65,
+              "resolvedAt": "2026-06-24T10:53:00Z"
+            },
+            {
+              "ticket": "NG-40242",
+              "summary": "Email alias creation for legal team",
+              "owner": "M. Adeyemi",
+              "hours": 1.8,
+              "resolvedAt": "2026-05-05T14:44:00Z"
+            },
+            {
+              "ticket": "NG-40241",
+              "summary": "Email alias creation for legal team",
+              "owner": "T. Brennan",
+              "hours": 5.69,
+              "resolvedAt": "2026-04-09T13:55:00Z"
+            },
+            {
+              "ticket": "NG-40240",
+              "summary": "User account unlock after lockout",
+              "owner": "T. Brennan",
+              "hours": 4.79,
+              "resolvedAt": "2026-06-21T15:33:00Z"
+            },
+            {
+              "ticket": "NG-40239",
+              "summary": "Intranet certificate expiry fix",
+              "owner": "R. Okafor",
+              "hours": 0.75,
+              "resolvedAt": "2026-04-22T16:36:00Z"
+            },
+            {
+              "ticket": "NG-40238",
+              "summary": "VPN certificate renewal",
+              "owner": "R. Okafor",
+              "hours": 2.91,
+              "resolvedAt": "2026-04-03T09:33:00Z"
+            },
+            {
+              "ticket": "NG-40237",
+              "summary": "Citrix workspace reinstall",
+              "owner": "R. Okafor",
+              "hours": 1.35,
+              "resolvedAt": "2026-05-18T11:54:00Z"
+            },
+            {
+              "ticket": "NG-40236",
+              "summary": "Network switch config backup",
+              "owner": "S. Lindqvist",
+              "hours": 6.24,
+              "resolvedAt": "2026-06-18T15:40:00Z"
+            },
+            {
+              "ticket": "NG-40235",
+              "summary": "Printer driver update, floor 2",
+              "owner": "R. Okafor",
+              "hours": 5.19,
+              "resolvedAt": "2026-05-06T11:10:00Z"
+            },
+            {
+              "ticket": "NG-40234",
+              "summary": "Shared mailbox permission fix",
+              "owner": "M. Adeyemi",
+              "hours": 4.85,
+              "resolvedAt": "2026-06-28T16:38:00Z"
+            },
+            {
+              "ticket": "NG-40233",
+              "summary": "Server patching window, HV-SRV-001",
+              "owner": "M. Adeyemi",
+              "hours": 5.88,
+              "resolvedAt": "2026-05-08T08:02:00Z"
+            },
+            {
+              "ticket": "NG-40232",
+              "summary": "Password reset for shared service account",
+              "owner": "T. Brennan",
+              "hours": 5.25,
+              "resolvedAt": "2026-06-12T12:55:00Z"
+            },
+            {
+              "ticket": "NG-40231",
+              "summary": "Shared drive permissions for finance",
+              "owner": "S. Lindqvist",
+              "hours": 4.06,
+              "resolvedAt": "2026-05-22T09:43:00Z"
+            },
+            {
+              "ticket": "NG-40230",
+              "summary": "Shared drive permissions for finance",
+              "owner": "T. Brennan",
+              "hours": 1.57,
+              "resolvedAt": "2026-04-03T12:23:00Z"
+            },
+            {
+              "ticket": "NG-40229",
+              "summary": "Intranet certificate expiry fix",
+              "owner": "R. Okafor",
+              "hours": 1.82,
+              "resolvedAt": "2026-04-15T10:32:00Z"
+            },
+            {
+              "ticket": "NG-40228",
+              "summary": "Endpoint antivirus definition update",
+              "owner": "M. Adeyemi",
+              "hours": 2.28,
+              "resolvedAt": "2026-06-22T12:39:00Z"
+            },
+            {
+              "ticket": "NG-40227",
+              "summary": "Citrix workspace reinstall",
+              "owner": "R. Okafor",
+              "hours": 3.77,
+              "resolvedAt": "2026-04-13T15:06:00Z"
+            },
+            {
+              "ticket": "NG-40226",
+              "summary": "Vendor software upgrade — practice management",
+              "owner": "R. Okafor",
+              "hours": 1.02,
+              "resolvedAt": "2026-04-14T16:04:00Z"
+            },
+            {
+              "ticket": "NG-40225",
+              "summary": "Phone system voicemail-to-email setup",
+              "owner": "T. Brennan",
+              "hours": 2.25,
+              "resolvedAt": "2026-04-24T12:23:00Z"
+            },
+            {
+              "ticket": "NG-40224",
+              "summary": "New starter laptop build",
+              "owner": "R. Okafor",
+              "hours": 6.25,
+              "resolvedAt": "2026-04-06T16:44:00Z"
+            },
+            {
+              "ticket": "NG-40223",
+              "summary": "Endpoint antivirus definition update",
+              "owner": "R. Okafor",
+              "hours": 2.65,
+              "resolvedAt": "2026-06-17T16:35:00Z"
+            },
+            {
+              "ticket": "NG-40222",
+              "summary": "Network switch config backup",
+              "owner": "S. Lindqvist",
+              "hours": 0.41,
+              "resolvedAt": "2026-05-06T08:47:00Z"
+            },
+            {
+              "ticket": "NG-40221",
+              "summary": "Backup job failure on HV-SRV-002",
+              "owner": "T. Brennan",
+              "hours": 1.63,
+              "resolvedAt": "2026-06-07T11:05:00Z"
+            },
+            {
+              "ticket": "NG-40220",
+              "summary": "Intranet certificate expiry fix",
+              "owner": "M. Adeyemi",
+              "hours": 2.33,
+              "resolvedAt": "2026-06-06T11:50:00Z"
+            },
+            {
+              "ticket": "NG-40219",
+              "summary": "Server patching window, HV-SRV-001",
+              "owner": "S. Lindqvist",
+              "hours": 0.57,
+              "resolvedAt": "2026-06-04T13:17:00Z"
+            },
+            {
+              "ticket": "NG-40218",
+              "summary": "File server share permission review",
+              "owner": "R. Okafor",
+              "hours": 0.85,
+              "resolvedAt": "2026-05-21T08:27:00Z"
+            },
+            {
+              "ticket": "NG-40217",
+              "summary": "User account unlock after lockout",
+              "owner": "R. Okafor",
+              "hours": 0.65,
+              "resolvedAt": "2026-06-12T14:24:00Z"
+            },
+            {
+              "ticket": "NG-40216",
+              "summary": "SharePoint list import for projects",
+              "owner": "R. Okafor",
+              "hours": 4.01,
+              "resolvedAt": "2026-05-18T08:12:00Z"
+            },
+            {
+              "ticket": "NG-40215",
+              "summary": "Printer driver update, floor 2",
+              "owner": "M. Adeyemi",
+              "hours": 0.46,
+              "resolvedAt": "2026-06-21T10:18:00Z"
+            },
+            {
+              "ticket": "NG-40214",
+              "summary": "Intranet certificate expiry fix",
+              "owner": "R. Okafor",
+              "hours": 2.88,
+              "resolvedAt": "2026-06-08T12:05:00Z"
+            },
+            {
+              "ticket": "NG-40213",
+              "summary": "Citrix workspace reinstall",
+              "owner": "M. Adeyemi",
+              "hours": 2.93,
+              "resolvedAt": "2026-04-18T15:40:00Z"
+            },
+            {
+              "ticket": "NG-40212",
+              "summary": "OneDrive sync issue — user profile",
+              "owner": "M. Adeyemi",
+              "hours": 4.03,
+              "resolvedAt": "2026-06-16T16:07:00Z"
+            },
+            {
+              "ticket": "NG-40211",
+              "summary": "MFA enrolment for new joiner",
+              "owner": "M. Adeyemi",
+              "hours": 0.81,
+              "resolvedAt": "2026-05-17T08:28:00Z"
+            },
+            {
+              "ticket": "NG-40210",
+              "summary": "Shared mailbox permission fix",
+              "owner": "S. Lindqvist",
+              "hours": 0.62,
+              "resolvedAt": "2026-06-02T09:51:00Z"
+            },
+            {
+              "ticket": "NG-40209",
+              "summary": "Email alias creation for legal team",
+              "owner": "M. Adeyemi",
+              "hours": 5.66,
+              "resolvedAt": "2026-06-22T15:32:00Z"
+            },
+            {
+              "ticket": "NG-40208",
+              "summary": "Wi-Fi dead zone survey, conference wing",
+              "owner": "R. Okafor",
+              "hours": 4.13,
+              "resolvedAt": "2026-06-24T11:05:00Z"
+            },
+            {
+              "ticket": "NG-40207",
+              "summary": "Server patching window, HV-SRV-001",
+              "owner": "T. Brennan",
+              "hours": 2.12,
+              "resolvedAt": "2026-05-24T13:08:00Z"
+            },
+            {
+              "ticket": "NG-40206",
+              "summary": "Endpoint antivirus definition update",
+              "owner": "M. Adeyemi",
+              "hours": 3.12,
+              "resolvedAt": "2026-04-16T14:17:00Z"
+            },
+            {
+              "ticket": "NG-40205",
+              "summary": "Vendor software upgrade — practice management",
+              "owner": "M. Adeyemi",
+              "hours": 4.93,
+              "resolvedAt": "2026-04-12T15:40:00Z"
+            },
+            {
+              "ticket": "NG-40204",
+              "summary": "Endpoint antivirus definition update",
+              "owner": "M. Adeyemi",
+              "hours": 1.52,
+              "resolvedAt": "2026-04-28T12:33:00Z"
+            },
+            {
+              "ticket": "NG-40203",
+              "summary": "New starter laptop build",
+              "owner": "R. Okafor",
+              "hours": 6.1,
+              "resolvedAt": "2026-04-05T13:08:00Z"
+            },
+            {
+              "ticket": "NG-40202",
+              "summary": "New starter laptop build",
+              "owner": "M. Adeyemi",
+              "hours": 0.35,
+              "resolvedAt": "2026-05-16T13:03:00Z"
+            },
+            {
+              "ticket": "NG-40201",
+              "summary": "Server patching window, HV-SRV-001",
+              "owner": "M. Adeyemi",
+              "hours": 2.23,
+              "resolvedAt": "2026-05-08T13:12:00Z"
+            },
+            {
+              "ticket": "NG-40200",
+              "summary": "Desk phone provisioning, floor 1",
+              "owner": "T. Brennan",
+              "hours": 5.06,
+              "resolvedAt": "2026-06-14T08:36:00Z"
+            },
+            {
+              "ticket": "NG-40199",
+              "summary": "Teams meeting recording retention",
+              "owner": "R. Okafor",
+              "hours": 2.75,
+              "resolvedAt": "2026-06-12T11:49:00Z"
+            },
+            {
+              "ticket": "NG-40198",
+              "summary": "Disk space investigation — email archive",
+              "owner": "S. Lindqvist",
+              "hours": 1.29,
+              "resolvedAt": "2026-06-15T11:45:00Z"
+            },
+            {
+              "ticket": "NG-40197",
+              "summary": "SharePoint list import for projects",
+              "owner": "S. Lindqvist",
+              "hours": 3.76,
+              "resolvedAt": "2026-04-23T14:59:00Z"
+            },
+            {
+              "ticket": "NG-40196",
+              "summary": "Email alias creation for legal team",
+              "owner": "S. Lindqvist",
+              "hours": 1.56,
+              "resolvedAt": "2026-04-19T11:27:00Z"
+            },
+            {
+              "ticket": "NG-40195",
+              "summary": "Email alias creation for legal team",
+              "owner": "T. Brennan",
+              "hours": 3.78,
+              "resolvedAt": "2026-06-08T08:16:00Z"
+            },
+            {
+              "ticket": "NG-40194",
+              "summary": "Endpoint antivirus definition update",
+              "owner": "T. Brennan",
+              "hours": 5.92,
+              "resolvedAt": "2026-04-18T12:33:00Z"
+            },
+            {
+              "ticket": "NG-40193",
+              "summary": "New starter laptop build",
+              "owner": "S. Lindqvist",
+              "hours": 0.87,
+              "resolvedAt": "2026-05-01T16:49:00Z"
+            },
+            {
+              "ticket": "NG-40192",
+              "summary": "VPN certificate renewal",
+              "owner": "R. Okafor",
+              "hours": 6.12,
+              "resolvedAt": "2026-04-24T15:53:00Z"
+            },
+            {
+              "ticket": "NG-40191",
+              "summary": "Backup job failure on HV-SRV-002",
+              "owner": "M. Adeyemi",
+              "hours": 1.4,
+              "resolvedAt": "2026-05-13T15:28:00Z"
+            },
+            {
+              "ticket": "NG-40190",
+              "summary": "Laptop BIOS update, finance cohort",
+              "owner": "T. Brennan",
+              "hours": 2.33,
+              "resolvedAt": "2026-04-07T09:40:00Z"
+            },
+            {
+              "ticket": "NG-40189",
+              "summary": "Printer driver update, floor 2",
+              "owner": "S. Lindqvist",
+              "hours": 2.73,
+              "resolvedAt": "2026-05-20T15:11:00Z"
+            },
+            {
+              "ticket": "NG-40188",
+              "summary": "Citrix workspace reinstall",
+              "owner": "T. Brennan",
+              "hours": 5.25,
+              "resolvedAt": "2026-04-06T14:03:00Z"
+            },
+            {
+              "ticket": "NG-40187",
+              "summary": "Shared mailbox permission fix",
+              "owner": "R. Okafor",
+              "hours": 0.98,
+              "resolvedAt": "2026-04-18T13:32:00Z"
+            },
+            {
+              "ticket": "NG-40186",
+              "summary": "Firewall rule request — partner VPN",
+              "owner": "R. Okafor",
+              "hours": 4.23,
+              "resolvedAt": "2026-04-18T11:28:00Z"
+            },
+            {
+              "ticket": "NG-40185",
+              "summary": "Desk phone provisioning, floor 1",
+              "owner": "M. Adeyemi",
+              "hours": 3.87,
+              "resolvedAt": "2026-04-28T16:11:00Z"
+            },
+            {
+              "ticket": "NG-40184",
+              "summary": "Printer driver update, floor 2",
+              "owner": "S. Lindqvist",
+              "hours": 4.38,
+              "resolvedAt": "2026-04-11T12:25:00Z"
+            },
+            {
+              "ticket": "NG-40183",
+              "summary": "Printer driver update, floor 2",
+              "owner": "S. Lindqvist",
+              "hours": 4.63,
+              "resolvedAt": "2026-04-28T13:39:00Z"
+            },
+            {
+              "ticket": "NG-40182",
+              "summary": "Disk space investigation — email archive",
+              "owner": "S. Lindqvist",
+              "hours": 1.6,
+              "resolvedAt": "2026-05-14T08:22:00Z"
+            },
+            {
+              "ticket": "NG-40181",
+              "summary": "Desk phone provisioning, floor 1",
+              "owner": "T. Brennan",
+              "hours": 4.63,
+              "resolvedAt": "2026-05-10T16:25:00Z"
+            },
+            {
+              "ticket": "NG-40180",
+              "summary": "Shared drive permissions for finance",
+              "owner": "T. Brennan",
+              "hours": 4.23,
+              "resolvedAt": "2026-04-06T10:21:00Z"
+            },
+            {
+              "ticket": "NG-40179",
+              "summary": "Password reset for shared service account",
+              "owner": "T. Brennan",
+              "hours": 1.93,
+              "resolvedAt": "2026-06-08T10:51:00Z"
+            },
+            {
+              "ticket": "NG-40178",
+              "summary": "Backup job failure on HV-SRV-002",
+              "owner": "T. Brennan",
+              "hours": 5.51,
+              "resolvedAt": "2026-04-10T12:30:00Z"
+            },
+            {
+              "ticket": "NG-40177",
+              "summary": "SharePoint list import for projects",
+              "owner": "R. Okafor",
+              "hours": 2.2,
+              "resolvedAt": "2026-05-20T11:32:00Z"
+            },
+            {
+              "ticket": "NG-40176",
+              "summary": "Laptop BIOS update, finance cohort",
+              "owner": "M. Adeyemi",
+              "hours": 5.92,
+              "resolvedAt": "2026-06-15T09:23:00Z"
+            },
+            {
+              "ticket": "NG-40175",
+              "summary": "Outlook add-in crash investigation",
+              "owner": "R. Okafor",
+              "hours": 5.05,
+              "resolvedAt": "2026-06-02T12:21:00Z"
+            },
+            {
+              "ticket": "NG-40174",
+              "summary": "Desk phone provisioning, floor 1",
+              "owner": "S. Lindqvist",
+              "hours": 5.59,
+              "resolvedAt": "2026-05-21T14:13:00Z"
+            },
+            {
+              "ticket": "NG-40173",
+              "summary": "Citrix workspace reinstall",
+              "owner": "T. Brennan",
+              "hours": 1.84,
+              "resolvedAt": "2026-05-22T15:34:00Z"
+            },
+            {
+              "ticket": "NG-40172",
+              "summary": "Email alias creation for legal team",
+              "owner": "R. Okafor",
+              "hours": 0.25,
+              "resolvedAt": "2026-05-14T14:57:00Z"
+            },
+            {
+              "ticket": "NG-40171",
+              "summary": "File server share permission review",
+              "owner": "T. Brennan",
+              "hours": 3.88,
+              "resolvedAt": "2026-05-18T12:26:00Z"
+            },
+            {
+              "ticket": "NG-40170",
+              "summary": "Password reset for shared service account",
+              "owner": "S. Lindqvist",
+              "hours": 1.66,
+              "resolvedAt": "2026-04-13T15:00:00Z"
+            },
+            {
+              "ticket": "NG-40169",
+              "summary": "Laptop BIOS update, finance cohort",
+              "owner": "M. Adeyemi",
+              "hours": 0.92,
+              "resolvedAt": "2026-05-07T08:20:00Z"
+            },
+            {
+              "ticket": "NG-40168",
+              "summary": "Shared mailbox permission fix",
+              "owner": "T. Brennan",
+              "hours": 4.15,
+              "resolvedAt": "2026-04-04T11:12:00Z"
+            },
+            {
+              "ticket": "NG-40167",
+              "summary": "New starter laptop build",
+              "owner": "M. Adeyemi",
+              "hours": 5.71,
+              "resolvedAt": "2026-06-17T14:00:00Z"
+            },
+            {
+              "ticket": "NG-40166",
+              "summary": "Citrix workspace reinstall",
+              "owner": "M. Adeyemi",
+              "hours": 3.85,
+              "resolvedAt": "2026-05-25T10:59:00Z"
+            },
+            {
+              "ticket": "NG-40165",
+              "summary": "File server share permission review",
+              "owner": "R. Okafor",
+              "hours": 2.13,
+              "resolvedAt": "2026-05-19T09:46:00Z"
+            },
+            {
+              "ticket": "NG-40164",
+              "summary": "Vendor software upgrade — practice management",
+              "owner": "S. Lindqvist",
+              "hours": 4.32,
+              "resolvedAt": "2026-04-19T09:34:00Z"
+            },
+            {
+              "ticket": "NG-40163",
+              "summary": "Desk phone provisioning, floor 1",
+              "owner": "M. Adeyemi",
+              "hours": 2.53,
+              "resolvedAt": "2026-06-14T15:56:00Z"
+            },
+            {
+              "ticket": "NG-40162",
+              "summary": "Teams meeting recording retention",
+              "owner": "S. Lindqvist",
+              "hours": 2.2,
+              "resolvedAt": "2026-04-05T11:40:00Z"
+            },
+            {
+              "ticket": "NG-40161",
+              "summary": "New workstation deployment, HR",
+              "owner": "T. Brennan",
+              "hours": 2.26,
+              "resolvedAt": "2026-05-10T15:42:00Z"
+            },
+            {
+              "ticket": "NG-40160",
+              "summary": "Scanner firmware update",
+              "owner": "S. Lindqvist",
+              "hours": 6.18,
+              "resolvedAt": "2026-06-23T14:33:00Z"
+            },
+            {
+              "ticket": "NG-40159",
+              "summary": "Phone system voicemail-to-email setup",
+              "owner": "S. Lindqvist",
+              "hours": 4.14,
+              "resolvedAt": "2026-05-06T08:08:00Z"
+            },
+            {
+              "ticket": "NG-40158",
+              "summary": "Disk space investigation — email archive",
+              "owner": "R. Okafor",
+              "hours": 2.74,
+              "resolvedAt": "2026-05-25T09:43:00Z"
+            },
+            {
+              "ticket": "NG-40157",
+              "summary": "Desk phone provisioning, floor 1",
+              "owner": "T. Brennan",
+              "hours": 5.73,
+              "resolvedAt": "2026-04-25T08:47:00Z"
+            },
+            {
+              "ticket": "NG-40156",
+              "summary": "Firewall rule request — partner VPN",
+              "owner": "R. Okafor",
+              "hours": 4.51,
+              "resolvedAt": "2026-05-12T13:11:00Z"
+            },
+            {
+              "ticket": "NG-40155",
+              "summary": "Phone system voicemail-to-email setup",
+              "owner": "R. Okafor",
+              "hours": 0.68,
+              "resolvedAt": "2026-04-08T16:45:00Z"
+            },
+            {
+              "ticket": "NG-40154",
+              "summary": "Printer driver update, floor 2",
+              "owner": "S. Lindqvist",
+              "hours": 5.32,
+              "resolvedAt": "2026-05-01T16:21:00Z"
+            },
+            {
+              "ticket": "NG-40153",
+              "summary": "Outlook mailbox re-indexing",
+              "owner": "T. Brennan",
+              "hours": 5.74,
+              "resolvedAt": "2026-06-17T15:53:00Z"
+            },
+            {
+              "ticket": "NG-40152",
+              "summary": "Backup job failure on HV-SRV-002",
+              "owner": "T. Brennan",
+              "hours": 3.93,
+              "resolvedAt": "2026-06-08T13:55:00Z"
+            },
+            {
+              "ticket": "NG-40151",
+              "summary": "Password reset for shared service account",
+              "owner": "S. Lindqvist",
+              "hours": 5.13,
+              "resolvedAt": "2026-06-26T16:38:00Z"
+            },
+            {
+              "ticket": "NG-40150",
+              "summary": "Outlook mailbox re-indexing",
+              "owner": "R. Okafor",
+              "hours": 2.57,
+              "resolvedAt": "2026-04-09T14:08:00Z"
+            },
+            {
+              "ticket": "NG-40149",
+              "summary": "File server share permission review",
+              "owner": "R. Okafor",
+              "hours": 4.18,
+              "resolvedAt": "2026-06-07T08:04:00Z"
+            },
+            {
+              "ticket": "NG-40148",
+              "summary": "Outlook mailbox re-indexing",
+              "owner": "T. Brennan",
+              "hours": 4.69,
+              "resolvedAt": "2026-04-01T08:54:00Z"
+            },
+            {
+              "ticket": "NG-40147",
+              "summary": "SharePoint list import for projects",
+              "owner": "R. Okafor",
+              "hours": 5.59,
+              "resolvedAt": "2026-05-06T14:04:00Z"
+            },
+            {
+              "ticket": "NG-40146",
+              "summary": "Laptop BIOS update, finance cohort",
+              "owner": "T. Brennan",
+              "hours": 2.29,
+              "resolvedAt": "2026-05-08T08:38:00Z"
+            },
+            {
+              "ticket": "NG-40145",
+              "summary": "Email alias creation for legal team",
+              "owner": "R. Okafor",
+              "hours": 2.73,
+              "resolvedAt": "2026-05-20T16:50:00Z"
+            },
+            {
+              "ticket": "NG-40144",
+              "summary": "Wi-Fi dead zone survey, conference wing",
+              "owner": "T. Brennan",
+              "hours": 3.54,
+              "resolvedAt": "2026-04-11T09:07:00Z"
+            },
+            {
+              "ticket": "NG-40143",
+              "summary": "New workstation deployment, HR",
+              "owner": "M. Adeyemi",
+              "hours": 1,
+              "resolvedAt": "2026-04-26T11:23:00Z"
+            },
+            {
+              "ticket": "NG-40142",
+              "summary": "Vendor software upgrade — practice management",
+              "owner": "S. Lindqvist",
+              "hours": 3.27,
+              "resolvedAt": "2026-06-17T16:32:00Z"
+            },
+            {
+              "ticket": "NG-40141",
+              "summary": "Backup job failure on HV-SRV-002",
+              "owner": "S. Lindqvist",
+              "hours": 4.1,
+              "resolvedAt": "2026-04-02T10:56:00Z"
+            },
+            {
+              "ticket": "NG-40140",
+              "summary": "Server patching window, HV-SRV-001",
+              "owner": "T. Brennan",
+              "hours": 4.35,
+              "resolvedAt": "2026-05-06T12:33:00Z"
+            },
+            {
+              "ticket": "NG-40139",
+              "summary": "Email alias creation for legal team",
+              "owner": "R. Okafor",
+              "hours": 2.47,
+              "resolvedAt": "2026-04-25T09:06:00Z"
+            },
+            {
+              "ticket": "NG-40138",
+              "summary": "Phone system voicemail-to-email setup",
+              "owner": "T. Brennan",
+              "hours": 4.55,
+              "resolvedAt": "2026-06-20T12:51:00Z"
+            },
+            {
+              "ticket": "NG-40137",
+              "summary": "MFA enrolment for new joiner",
+              "owner": "R. Okafor",
+              "hours": 5.11,
+              "resolvedAt": "2026-05-20T13:23:00Z"
+            },
+            {
+              "ticket": "NG-40136",
+              "summary": "Backup job failure on HV-SRV-002",
+              "owner": "M. Adeyemi",
+              "hours": 1.47,
+              "resolvedAt": "2026-06-15T16:00:00Z"
+            },
+            {
+              "ticket": "NG-40135",
+              "summary": "Citrix workspace reinstall",
+              "owner": "M. Adeyemi",
+              "hours": 4.68,
+              "resolvedAt": "2026-05-27T14:45:00Z"
+            },
+            {
+              "ticket": "NG-40134",
+              "summary": "Outlook mailbox re-indexing",
+              "owner": "T. Brennan",
+              "hours": 2.33,
+              "resolvedAt": "2026-06-28T14:27:00Z"
+            },
+            {
+              "ticket": "NG-40133",
+              "summary": "User account unlock after lockout",
+              "owner": "M. Adeyemi",
+              "hours": 0.47,
+              "resolvedAt": "2026-04-24T08:54:00Z"
+            },
+            {
+              "ticket": "NG-40132",
+              "summary": "Intranet certificate expiry fix",
+              "owner": "S. Lindqvist",
+              "hours": 1.72,
+              "resolvedAt": "2026-06-23T10:30:00Z"
+            },
+            {
+              "ticket": "NG-40131",
+              "summary": "New workstation deployment, HR",
+              "owner": "R. Okafor",
+              "hours": 0.48,
+              "resolvedAt": "2026-05-22T10:59:00Z"
+            },
+            {
+              "ticket": "NG-40130",
+              "summary": "File server share permission review",
+              "owner": "M. Adeyemi",
+              "hours": 4.67,
+              "resolvedAt": "2026-05-16T14:19:00Z"
+            },
+            {
+              "ticket": "NG-40129",
+              "summary": "Desk phone provisioning, floor 1",
+              "owner": "R. Okafor",
+              "hours": 5.5,
+              "resolvedAt": "2026-05-24T12:50:00Z"
+            },
+            {
+              "ticket": "NG-40128",
+              "summary": "Server patching window, HV-SRV-001",
+              "owner": "T. Brennan",
+              "hours": 1.5,
+              "resolvedAt": "2026-04-14T08:07:00Z"
+            },
+            {
+              "ticket": "NG-40127",
+              "summary": "VPN certificate renewal",
+              "owner": "M. Adeyemi",
+              "hours": 4.05,
+              "resolvedAt": "2026-05-04T13:47:00Z"
+            },
+            {
+              "ticket": "NG-40126",
+              "summary": "File server share permission review",
+              "owner": "S. Lindqvist",
+              "hours": 3.55,
+              "resolvedAt": "2026-04-14T09:33:00Z"
+            },
+            {
+              "ticket": "NG-40125",
+              "summary": "Outlook mailbox re-indexing",
+              "owner": "S. Lindqvist",
+              "hours": 0.48,
+              "resolvedAt": "2026-04-04T15:09:00Z"
+            },
+            {
+              "ticket": "NG-40124",
+              "summary": "Firewall rule request — partner VPN",
+              "owner": "R. Okafor",
+              "hours": 2.66,
+              "resolvedAt": "2026-05-17T16:08:00Z"
+            },
+            {
+              "ticket": "NG-40123",
+              "summary": "New workstation deployment, HR",
+              "owner": "T. Brennan",
+              "hours": 0.94,
+              "resolvedAt": "2026-06-13T10:43:00Z"
+            },
+            {
+              "ticket": "NG-40122",
+              "summary": "Phone system voicemail-to-email setup",
+              "owner": "T. Brennan",
+              "hours": 4.14,
+              "resolvedAt": "2026-06-28T11:06:00Z"
+            },
+            {
+              "ticket": "NG-40121",
+              "summary": "OneDrive sync issue — user profile",
+              "owner": "R. Okafor",
+              "hours": 6.17,
+              "resolvedAt": "2026-06-20T11:46:00Z"
+            },
+            {
+              "ticket": "NG-40120",
+              "summary": "Phone system voicemail-to-email setup",
+              "owner": "S. Lindqvist",
+              "hours": 5.38,
+              "resolvedAt": "2026-06-07T14:58:00Z"
+            },
+            {
+              "ticket": "NG-40119",
+              "summary": "Scanner firmware update",
+              "owner": "M. Adeyemi",
+              "hours": 4.75,
+              "resolvedAt": "2026-05-14T11:21:00Z"
+            },
+            {
+              "ticket": "NG-40118",
+              "summary": "OneDrive sync issue — user profile",
+              "owner": "R. Okafor",
+              "hours": 2.29,
+              "resolvedAt": "2026-06-23T12:43:00Z"
+            },
+            {
+              "ticket": "NG-40117",
+              "summary": "Printer driver update, floor 2",
+              "owner": "S. Lindqvist",
+              "hours": 5.8,
+              "resolvedAt": "2026-05-06T14:33:00Z"
+            },
+            {
+              "ticket": "NG-40116",
+              "summary": "MFA enrolment for new joiner",
+              "owner": "S. Lindqvist",
+              "hours": 4.58,
+              "resolvedAt": "2026-04-15T12:52:00Z"
+            },
+            {
+              "ticket": "NG-40115",
+              "summary": "Server patching window, HV-SRV-001",
+              "owner": "S. Lindqvist",
+              "hours": 4.91,
+              "resolvedAt": "2026-05-06T16:41:00Z"
+            },
+            {
+              "ticket": "NG-40114",
+              "summary": "Vendor software upgrade — practice management",
+              "owner": "R. Okafor",
+              "hours": 2.34,
+              "resolvedAt": "2026-06-27T13:56:00Z"
+            },
+            {
+              "ticket": "NG-40113",
+              "summary": "Password reset for shared service account",
+              "owner": "T. Brennan",
+              "hours": 3.52,
+              "resolvedAt": "2026-05-03T12:26:00Z"
+            },
+            {
+              "ticket": "NG-40112",
+              "summary": "SharePoint list import for projects",
+              "owner": "R. Okafor",
+              "hours": 3.2,
+              "resolvedAt": "2026-04-28T15:17:00Z"
+            },
+            {
+              "ticket": "NG-40111",
+              "summary": "Scanner firmware update",
+              "owner": "S. Lindqvist",
+              "hours": 2.69,
+              "resolvedAt": "2026-04-12T11:25:00Z"
+            },
+            {
+              "ticket": "NG-40110",
+              "summary": "OneDrive sync issue — user profile",
+              "owner": "T. Brennan",
+              "hours": 2.81,
+              "resolvedAt": "2026-05-18T10:00:00Z"
+            },
+            {
+              "ticket": "NG-40109",
+              "summary": "New workstation deployment, HR",
+              "owner": "S. Lindqvist",
+              "hours": 0.27,
+              "resolvedAt": "2026-06-05T15:49:00Z"
+            },
+            {
+              "ticket": "NG-40108",
+              "summary": "Laptop BIOS update, finance cohort",
+              "owner": "S. Lindqvist",
+              "hours": 0.98,
+              "resolvedAt": "2026-05-05T09:23:00Z"
+            },
+            {
+              "ticket": "NG-40107",
+              "summary": "Desk phone provisioning, floor 1",
+              "owner": "T. Brennan",
+              "hours": 4.4,
+              "resolvedAt": "2026-04-21T09:28:00Z"
+            },
+            {
+              "ticket": "NG-40106",
+              "summary": "Firewall rule request — partner VPN",
+              "owner": "M. Adeyemi",
+              "hours": 0.7,
+              "resolvedAt": "2026-05-26T15:15:00Z"
+            },
+            {
+              "ticket": "NG-40105",
+              "summary": "New starter laptop build",
+              "owner": "M. Adeyemi",
+              "hours": 6.12,
+              "resolvedAt": "2026-04-14T12:50:00Z"
+            },
+            {
+              "ticket": "NG-40104",
+              "summary": "Outlook add-in crash investigation",
+              "owner": "R. Okafor",
+              "hours": 5.8,
+              "resolvedAt": "2026-04-20T14:28:00Z"
+            },
+            {
+              "ticket": "NG-40103",
+              "summary": "Password reset for shared service account",
+              "owner": "R. Okafor",
+              "hours": 5.18,
+              "resolvedAt": "2026-05-16T09:09:00Z"
+            },
+            {
+              "ticket": "NG-40102",
+              "summary": "Email alias creation for legal team",
+              "owner": "M. Adeyemi",
+              "hours": 5.58,
+              "resolvedAt": "2026-06-20T16:31:00Z"
+            },
+            {
+              "ticket": "NG-40101",
+              "summary": "Phone system voicemail-to-email setup",
+              "owner": "M. Adeyemi",
+              "hours": 2.15,
+              "resolvedAt": "2026-06-09T09:13:00Z"
+            },
+            {
+              "ticket": "NG-40100",
+              "summary": "Email alias creation for legal team",
+              "owner": "R. Okafor",
+              "hours": 1.78,
+              "resolvedAt": "2026-06-18T09:28:00Z"
+            },
+            {
+              "ticket": "NG-40099",
+              "summary": "New workstation deployment, HR",
+              "owner": "R. Okafor",
+              "hours": 3.61,
+              "resolvedAt": "2026-05-11T08:11:00Z"
+            },
+            {
+              "ticket": "NG-40098",
+              "summary": "Wi-Fi dead zone survey, conference wing",
+              "owner": "M. Adeyemi",
+              "hours": 3.68,
+              "resolvedAt": "2026-06-28T16:56:00Z"
+            },
+            {
+              "ticket": "NG-40097",
+              "summary": "Citrix workspace reinstall",
+              "owner": "T. Brennan",
+              "hours": 2.91,
+              "resolvedAt": "2026-04-23T08:36:00Z"
+            },
+            {
+              "ticket": "NG-40096",
+              "summary": "Firewall rule request — partner VPN",
+              "owner": "S. Lindqvist",
+              "hours": 2.68,
+              "resolvedAt": "2026-06-05T10:51:00Z"
+            },
+            {
+              "ticket": "NG-40095",
+              "summary": "Email alias creation for legal team",
+              "owner": "M. Adeyemi",
+              "hours": 4.35,
+              "resolvedAt": "2026-05-25T14:28:00Z"
+            },
+            {
+              "ticket": "NG-40094",
+              "summary": "Citrix workspace reinstall",
+              "owner": "M. Adeyemi",
+              "hours": 3.14,
+              "resolvedAt": "2026-06-08T08:06:00Z"
+            },
+            {
+              "ticket": "NG-40093",
+              "summary": "Disk space investigation — email archive",
+              "owner": "T. Brennan",
+              "hours": 1.06,
+              "resolvedAt": "2026-06-25T15:06:00Z"
+            },
+            {
+              "ticket": "NG-40092",
+              "summary": "User account unlock after lockout",
+              "owner": "S. Lindqvist",
+              "hours": 0.94,
+              "resolvedAt": "2026-06-17T10:07:00Z"
+            },
+            {
+              "ticket": "NG-40091",
+              "summary": "File server share permission review",
+              "owner": "M. Adeyemi",
+              "hours": 2.38,
+              "resolvedAt": "2026-05-13T14:58:00Z"
+            },
+            {
+              "ticket": "NG-40090",
+              "summary": "New starter laptop build",
+              "owner": "R. Okafor",
+              "hours": 5.3,
+              "resolvedAt": "2026-05-05T15:21:00Z"
+            },
+            {
+              "ticket": "NG-40089",
+              "summary": "Outlook mailbox re-indexing",
+              "owner": "S. Lindqvist",
+              "hours": 1.39,
+              "resolvedAt": "2026-05-26T12:49:00Z"
+            },
+            {
+              "ticket": "NG-40088",
+              "summary": "Shared mailbox permission fix",
+              "owner": "R. Okafor",
+              "hours": 4.93,
+              "resolvedAt": "2026-06-03T14:56:00Z"
+            },
+            {
+              "ticket": "NG-40087",
+              "summary": "Laptop BIOS update, finance cohort",
+              "owner": "R. Okafor",
+              "hours": 3,
+              "resolvedAt": "2026-05-07T13:55:00Z"
+            },
+            {
+              "ticket": "NG-40086",
+              "summary": "File server share permission review",
+              "owner": "M. Adeyemi",
+              "hours": 1.81,
+              "resolvedAt": "2026-05-14T08:33:00Z"
+            },
+            {
+              "ticket": "NG-40085",
+              "summary": "Shared drive permissions for finance",
+              "owner": "M. Adeyemi",
+              "hours": 3.74,
+              "resolvedAt": "2026-05-17T11:23:00Z"
+            },
+            {
+              "ticket": "NG-40084",
+              "summary": "Laptop BIOS update, finance cohort",
+              "owner": "M. Adeyemi",
+              "hours": 0.48,
+              "resolvedAt": "2026-04-07T08:46:00Z"
+            },
+            {
+              "ticket": "NG-40083",
+              "summary": "File server share permission review",
+              "owner": "R. Okafor",
+              "hours": 5.42,
+              "resolvedAt": "2026-05-05T13:16:00Z"
+            },
+            {
+              "ticket": "NG-40082",
+              "summary": "Scanner firmware update",
+              "owner": "R. Okafor",
+              "hours": 4.93,
+              "resolvedAt": "2026-04-15T16:35:00Z"
+            },
+            {
+              "ticket": "NG-40081",
+              "summary": "Email alias creation for legal team",
+              "owner": "R. Okafor",
+              "hours": 5.32,
+              "resolvedAt": "2026-04-15T13:30:00Z"
+            },
+            {
+              "ticket": "NG-40080",
+              "summary": "Network switch config backup",
+              "owner": "M. Adeyemi",
+              "hours": 5.61,
+              "resolvedAt": "2026-06-01T13:50:00Z"
+            },
+            {
+              "ticket": "NG-40079",
+              "summary": "Firewall rule request — partner VPN",
+              "owner": "S. Lindqvist",
+              "hours": 2.36,
+              "resolvedAt": "2026-04-20T11:48:00Z"
+            },
+            {
+              "ticket": "NG-40078",
+              "summary": "Shared drive permissions for finance",
+              "owner": "R. Okafor",
+              "hours": 1.35,
+              "resolvedAt": "2026-06-12T08:41:00Z"
+            },
+            {
+              "ticket": "NG-40077",
+              "summary": "Wi-Fi dead zone survey, conference wing",
+              "owner": "M. Adeyemi",
+              "hours": 3.05,
+              "resolvedAt": "2026-06-07T13:35:00Z"
+            },
+            {
+              "ticket": "NG-40076",
+              "summary": "Network switch config backup",
+              "owner": "T. Brennan",
+              "hours": 5.73,
+              "resolvedAt": "2026-04-10T12:30:00Z"
+            },
+            {
+              "ticket": "NG-40075",
+              "summary": "Network switch config backup",
+              "owner": "R. Okafor",
+              "hours": 3.7,
+              "resolvedAt": "2026-04-11T14:18:00Z"
+            },
+            {
+              "ticket": "NG-40074",
+              "summary": "Outlook mailbox re-indexing",
+              "owner": "M. Adeyemi",
+              "hours": 3.94,
+              "resolvedAt": "2026-06-07T16:57:00Z"
+            },
+            {
+              "ticket": "NG-40073",
+              "summary": "Wi-Fi dead zone survey, conference wing",
+              "owner": "S. Lindqvist",
+              "hours": 2.05,
+              "resolvedAt": "2026-04-03T15:57:00Z"
+            },
+            {
+              "ticket": "NG-40072",
+              "summary": "New workstation deployment, HR",
+              "owner": "T. Brennan",
+              "hours": 3.97,
+              "resolvedAt": "2026-06-26T13:17:00Z"
+            },
+            {
+              "ticket": "NG-40071",
+              "summary": "Desk phone provisioning, floor 1",
+              "owner": "S. Lindqvist",
+              "hours": 4.7,
+              "resolvedAt": "2026-04-20T15:26:00Z"
+            },
+            {
+              "ticket": "NG-40070",
+              "summary": "Server patching window, HV-SRV-001",
+              "owner": "M. Adeyemi",
+              "hours": 4.27,
+              "resolvedAt": "2026-04-26T09:35:00Z"
+            },
+            {
+              "ticket": "NG-40069",
+              "summary": "MFA enrolment for new joiner",
+              "owner": "S. Lindqvist",
+              "hours": 6.11,
+              "resolvedAt": "2026-04-02T10:56:00Z"
+            },
+            {
+              "ticket": "NG-40068",
+              "summary": "Shared mailbox permission fix",
+              "owner": "S. Lindqvist",
+              "hours": 3.44,
+              "resolvedAt": "2026-05-03T13:28:00Z"
+            },
+            {
+              "ticket": "NG-40067",
+              "summary": "File server share permission review",
+              "owner": "T. Brennan",
+              "hours": 2.18,
+              "resolvedAt": "2026-06-26T14:31:00Z"
+            },
+            {
+              "ticket": "NG-40066",
+              "summary": "Outlook mailbox re-indexing",
+              "owner": "R. Okafor",
+              "hours": 3.83,
+              "resolvedAt": "2026-05-26T09:23:00Z"
+            },
+            {
+              "ticket": "NG-40065",
+              "summary": "Wi-Fi dead zone survey, conference wing",
+              "owner": "T. Brennan",
+              "hours": 5.87,
+              "resolvedAt": "2026-06-08T13:09:00Z"
+            },
+            {
+              "ticket": "NG-40064",
+              "summary": "Backup job failure on HV-SRV-002",
+              "owner": "T. Brennan",
+              "hours": 5.19,
+              "resolvedAt": "2026-06-11T08:25:00Z"
+            },
+            {
+              "ticket": "NG-40063",
+              "summary": "Network switch config backup",
+              "owner": "S. Lindqvist",
+              "hours": 6.1,
+              "resolvedAt": "2026-05-06T15:09:00Z"
+            },
+            {
+              "ticket": "NG-40062",
+              "summary": "Password reset for shared service account",
+              "owner": "M. Adeyemi",
+              "hours": 3.63,
+              "resolvedAt": "2026-06-04T15:37:00Z"
+            },
+            {
+              "ticket": "NG-40061",
+              "summary": "User account unlock after lockout",
+              "owner": "S. Lindqvist",
+              "hours": 3.8,
+              "resolvedAt": "2026-05-21T11:05:00Z"
+            },
+            {
+              "ticket": "NG-40060",
+              "summary": "New starter laptop build",
+              "owner": "R. Okafor",
+              "hours": 5.1,
+              "resolvedAt": "2026-04-04T16:56:00Z"
+            },
+            {
+              "ticket": "NG-40059",
+              "summary": "Password reset for shared service account",
+              "owner": "S. Lindqvist",
+              "hours": 2.5,
+              "resolvedAt": "2026-05-05T15:13:00Z"
+            },
+            {
+              "ticket": "NG-40058",
+              "summary": "Printer driver update, floor 2",
+              "owner": "S. Lindqvist",
+              "hours": 1.37,
+              "resolvedAt": "2026-06-22T16:04:00Z"
+            },
+            {
+              "ticket": "NG-40057",
+              "summary": "Vendor software upgrade — practice management",
+              "owner": "R. Okafor",
+              "hours": 0.52,
+              "resolvedAt": "2026-06-19T09:00:00Z"
+            },
+            {
+              "ticket": "NG-40056",
+              "summary": "Backup job failure on HV-SRV-002",
+              "owner": "T. Brennan",
+              "hours": 1.54,
+              "resolvedAt": "2026-05-23T16:40:00Z"
+            },
+            {
+              "ticket": "NG-40055",
+              "summary": "Password reset for shared service account",
+              "owner": "M. Adeyemi",
+              "hours": 4.87,
+              "resolvedAt": "2026-05-06T14:57:00Z"
+            },
+            {
+              "ticket": "NG-40054",
+              "summary": "Outlook add-in crash investigation",
+              "owner": "R. Okafor",
+              "hours": 6.04,
+              "resolvedAt": "2026-04-01T14:55:00Z"
+            },
+            {
+              "ticket": "NG-40053",
+              "summary": "Shared mailbox permission fix",
+              "owner": "T. Brennan",
+              "hours": 6.13,
+              "resolvedAt": "2026-04-08T08:13:00Z"
+            },
+            {
+              "ticket": "NG-40052",
+              "summary": "Scanner firmware update",
+              "owner": "S. Lindqvist",
+              "hours": 3.88,
+              "resolvedAt": "2026-04-20T12:32:00Z"
+            },
+            {
+              "ticket": "NG-40051",
+              "summary": "Disk space investigation — email archive",
+              "owner": "R. Okafor",
+              "hours": 3.22,
+              "resolvedAt": "2026-05-14T16:00:00Z"
+            },
+            {
+              "ticket": "NG-40050",
+              "summary": "Phone system voicemail-to-email setup",
+              "owner": "T. Brennan",
+              "hours": 5.99,
+              "resolvedAt": "2026-06-21T15:36:00Z"
+            },
+            {
+              "ticket": "NG-40049",
+              "summary": "Teams meeting recording retention",
+              "owner": "R. Okafor",
+              "hours": 0.68,
+              "resolvedAt": "2026-04-27T10:31:00Z"
+            },
+            {
+              "ticket": "NG-40048",
+              "summary": "Printer driver update, floor 2",
+              "owner": "T. Brennan",
+              "hours": 1.46,
+              "resolvedAt": "2026-05-25T14:57:00Z"
+            },
+            {
+              "ticket": "NG-40047",
+              "summary": "Shared mailbox permission fix",
+              "owner": "S. Lindqvist",
+              "hours": 1.99,
+              "resolvedAt": "2026-06-02T13:52:00Z"
+            },
+            {
+              "ticket": "NG-40046",
+              "summary": "Disk space investigation — email archive",
+              "owner": "S. Lindqvist",
+              "hours": 1.43,
+              "resolvedAt": "2026-04-01T16:01:00Z"
+            },
+            {
+              "ticket": "NG-40045",
+              "summary": "Scanner firmware update",
+              "owner": "T. Brennan",
+              "hours": 5.04,
+              "resolvedAt": "2026-06-08T12:23:00Z"
+            },
+            {
+              "ticket": "NG-40044",
+              "summary": "Laptop BIOS update, finance cohort",
+              "owner": "S. Lindqvist",
+              "hours": 4.01,
+              "resolvedAt": "2026-04-12T16:07:00Z"
+            },
+            {
+              "ticket": "NG-40043",
+              "summary": "Firewall rule request — partner VPN",
+              "owner": "T. Brennan",
+              "hours": 3.84,
+              "resolvedAt": "2026-06-01T09:22:00Z"
+            },
+            {
+              "ticket": "NG-40042",
+              "summary": "Outlook mailbox re-indexing",
+              "owner": "T. Brennan",
+              "hours": 5.14,
+              "resolvedAt": "2026-05-07T12:37:00Z"
+            },
+            {
+              "ticket": "NG-40041",
+              "summary": "New starter laptop build",
+              "owner": "M. Adeyemi",
+              "hours": 4.38,
+              "resolvedAt": "2026-05-17T15:20:00Z"
+            },
+            {
+              "ticket": "NG-40040",
+              "summary": "Laptop BIOS update, finance cohort",
+              "owner": "T. Brennan",
+              "hours": 0.52,
+              "resolvedAt": "2026-05-26T11:28:00Z"
+            },
+            {
+              "ticket": "NG-40039",
+              "summary": "Outlook add-in crash investigation",
+              "owner": "M. Adeyemi",
+              "hours": 5.83,
+              "resolvedAt": "2026-06-21T14:38:00Z"
+            },
+            {
+              "ticket": "NG-40038",
+              "summary": "Vendor software upgrade — practice management",
+              "owner": "M. Adeyemi",
+              "hours": 0.43,
+              "resolvedAt": "2026-04-12T12:28:00Z"
+            },
+            {
+              "ticket": "NG-40037",
+              "summary": "File server share permission review",
+              "owner": "M. Adeyemi",
+              "hours": 2.77,
+              "resolvedAt": "2026-05-23T08:40:00Z"
+            },
+            {
+              "ticket": "NG-40036",
+              "summary": "Printer driver update, floor 2",
+              "owner": "R. Okafor",
+              "hours": 5.69,
+              "resolvedAt": "2026-04-02T09:11:00Z"
+            },
+            {
+              "ticket": "NG-40035",
+              "summary": "SharePoint list import for projects",
+              "owner": "M. Adeyemi",
+              "hours": 4.87,
+              "resolvedAt": "2026-06-25T10:47:00Z"
+            },
+            {
+              "ticket": "NG-40034",
+              "summary": "Teams meeting recording retention",
+              "owner": "T. Brennan",
+              "hours": 1.55,
+              "resolvedAt": "2026-04-17T10:43:00Z"
+            },
+            {
+              "ticket": "NG-40033",
+              "summary": "Server patching window, HV-SRV-001",
+              "owner": "R. Okafor",
+              "hours": 2.55,
+              "resolvedAt": "2026-05-03T13:37:00Z"
+            },
+            {
+              "ticket": "NG-40032",
+              "summary": "Shared drive permissions for finance",
+              "owner": "M. Adeyemi",
+              "hours": 1.42,
+              "resolvedAt": "2026-04-09T10:44:00Z"
+            },
+            {
+              "ticket": "NG-40031",
+              "summary": "Firewall rule request — partner VPN",
+              "owner": "M. Adeyemi",
+              "hours": 0.38,
+              "resolvedAt": "2026-04-13T09:25:00Z"
+            },
+            {
+              "ticket": "NG-40030",
+              "summary": "Disk space investigation — email archive",
+              "owner": "S. Lindqvist",
+              "hours": 1.99,
+              "resolvedAt": "2026-05-11T13:28:00Z"
+            },
+            {
+              "ticket": "NG-40029",
+              "summary": "Server patching window, HV-SRV-001",
+              "owner": "R. Okafor",
+              "hours": 3.71,
+              "resolvedAt": "2026-06-14T11:05:00Z"
+            },
+            {
+              "ticket": "NG-40028",
+              "summary": "Intranet certificate expiry fix",
+              "owner": "M. Adeyemi",
+              "hours": 1.28,
+              "resolvedAt": "2026-05-21T14:43:00Z"
+            },
+            {
+              "ticket": "NG-40027",
+              "summary": "Citrix workspace reinstall",
+              "owner": "T. Brennan",
+              "hours": 3.48,
+              "resolvedAt": "2026-04-28T12:17:00Z"
+            },
+            {
+              "ticket": "NG-40026",
+              "summary": "Outlook add-in crash investigation",
+              "owner": "S. Lindqvist",
+              "hours": 5.7,
+              "resolvedAt": "2026-04-12T16:20:00Z"
+            },
+            {
+              "ticket": "NG-40025",
+              "summary": "New workstation deployment, HR",
+              "owner": "R. Okafor",
+              "hours": 1.25,
+              "resolvedAt": "2026-06-19T12:39:00Z"
+            },
+            {
+              "ticket": "NG-40024",
+              "summary": "Endpoint antivirus definition update",
+              "owner": "T. Brennan",
+              "hours": 3.15,
+              "resolvedAt": "2026-04-13T15:03:00Z"
+            },
+            {
+              "ticket": "NG-40023",
+              "summary": "Endpoint antivirus definition update",
+              "owner": "R. Okafor",
+              "hours": 3.54,
+              "resolvedAt": "2026-04-22T11:50:00Z"
+            },
+            {
+              "ticket": "NG-40022",
+              "summary": "Server patching window, HV-SRV-001",
+              "owner": "S. Lindqvist",
+              "hours": 5.11,
+              "resolvedAt": "2026-06-16T13:39:00Z"
+            },
+            {
+              "ticket": "NG-40021",
+              "summary": "MFA enrolment for new joiner",
+              "owner": "M. Adeyemi",
+              "hours": 6,
+              "resolvedAt": "2026-04-01T11:24:00Z"
+            },
+            {
+              "ticket": "NG-40020",
+              "summary": "VPN certificate renewal",
+              "owner": "T. Brennan",
+              "hours": 0.46,
+              "resolvedAt": "2026-05-21T11:13:00Z"
+            },
+            {
+              "ticket": "NG-40019",
+              "summary": "Disk space investigation — email archive",
+              "owner": "M. Adeyemi",
+              "hours": 3.85,
+              "resolvedAt": "2026-05-09T09:04:00Z"
+            },
+            {
+              "ticket": "NG-40018",
+              "summary": "Printer driver update, floor 2",
+              "owner": "T. Brennan",
+              "hours": 5.89,
+              "resolvedAt": "2026-05-09T15:32:00Z"
+            },
+            {
+              "ticket": "NG-40017",
+              "summary": "Network switch config backup",
+              "owner": "R. Okafor",
+              "hours": 4.09,
+              "resolvedAt": "2026-06-10T13:53:00Z"
+            },
+            {
+              "ticket": "NG-40016",
+              "summary": "Laptop BIOS update, finance cohort",
+              "owner": "S. Lindqvist",
+              "hours": 4.33,
+              "resolvedAt": "2026-05-19T09:51:00Z"
+            },
+            {
+              "ticket": "NG-40015",
+              "summary": "Scanner firmware update",
+              "owner": "M. Adeyemi",
+              "hours": 4.68,
+              "resolvedAt": "2026-05-25T16:56:00Z"
+            },
+            {
+              "ticket": "NG-40014",
+              "summary": "Endpoint antivirus definition update",
+              "owner": "S. Lindqvist",
+              "hours": 3.84,
+              "resolvedAt": "2026-06-15T08:29:00Z"
+            },
+            {
+              "ticket": "NG-40013",
+              "summary": "Scanner firmware update",
+              "owner": "S. Lindqvist",
+              "hours": 5.97,
+              "resolvedAt": "2026-05-03T16:35:00Z"
+            },
+            {
+              "ticket": "NG-40012",
+              "summary": "File server share permission review",
+              "owner": "S. Lindqvist",
+              "hours": 1.26,
+              "resolvedAt": "2026-05-25T11:20:00Z"
+            },
+            {
+              "ticket": "NG-40011",
+              "summary": "Shared drive permissions for finance",
+              "owner": "T. Brennan",
+              "hours": 2.66,
+              "resolvedAt": "2026-04-27T11:25:00Z"
+            },
+            {
+              "ticket": "NG-40010",
+              "summary": "Firewall rule request — partner VPN",
+              "owner": "S. Lindqvist",
+              "hours": 4.13,
+              "resolvedAt": "2026-05-15T15:14:00Z"
+            },
+            {
+              "ticket": "NG-40009",
+              "summary": "Citrix workspace reinstall",
+              "owner": "T. Brennan",
+              "hours": 3.1,
+              "resolvedAt": "2026-05-16T12:02:00Z"
+            },
+            {
+              "ticket": "NG-40008",
+              "summary": "Server patching window, HV-SRV-001",
+              "owner": "M. Adeyemi",
+              "hours": 5.44,
+              "resolvedAt": "2026-05-15T14:23:00Z"
+            },
+            {
+              "ticket": "NG-40007",
+              "summary": "Backup job failure on HV-SRV-002",
+              "owner": "T. Brennan",
+              "hours": 2.54,
+              "resolvedAt": "2026-05-04T13:47:00Z"
+            },
+            {
+              "ticket": "NG-40006",
+              "summary": "Password reset for shared service account",
+              "owner": "T. Brennan",
+              "hours": 5.66,
+              "resolvedAt": "2026-04-07T13:41:00Z"
+            },
+            {
+              "ticket": "NG-40005",
+              "summary": "Server patching window, HV-SRV-001",
+              "owner": "M. Adeyemi",
+              "hours": 5.06,
+              "resolvedAt": "2026-04-04T11:33:00Z"
+            },
+            {
+              "ticket": "NG-40004",
+              "summary": "Backup job failure on HV-SRV-002",
+              "owner": "T. Brennan",
+              "hours": 4.06,
+              "resolvedAt": "2026-04-05T13:16:00Z"
+            },
+            {
+              "ticket": "NG-40003",
+              "summary": "Outlook add-in crash investigation",
+              "owner": "T. Brennan",
+              "hours": 5.44,
+              "resolvedAt": "2026-04-22T11:10:00Z"
+            },
+            {
+              "ticket": "NG-40002",
+              "summary": "Shared mailbox permission fix",
+              "owner": "T. Brennan",
+              "hours": 3.61,
+              "resolvedAt": "2026-06-28T15:35:00Z"
+            },
+            {
+              "ticket": "NG-40001",
+              "summary": "Email alias creation for legal team",
+              "owner": "T. Brennan",
+              "hours": 4.74,
+              "resolvedAt": "2026-05-21T15:12:00Z"
+            }
           ]
         },
         "provenance": {
           "sourceSystem": "PSA — ticket export",
-          "sourceQuery": "status = closed AND closed_at BETWEEN 2026-04-01 AND 2026-06-30",
+          "sourceQuery": "status = closed AND closed_at BETWEEN 2026-04-01 AND 2026-06-30 ORDER BY ticket_id",
           "approvedBy": "Priya Raman (vCIO)",
           "approvedAt": "2026-07-01T16:40:00Z"
         }
@@ -52,21 +2947,93 @@
       "caption": "Target 95% · 11 breaches",
       "evidence": {
         "title": "SLA breaches in Q2 2026",
-        "summary": "11 of 412 tickets missed their response or resolution target. Every breach is listed.",
+        "summary": "11 of 412 tickets missed their response or resolution target. Every breach is listed below.",
         "table": {
           "columns": [
-            { "key": "ticket", "label": "Ticket" },
-            { "key": "target", "label": "Target missed" },
-            { "key": "overBy", "label": "Over by" },
-            { "key": "cause", "label": "Cause" }
+            {
+              "key": "ticket",
+              "label": "Ticket"
+            },
+            {
+              "key": "target",
+              "label": "Target missed"
+            },
+            {
+              "key": "overBy",
+              "label": "Over by"
+            },
+            {
+              "key": "cause",
+              "label": "Cause"
+            }
           ],
           "rows": [
-            { "ticket": "NG-40142", "target": "First response 1h", "overBy": "22m", "cause": "Out-of-hours volume spike" },
-            { "ticket": "NG-40190", "target": "Resolution 8h", "overBy": "3h 10m", "cause": "Vendor escalation" },
-            { "ticket": "NG-40266", "target": "First response 1h", "overBy": "8m", "cause": "Out-of-hours volume spike" },
-            { "ticket": "NG-40318", "target": "Resolution 8h", "overBy": "1h 45m", "cause": "Awaiting client access" },
-            { "ticket": "NG-40402", "target": "Resolution 24h", "overBy": "5h", "cause": "Hardware RMA delay" },
-            { "ticket": "NG-40559", "target": "First response 1h", "overBy": "14m", "cause": "Public holiday cover" }
+            {
+              "ticket": "NG-40459",
+              "target": "Resolution 8h",
+              "overBy": "2h 49m",
+              "cause": "Vendor escalation"
+            },
+            {
+              "ticket": "NG-40218",
+              "target": "Resolution 24h",
+              "overBy": "1h 10m",
+              "cause": "Out-of-hours volume spike"
+            },
+            {
+              "ticket": "NG-40893",
+              "target": "Resolution 8h",
+              "overBy": "1h 21m",
+              "cause": "Awaiting client access"
+            },
+            {
+              "ticket": "NG-40151",
+              "target": "Resolution 24h",
+              "overBy": "2h 9m",
+              "cause": "Vendor escalation"
+            },
+            {
+              "ticket": "NG-40112",
+              "target": "Resolution 24h",
+              "overBy": "3h 8m",
+              "cause": "Public holiday cover"
+            },
+            {
+              "ticket": "NG-40166",
+              "target": "First response 1h",
+              "overBy": "9m",
+              "cause": "Vendor escalation"
+            },
+            {
+              "ticket": "NG-40782",
+              "target": "Resolution 8h",
+              "overBy": "1h 8m",
+              "cause": "Hardware RMA delay"
+            },
+            {
+              "ticket": "NG-40357",
+              "target": "Resolution 24h",
+              "overBy": "2h 16m",
+              "cause": "Public holiday cover"
+            },
+            {
+              "ticket": "NG-40265",
+              "target": "Resolution 8h",
+              "overBy": "1h 51m",
+              "cause": "Public holiday cover"
+            },
+            {
+              "ticket": "NG-40969",
+              "target": "First response 1h",
+              "overBy": "45m",
+              "cause": "Hardware RMA delay"
+            },
+            {
+              "ticket": "NG-40569",
+              "target": "First response 1h",
+              "overBy": "32m",
+              "cause": "Public holiday cover"
+            }
           ]
         },
         "provenance": {
@@ -88,20 +3055,109 @@
         "summary": "Every asset counted in the headline figure, with the reason it was flagged.",
         "table": {
           "columns": [
-            { "key": "asset", "label": "Asset" },
-            { "key": "type", "label": "Type" },
-            { "key": "reason", "label": "Reason flagged" },
-            { "key": "age", "label": "Age (yrs)", "align": "right" }
+            {
+              "key": "asset",
+              "label": "Asset"
+            },
+            {
+              "key": "type",
+              "label": "Type"
+            },
+            {
+              "key": "reason",
+              "label": "Reason flagged"
+            },
+            {
+              "key": "age",
+              "label": "Age (yrs)",
+              "align": "right"
+            }
           ],
           "rows": [
-            { "asset": "HV-WKS-014", "type": "Workstation", "reason": "Warranty expired 2026-02-11", "age": 5.4 },
-            { "asset": "HV-WKS-021", "type": "Workstation", "reason": "Warranty expired 2026-03-02", "age": 5.2 },
-            { "asset": "HV-WKS-033", "type": "Workstation", "reason": "Unsupported OS build", "age": 4.9 },
-            { "asset": "HV-WKS-047", "type": "Workstation", "reason": "Unsupported OS build", "age": 4.8 },
-            { "asset": "HV-NB-008", "type": "Laptop", "reason": "Warranty expired 2025-12-19", "age": 5.7 },
-            { "asset": "HV-NB-012", "type": "Laptop", "reason": "Battery health below 60%", "age": 4.1 },
-            { "asset": "HV-SRV-002", "type": "Server", "reason": "Extended support ends 2026-10-14", "age": 6.2 },
-            { "asset": "HV-SW-004", "type": "Switch", "reason": "End of vendor support", "age": 7.8 }
+            {
+              "asset": "HV-WKS-014",
+              "type": "Workstation",
+              "reason": "Warranty expired 2026-02-11",
+              "age": 5.4
+            },
+            {
+              "asset": "HV-WKS-021",
+              "type": "Workstation",
+              "reason": "Warranty expired 2026-03-02",
+              "age": 5.2
+            },
+            {
+              "asset": "HV-WKS-033",
+              "type": "Workstation",
+              "reason": "Unsupported OS build",
+              "age": 4.9
+            },
+            {
+              "asset": "HV-WKS-047",
+              "type": "Workstation",
+              "reason": "Unsupported OS build",
+              "age": 4.8
+            },
+            {
+              "asset": "HV-NB-008",
+              "type": "Laptop",
+              "reason": "Warranty expired 2025-12-19",
+              "age": 5.7
+            },
+            {
+              "asset": "HV-NB-012",
+              "type": "Laptop",
+              "reason": "Battery health below 60%",
+              "age": 4.1
+            },
+            {
+              "asset": "HV-SRV-002",
+              "type": "Server",
+              "reason": "Extended support ends 2026-10-14",
+              "age": 6.2
+            },
+            {
+              "asset": "HV-SW-004",
+              "type": "Switch",
+              "reason": "End of vendor support",
+              "age": 7.8
+            },
+            {
+              "asset": "HV-WKS-052",
+              "type": "Workstation",
+              "reason": "Unsupported OS build",
+              "age": 4.7
+            },
+            {
+              "asset": "HV-WKS-058",
+              "type": "Workstation",
+              "reason": "Warranty expired 2026-01-24",
+              "age": 5.1
+            },
+            {
+              "asset": "HV-NB-019",
+              "type": "Laptop",
+              "reason": "Warranty expired 2026-04-06",
+              "age": 4.9
+            },
+            {
+              "asset": "HV-NB-024",
+              "type": "Laptop",
+              "reason": "Unsupported OS build",
+              "age": 4.3
+            },
+            {
+              "asset": "HV-SRV-005",
+              "type": "Server",
+              "reason": "Warranty expired 2026-05-18",
+              "age": 6.8
+            },
+            {
+              "asset": "HV-SW-009",
+              "type": "Switch",
+              "reason": "End of vendor support",
+              "age": 8.1
+            }
           ]
         },
         "provenance": {
@@ -118,25 +3174,71 @@
       "label": "Ticket volume by month",
       "caption": "Closed tickets per month, Q2 2026",
       "series": [
-        { "label": "April", "value": 121 },
-        { "label": "May", "value": 148 },
-        { "label": "June", "value": 143 }
+        {
+          "label": "April",
+          "value": 121
+        },
+        {
+          "label": "May",
+          "value": 148
+        },
+        {
+          "label": "June",
+          "value": 143
+        }
       ],
       "evidence": {
         "title": "Ticket volume by month",
         "summary": "Monthly totals with the split by request type behind each bar.",
         "table": {
           "columns": [
-            { "key": "month", "label": "Month" },
-            { "key": "incidents", "label": "Incidents", "align": "right" },
-            { "key": "requests", "label": "Requests", "align": "right" },
-            { "key": "projects", "label": "Project tasks", "align": "right" },
-            { "key": "total", "label": "Total", "align": "right" }
+            {
+              "key": "month",
+              "label": "Month"
+            },
+            {
+              "key": "incidents",
+              "label": "Incidents",
+              "align": "right"
+            },
+            {
+              "key": "requests",
+              "label": "Requests",
+              "align": "right"
+            },
+            {
+              "key": "projects",
+              "label": "Project tasks",
+              "align": "right"
+            },
+            {
+              "key": "total",
+              "label": "Total",
+              "align": "right"
+            }
           ],
           "rows": [
-            { "month": "April 2026", "incidents": 54, "requests": 51, "projects": 16, "total": 121 },
-            { "month": "May 2026", "incidents": 71, "requests": 58, "projects": 19, "total": 148 },
-            { "month": "June 2026", "incidents": 63, "requests": 62, "projects": 18, "total": 143 }
+            {
+              "month": "April 2026",
+              "incidents": 54,
+              "requests": 51,
+              "projects": 16,
+              "total": 121
+            },
+            {
+              "month": "May 2026",
+              "incidents": 71,
+              "requests": 58,
+              "projects": 19,
+              "total": 148
+            },
+            {
+              "month": "June 2026",
+              "incidents": 63,
+              "requests": 62,
+              "projects": 18,
+              "total": 143
+            }
           ]
         },
         "provenance": {
@@ -157,18 +3259,63 @@
         "summary": "Compliance percentage for each of the 13 weeks. Six lowest weeks shown.",
         "table": {
           "columns": [
-            { "key": "week", "label": "Week commencing" },
-            { "key": "endpoints", "label": "Endpoints", "align": "right" },
-            { "key": "compliant", "label": "Compliant", "align": "right" },
-            { "key": "pct", "label": "Compliance", "align": "right" }
+            {
+              "key": "week",
+              "label": "Week commencing"
+            },
+            {
+              "key": "endpoints",
+              "label": "Endpoints",
+              "align": "right"
+            },
+            {
+              "key": "compliant",
+              "label": "Compliant",
+              "align": "right"
+            },
+            {
+              "key": "pct",
+              "label": "Compliance",
+              "align": "right"
+            }
           ],
           "rows": [
-            { "week": "2026-05-18", "endpoints": 96, "compliant": 94, "pct": "98.2%" },
-            { "week": "2026-04-13", "endpoints": 95, "compliant": 93, "pct": "98.4%" },
-            { "week": "2026-06-15", "endpoints": 96, "compliant": 95, "pct": "98.9%" },
-            { "week": "2026-04-27", "endpoints": 95, "compliant": 94, "pct": "98.9%" },
-            { "week": "2026-06-01", "endpoints": 96, "compliant": 95, "pct": "99.0%" },
-            { "week": "2026-05-04", "endpoints": 96, "compliant": 95, "pct": "99.0%" }
+            {
+              "week": "2026-05-18",
+              "endpoints": 96,
+              "compliant": 94,
+              "pct": "98.2%"
+            },
+            {
+              "week": "2026-04-13",
+              "endpoints": 95,
+              "compliant": 93,
+              "pct": "98.4%"
+            },
+            {
+              "week": "2026-06-15",
+              "endpoints": 96,
+              "compliant": 95,
+              "pct": "98.9%"
+            },
+            {
+              "week": "2026-04-27",
+              "endpoints": 95,
+              "compliant": 94,
+              "pct": "98.9%"
+            },
+            {
+              "week": "2026-06-01",
+              "endpoints": 96,
+              "compliant": 95,
+              "pct": "99.0%"
+            },
+            {
+              "week": "2026-05-04",
+              "endpoints": 96,
+              "compliant": 95,
+              "pct": "99.0%"
+            }
           ]
         },
         "provenance": {
@@ -189,16 +3336,49 @@
         "summary": "Nightly job outcomes. The two jobs that needed a re-run are listed first.",
         "table": {
           "columns": [
-            { "key": "date", "label": "Date" },
-            { "key": "job", "label": "Job" },
-            { "key": "result", "label": "Restore test" },
-            { "key": "attempts", "label": "Attempts", "align": "right" }
+            {
+              "key": "date",
+              "label": "Date"
+            },
+            {
+              "key": "job",
+              "label": "Job"
+            },
+            {
+              "key": "result",
+              "label": "Restore test"
+            },
+            {
+              "key": "attempts",
+              "label": "Attempts",
+              "align": "right"
+            }
           ],
           "rows": [
-            { "date": "2026-05-09", "job": "HV-SRV-001 full", "result": "Passed on re-run", "attempts": 2 },
-            { "date": "2026-06-22", "job": "HV-SRV-002 full", "result": "Passed on re-run", "attempts": 2 },
-            { "date": "2026-06-29", "job": "HV-SRV-001 full", "result": "Passed", "attempts": 1 },
-            { "date": "2026-06-30", "job": "HV-SRV-002 full", "result": "Passed", "attempts": 1 }
+            {
+              "date": "2026-05-09",
+              "job": "HV-SRV-001 full",
+              "result": "Passed on re-run",
+              "attempts": 2
+            },
+            {
+              "date": "2026-06-22",
+              "job": "HV-SRV-002 full",
+              "result": "Passed on re-run",
+              "attempts": 2
+            },
+            {
+              "date": "2026-06-29",
+              "job": "HV-SRV-001 full",
+              "result": "Passed",
+              "attempts": 1
+            },
+            {
+              "date": "2026-06-30",
+              "job": "HV-SRV-002 full",
+              "result": "Passed",
+              "attempts": 1
+            }
           ]
         },
         "provenance": {

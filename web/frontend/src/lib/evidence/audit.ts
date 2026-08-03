@@ -6,10 +6,14 @@
  * data is rendered — so `recordAccess` is awaited on the request path, not
  * fired and forgotten.
  *
- * The default sink is structured stdout, which every hosting platform ships to
- * a log store. A durable sink (Postgres) replaces `sink` without touching call
- * sites.
+ * Two sinks ship. Structured stdout is always on, because every hosting
+ * platform forwards it to a log store. When `RIPODOC_AUDIT_LOG` names a file,
+ * a hash-chained append-only log is written as well (`audit-log.ts`) — that is
+ * the copy an MSP can hand to an assessor, because altering it is detectable.
+ * A Postgres sink replaces either without touching call sites.
  */
+
+import { createFileAuditSink, teeAuditSinks } from './audit-log.ts';
 
 export type AuditOutcome = 'granted' | 'denied';
 
@@ -36,15 +40,31 @@ const stdoutSink: AuditSink = {
   },
 };
 
-let sink: AuditSink = stdoutSink;
+let override: AuditSink | undefined;
+let configured: AuditSink | undefined;
+
+const activeSink = (): AuditSink => {
+  if (override) return override;
+  if (!configured) {
+    const path = process.env.RIPODOC_AUDIT_LOG;
+    configured = path ? teeAuditSinks(createFileAuditSink(path), stdoutSink) : stdoutSink;
+  }
+  return configured;
+};
 
 /** Swap the sink (tests, or a durable store in production). */
 export const setAuditSink = (next: AuditSink): void => {
-  sink = next;
+  override = next;
+};
+
+/** Drop an override and re-read the environment on the next write. */
+export const resetAuditSink = (): void => {
+  override = undefined;
+  configured = undefined;
 };
 
 export const recordAccess = async (
   event: Omit<AccessEvent, 'at'> & { readonly at?: string },
 ): Promise<void> => {
-  await sink.write({ ...event, at: event.at ?? new Date().toISOString() });
+  await activeSink().write({ ...event, at: event.at ?? new Date().toISOString() });
 };

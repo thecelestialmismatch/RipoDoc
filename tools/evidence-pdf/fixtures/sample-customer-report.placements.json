@@ -1,0 +1,92 @@
+{
+  "reportId": "rpt-demo-0001",
+  "version": 3,
+  "pdfSha256": "e19fd6e8bdf06f2c0df65a39b70824c187cd324822b8c1597c668fe1838097e2",
+  "generatedAt": "2026-07-02T09:15:00Z",
+  "placements": [
+    {
+      "elementId": "tickets-resolved",
+      "page": 1,
+      "rect": {
+        "x": 56.2,
+        "y": 107.05,
+        "width": 54.01,
+        "height": 33.1
+      },
+      "matchedText": "412",
+      "note": "reviewed against the sample customer report",
+      "approvedBy": "Priya Raman",
+      "approvedAt": "2026-07-02T09:10:00Z"
+    },
+    {
+      "elementId": "sla-attainment",
+      "page": 1,
+      "rect": {
+        "x": 127.25,
+        "y": 107.05,
+        "width": 88.96,
+        "height": 33.1
+      },
+      "matchedText": "97.4%",
+      "note": "reviewed against the sample customer report",
+      "approvedBy": "Priya Raman",
+      "approvedAt": "2026-07-02T09:10:00Z"
+    },
+    {
+      "elementId": "assets-at-risk",
+      "page": 1,
+      "rect": {
+        "x": 217.55,
+        "y": 107.05,
+        "width": 37.33,
+        "height": 33.1
+      },
+      "matchedText": "14",
+      "note": "reviewed against the sample customer report",
+      "approvedBy": "Priya Raman",
+      "approvedAt": "2026-07-02T09:10:00Z"
+    },
+    {
+      "elementId": "tickets-by-month",
+      "page": 1,
+      "rect": {
+        "x": 90.8,
+        "y": 169.9,
+        "width": 118.37,
+        "height": 13.7
+      },
+      "matchedText": "Ticket volume by month",
+      "note": "reviewed against the sample customer report",
+      "approvedBy": "Priya Raman",
+      "approvedAt": "2026-07-02T09:10:00Z"
+    },
+    {
+      "elementId": "patch-compliance",
+      "page": 1,
+      "rect": {
+        "x": 90.8,
+        "y": 584.85,
+        "width": 280.55,
+        "height": 13.7
+      },
+      "matchedText": "Patch compliance held above 98% every week this quarter",
+      "note": "reviewed against the sample customer report",
+      "approvedBy": "Priya Raman",
+      "approvedAt": "2026-07-02T09:10:00Z"
+    },
+    {
+      "elementId": "backup-verification",
+      "page": 1,
+      "rect": {
+        "x": 90.8,
+        "y": 632.3,
+        "width": 236.1,
+        "height": 13.7
+      },
+      "matchedText": "Every nightly backup was verified by restore test",
+      "note": "reviewed against the sample customer report",
+      "approvedBy": "Priya Raman",
+      "approvedAt": "2026-07-02T09:10:00Z"
+    }
+  ]
+}
