@@ -1,4 +1,4 @@
-# RipoDoc
+ai and # RipoDoc
 
 **A normal PDF where every figure is clickable.** Click a number in the report and the exact rows behind it open in your browser — scoped to you, expiring, revocable, and logged.
 
