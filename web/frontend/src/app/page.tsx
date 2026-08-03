@@ -14,7 +14,6 @@ import {
   ExternalLink,
   FileCheck,
   FileText,
-  Github,
   LockKeyhole,
   ScrollText,
   ShieldCheck,
@@ -111,7 +110,6 @@ export default async function Home() {
             <Link href="#security" className="font-medium text-slate-600 hover:text-blue-700 transition">Security</Link>
             <Link href="#download" className="font-medium text-slate-600 hover:text-blue-700 transition">Download</Link>
             <a href="https://github.com/thecelestialmismatch/RipoDoc" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-md bg-slate-900 px-3 py-1.5 font-medium text-white hover:bg-slate-700 transition">
-              <Github aria-hidden="true" className="h-4 w-4" />
               GitHub
             </a>
           </nav>
@@ -358,7 +356,7 @@ open build/demo-report.local.pdf`}</code></pre>
         </div>
         <div className="mt-8 flex flex-wrap justify-center gap-4">
           <a href="https://github.com/thecelestialmismatch/RipoDoc" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-6 py-3 text-base font-semibold text-white hover:bg-slate-700 transition">
-            <Github aria-hidden="true" className="h-5 w-5" />View on GitHub
+            View on GitHub
           </a>
           <a href="https://github.com/thecelestialmismatch/RipoDoc/fork" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-6 py-3 text-base font-semibold text-slate-700 hover:bg-slate-50 transition">
             <ExternalLink aria-hidden="true" className="h-4 w-4" />Fork the repo
