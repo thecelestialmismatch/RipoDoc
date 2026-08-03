@@ -2,18 +2,25 @@
   "name": "ripodoc",
   "version": "0.1.0",
   "private": true,
-  "description": "Secure reporting delivery and evidence layer for MSPs \u2014 a normal PDF where every figure is clickable, recipient-bound and audited.",
+  "description": "Secure reporting delivery and evidence layer for MSPs — a normal PDF where every figure is clickable, recipient-bound and audited.",
   "type": "module",
   "engines": {
     "node": ">=22.6.0"
   },
   "scripts": {
     "test": "node --test --experimental-strip-types \"tools/evidence-pdf/test/*.test.ts\"",
-    "typecheck": "cd web/frontend && npx tsc --noEmit",
+    "typecheck": "npm run typecheck:web && npm run typecheck:tools",
+    "typecheck:web": "cd web/frontend && npx tsc --noEmit",
+    "typecheck:tools": "cd tools && ../web/frontend/node_modules/.bin/tsc --noEmit -p tsconfig.json",
     "lint": "cd web/frontend && npx eslint",
     "build:web": "npm --prefix web/frontend run build",
+    "fixture:generate": "node --experimental-strip-types tools/evidence-pdf/scripts/generate-demo-fixture.ts",
     "build:pdf": "node --experimental-strip-types tools/evidence-pdf/src/cli.ts --manifest tools/evidence-pdf/fixtures/demo-report.json --out build/demo-report.pdf --origin https://ripodoc.com --ttl-days 14",
     "build:pdf:local": "node --experimental-strip-types tools/evidence-pdf/src/cli.ts --manifest tools/evidence-pdf/fixtures/demo-report.json --out build/demo-report.local.pdf --origin http://localhost:3000 --ttl-days 365 --allow-loopback-http true",
+    "overlay": "node --experimental-strip-types tools/evidence-pdf/src/overlay-cli.ts",
+    "overlay:propose": "npm run overlay -- --pdf tools/evidence-pdf/fixtures/sample-customer-report.pdf --manifest tools/evidence-pdf/fixtures/demo-report.json --propose build/sample-customer-report.placements.json",
+    "overlay:sample": "npm run overlay -- --pdf tools/evidence-pdf/fixtures/sample-customer-report.pdf --manifest tools/evidence-pdf/fixtures/demo-report.json --placements tools/evidence-pdf/fixtures/sample-customer-report.placements.json --out build/sample-customer-report.clickable.pdf --origin https://ripodoc.com --ttl-days 14",
+    "audit:verify": "node --experimental-strip-types tools/audit-log/verify-cli.ts",
     "verify": "npm run typecheck && npm test && npm run build:web"
   }
 }
