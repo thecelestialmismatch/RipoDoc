@@ -9,7 +9,7 @@ export function Footer() {
           <div className="md:col-span-2">
             <div className="flex items-center gap-2">
               <Image
-                src="/ripodoc-logo.png"
+                src="/ripodoc-logo.jpeg"
                 alt="RipoDoc logo"
                 width={32}
                 height={32}

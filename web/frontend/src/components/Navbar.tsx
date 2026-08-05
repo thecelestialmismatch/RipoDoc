@@ -8,7 +8,7 @@ import { Menu, X, Upload, LayoutDashboard, Home, Shield } from 'lucide-react';
 
 const NAV_LINKS = [
   { href: '/', label: 'Home', icon: Home },
-  { href: '/upload', label: 'Upload PDF', icon: Upload },
+  { href: '/upload', label: 'Create report', icon: Upload },
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/security', label: 'Security', icon: Shield },
 ] as const;
@@ -22,7 +22,7 @@ export function Navbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3.5">
         <Link href="/" className="flex items-center gap-2.5 transition hover:opacity-80">
           <Image
-            src="/ripodoc-logo.png"
+            src="/ripodoc-logo.jpeg"
             alt="RipoDoc logo"
             width={36}
             height={36}

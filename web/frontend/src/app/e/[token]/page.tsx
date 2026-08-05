@@ -21,9 +21,11 @@ interface PageProps {
   readonly params: Promise<{ readonly token: string }>;
 }
 
-const KIND_LABEL: Readonly<Record<string, string>> = {
+const KIND_LABEL: Record<string, string> = {
   kpi: 'Figure',
-  'bar-chart': 'Chart',
+  'bar-chart': 'Bar chart',
+  'line-chart': 'Line chart',
+  table: 'Table',
   claim: 'Claim',
 };
 
