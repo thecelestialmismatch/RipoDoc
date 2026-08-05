@@ -164,7 +164,7 @@ export default async function Home() {
         <div className="relative mx-auto max-w-7xl px-6 pt-20 pb-16">
           <div className="text-center">
             <Image
-              src="/ripodoc-logo.png"
+              src="/ripodoc-logo.jpeg"
               alt="RipoDoc logo"
               width={96}
               height={96}

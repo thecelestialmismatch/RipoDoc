@@ -1,0 +1,13 @@
+{
+  "name": "@ripodoc/local-dev-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Zero-dependency local development server for saving drafts and publishing manifests",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
