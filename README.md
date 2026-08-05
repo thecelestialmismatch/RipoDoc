@@ -1,5 +1,10 @@
 <div align="center">
 
+<img src="web/frontend/public/ripodoc-logo.png" alt="RipoDoc Logo" width="160"/>
+
+<br/>
+<br/>
+
 # 📄 RipoDoc — Secure Interactive Client Reports for MSPs
 
 **A normal PDF where every figure is clickable.** Click a number in the report and the exact rows behind it open in your browser — scoped to one recipient, expiring, revocable, and logged.
@@ -7,6 +12,18 @@
 Built for MSPs who send client reports and get asked *"where did that number come from?"*
 
 </div>
+
+<div align="center">
+
+## 💥 The Promise
+
+</div>
+
+> **Click-to-evidence is commodity inside BI tools. Nobody delivers it from the PDF an MSP actually emails a client** — where the click survives the export, the email, the forward and the phone.
+
+Every interactive element carries a standard PDF **link annotation** (`/Annot /Subtype /Link` with a `/URI` action). That is the only PDF interaction mechanism supported by every viewer — Chrome, Safari, macOS Preview, Acrobat, iOS and Android.
+
+**The rows themselves never travel inside the PDF.** Forwarding the file does not forward the data.
 
 ```
 ┌─ The PDF (opens anywhere) ─────────┐        ┌─ The evidence page ──────────────┐
@@ -22,6 +39,8 @@ Built for MSPs who send client reports and get asked *"where did that number com
                                                └──────────────────────────────────┘
 ```
 
+<br/>
+
 <div align="center">
 
 ### ⭐ Star the repo if RipoDoc helps you build better client reports.
@@ -34,6 +53,7 @@ Built for MSPs who send client reports and get asked *"where did that number com
 [![React](https://img.shields.io/badge/React-19.2-61DAFB?logo=react&logoColor=white)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Tailwind](https://img.shields.io/badge/Tailwind-4.1-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-black?logo=vercel&logoColor=white)](https://vercel.com)
 
 </div>
 
@@ -54,6 +74,11 @@ Built for MSPs who send client reports and get asked *"where did that number com
     <td align="center"><a href="#-technology-stack"><b>⚙️ Tech Stack</b></a></td>
     <td align="center"><a href="#-testing"><b>🧪 Testing</b></a></td>
     <td align="center"><a href="#-documentation"><b>📚 Docs</b></a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="#-roadmap"><b>🗺️ Roadmap</b></a></td>
+    <td align="center"><a href="#-contributing"><b>🤝 Contributing</b></a></td>
+    <td align="center"><a href="#-license"><b>📄 License</b></a></td>
   </tr>
 </table>
 
@@ -406,13 +431,11 @@ IDEA.md                Strategy, market, pricing, execution plan
 
 <div align="center">
 
-## 📊 Status
+## 🗺️ Roadmap
 
 </div>
 
-**Pre-revenue, validation phase.**
-
-The interaction and the overlay are implemented and verified end to end against both hand-built fixtures and a real word-processor PDF. Not built: the upload and review UI, PSA/RMM connectors, page rasterisation for a visual zone editor, and a database-backed manifest and audit store. Limits are listed explicitly in each spec.
+### Shipped Today
 
 | Component | Status |
 | :--- | :--- |
@@ -423,6 +446,23 @@ The interaction and the overlay are implemented and verified end to end against 
 | Next.js evidence pages (token-gated, searchable, sortable, CSV export) | ✅ Shipped |
 | Demo manifest (412 tickets + SLA + assets, both fixture copies) | ✅ Shipped — every count KPI enumerates its rows |
 | Marketing page with interactive sample report | ✅ Shipped |
+| New brand logo across Navbar, Footer, hero, and upload page | ✅ Shipped |
+
+### In Development
+
+| Component | Status |
+| :--- | :--- |
+| Multi-format upload (PDF, DOC/DOCX, CSV, XLSX, TXT, images) | 🚧 Planned |
+| Source-system declaration ("where the data is coming from") | 🚧 Planned |
+| Drag-and-drop field mapping canvas | 🚧 Planned |
+| Visualisation picker (KPI, bar chart, line chart, table, claim) | 🚧 Planned |
+| Local Docker container (`ripodoc-local`) — data never leaves the machine | 🚧 Planned |
+| Authoring wizard (upload → source → map → preview → publish) | 🚧 Planned |
+
+### Planned
+
+| Component | Status |
+| :--- | :--- |
 | Go API (`cmd/api`) | ⏳ Planned |
 | Worker service (`cmd/worker`) | ⏳ Planned |
 | PostgreSQL RLS + migrations | ⏳ Planned |
@@ -516,7 +556,6 @@ RipoDoc's development workflow works with AI coding agents that respect `AGENTS.
 | **Codex** | Reads `AGENTS.md` from the working directory. |
 | **Any OpenAI-compatible tool** | Point at the evidence pages at `http://localhost:3000`. |
 
-
 <br/>
 
 <div align="center">
@@ -546,5 +585,7 @@ This is a solo-founder project in validation phase. Contributions are not curren
 **RipoDoc** — *The secure reporting delivery and evidence layer for MSPs.*
 
 Send a normal PDF. Every number is clickable.
+
+[![Vercel](https://img.shields.io/badge/Live_at-ripodoc.com-black?logo=vercel&logoColor=white)](https://www.ripodoc.com)
 
 </div>
