@@ -71,7 +71,7 @@ export default function UploadPage() {
         {/* Header */}
         <div className="text-center">
           <Image
-            src="/ripodoc-logo.png"
+            src="/ripodoc-logo.jpeg"
             alt="RipoDoc logo"
             width={64}
             height={64}
