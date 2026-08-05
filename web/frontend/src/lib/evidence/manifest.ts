@@ -11,6 +11,7 @@ import type {
   EvidenceCell,
   EvidenceColumn,
   EvidenceDetail,
+  DataSource,
   ReportElement,
   ReportManifest,
 } from './types.ts';
@@ -113,6 +114,18 @@ const parseEvidence = (value: unknown, path: string): EvidenceDetail => {
   };
 };
 
+const parseDataSource = (value: unknown, path: string): DataSource => {
+  if (!isRecord(value)) throw new ManifestError(path, 'expected an object');
+  return {
+    system: requireString(value.system, `${path}.system`),
+    description: requireString(value.description, `${path}.description`),
+    ...(typeof value.method === 'string' && value.method.trim().length > 0
+      ? { method: value.method }
+      : {}),
+    capturedAt: requireIso(value.capturedAt, `${path}.capturedAt`),
+  };
+};
+
 const parseElement = (value: unknown, path: string): ReportElement => {
   if (!isRecord(value)) throw new ManifestError(path, 'expected an object');
 
@@ -122,8 +135,17 @@ const parseElement = (value: unknown, path: string): ReportElement => {
   }
 
   const kind = value.kind;
-  if (kind !== 'kpi' && kind !== 'bar-chart' && kind !== 'claim') {
-    throw new ManifestError(`${path}.kind`, 'expected "kpi", "bar-chart" or "claim"');
+  if (
+    kind !== 'kpi' &&
+    kind !== 'bar-chart' &&
+    kind !== 'line-chart' &&
+    kind !== 'table' &&
+    kind !== 'claim'
+  ) {
+    throw new ManifestError(
+      `${path}.kind`,
+      'expected "kpi", "bar-chart", "line-chart", "table" or "claim"',
+    );
   }
 
   let series: readonly { label: string; value: number }[] | undefined;
@@ -139,6 +161,39 @@ const parseElement = (value: unknown, path: string): ReportElement => {
       if (item.value < 0) throw new ManifestError(`${at}.value`, 'must not be negative');
       return { label: requireString(item.label, `${at}.label`), value: item.value };
     });
+  }
+
+  if (kind === 'line-chart') {
+    const items = requireArray(value.lineSeries, `${path}.lineSeries`);
+    if (items.length === 0) throw new ManifestError(`${path}.lineSeries`, 'needs at least one point');
+    const lineSeries = items.map((item, index) => {
+      const at = `${path}.lineSeries[${index}]`;
+      if (!isRecord(item)) throw new ManifestError(at, 'expected an object');
+      if (typeof item.value !== 'number' || !Number.isFinite(item.value)) {
+        throw new ManifestError(`${at}.value`, 'expected a finite number');
+      }
+      return { label: requireString(item.label, `${at}.label`), value: item.value };
+    });
+    return {
+      id,
+      kind,
+      label: requireString(value.label, `${path}.label`),
+      ...(typeof value.caption === 'string' ? { caption: value.caption } : {}),
+      lineSeries,
+      evidence: parseEvidence(value.evidence, `${path}.evidence`),
+    };
+  }
+
+  if (kind === 'table') {
+    const tableColumns = parseColumns(value.tableColumns, `${path}.tableColumns`);
+    return {
+      id,
+      kind,
+      label: requireString(value.label, `${path}.label`),
+      ...(typeof value.caption === 'string' ? { caption: value.caption } : {}),
+      tableColumns,
+      evidence: parseEvidence(value.evidence, `${path}.evidence`),
+    };
   }
 
   if (kind === 'kpi' && typeof value.value !== 'string') {
@@ -186,7 +241,7 @@ export const parseManifest = (value: unknown): ReportManifest => {
     seen.add(element.id);
   }
 
-  return {
+  const result: ReportManifest = {
     reportId: requireString(value.reportId, '$.reportId'),
     version,
     title: requireString(value.title, '$.title'),
@@ -197,4 +252,9 @@ export const parseManifest = (value: unknown): ReportManifest => {
     recipient: { name: requireString(recipient.name, '$.recipient.name'), email },
     elements,
   };
+
+  if (value.source !== undefined) {
+    return { ...result, source: parseDataSource(value.source, '$.source') };
+  }
+  return result;
 };

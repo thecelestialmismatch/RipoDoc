@@ -1,0 +1,18 @@
+# Local development container for the RipoDoc authoring studio.
+# The Next.js frontend talks to this server via API proxy routes.
+# Run: docker compose up  (or: npm run docker:run)
+services:
+  local:
+    build:
+      context: .
+      dockerfile: docker/local/Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - DATA_DIR=/data
+    volumes:
+      - ripodoc-local-data:/data
+
+volumes:
+  ripodoc-local-data:
