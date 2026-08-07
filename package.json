@@ -24,6 +24,7 @@
     "verify": "npm run typecheck && npm test && npm run build:web",
     "docker:build": "docker compose build",
     "docker:run": "docker compose up",
-    "docker:stop": "docker compose down"
+    "docker:stop": "docker compose down",
+    "dev:local-server": "node docker/local/server.mjs"
   }
 }

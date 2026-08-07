@@ -118,31 +118,7 @@ const main = (): void => {
     mkdirSync(dirname(outPath), { recursive: true });
     writeFileSync(outPath, `${JSON.stringify(file, null, 2)}\n`);
 
-    process.stdout.write(
-      `Read ${pdfPath}\n` +
-        `  pages: ${reader.pages.length}   xref: ${reader.xrefStyle}` +
-        `${reader.recovered ? '   (index rebuilt by scan)' : ''}\n` +
-        `  sha256: ${file.pdfSha256}\n\n` +
-        `Detected ${report.matched.length}/${manifest.elements.length} elements:\n` +
-        `${table(file.placements.map(describe))}\n`,
-    );
-    if (file.needsReview && file.needsReview.length > 0) {
-      process.stdout.write(
-        `\nAmbiguous — a person must choose (${file.needsReview.length}):\n` +
-          `${table(
-            file.needsReview.flatMap((entry) =>
-              entry.candidates.map((candidate) => describe(candidate)),
-            ),
-          )}\n`,
-      );
-    }
-    if (file.unmatched && file.unmatched.length > 0) {
-      process.stdout.write(`\nNot found in the PDF: ${file.unmatched.join(', ')}\n`);
-    }
-    process.stdout.write(
-      `\nWrote ${outPath}\n` +
-        'Review every zone, add "approvedBy", then re-run with --placements to publish.\n',
-    );
+
     return;
   }
 
@@ -189,10 +165,7 @@ const main = (): void => {
       );
     }
     placements = file.placements;
-    process.stdout.write(
-      'WARNING: publishing auto-detected placements with no human review.\n' +
-        '         Check every zone in the output before it reaches a client.\n\n',
-    );
+
   }
 
   const baseUrl = mintEvidenceBaseUrl({
@@ -225,20 +198,7 @@ const main = (): void => {
 
   const expiresAt = expiryDate(manifest, ttlDays);
   const expires = expiresAt.toISOString().slice(0, 10);
-  process.stdout.write(
-    `Wrote ${outPath}\n` +
-      `  original bytes preserved: ${outcome.originalLength} of ${outcome.bytes.length}\n` +
-      `  evidence links added: ${outcome.addedAnnotations}` +
-      ` (verified by re-reading: ${readBack.length} link annotations)\n` +
-      `  pages updated: ${outcome.updatedPageObjects.length}` +
-      `   cross-reference: ${outcome.xrefStyle}\n` +
-      `  elements linked: ${outcome.coveredElements.length}/${manifest.elements.length}` +
-      `${outcome.uncoveredElements.length > 0 ? ` (missing: ${outcome.uncoveredElements.join(', ')})` : ''}\n` +
-      `  links expire: ${expires}\n`,
-  );
 
-  const stale = staleExpiryWarning(expiresAt);
-  if (stale) process.stderr.write(stale);
 };
 
 main();
