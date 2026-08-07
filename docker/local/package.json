@@ -9,5 +9,8 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "formidable": "^3.5.4"
   }
 }

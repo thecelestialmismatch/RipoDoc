@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Source+Sans+Pro:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            box-sizing: border-box;
+            background: #FFFFFF;
+            font-family: 'Source Sans Pro', sans-serif;
+            color: #3E4A61;
+            position: relative;
+            overflow: hidden;
+        }
+        .accent-header {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 800px;
+            height: 150px;
+            background: #C24D2C;
+            z-index: 1;
+            transform: skewX(-20deg) translateX(100px);
+        }
+        .header-serif {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: #1A2639;
+            font-size: 72px;
+            margin-top: 60px;
+            margin-left: 80px;
+            z-index: 2;
+            position: relative;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 80px;
+            margin-left: 80px;
+            margin-right: 80px;
+            z-index: 2;
+            position: relative;
+        }
+        .solution-pillar {
+            background: #FFFFFF;
+            border-top: 4px solid #1A2639;
+            padding-top: 20px;
+        }
+        .pillar-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 32px;
+            color: #C24D2C;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .pillar-title i {
+            margin-right: 15px;
+            font-size: 28px;
+        }
+        .pillar-desc {
+            font-weight: 300;
+            font-size: 22px;
+            line-height: 1.4;
+        }
+        .dashed-line {
+            position: absolute;
+            top: 150px;
+            left: 80px;
+            width: 200px;
+            border-top: 2px dashed #1A2639;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="accent-header"></div>
+        <div class="header-serif">The RipoDoc Solution</div>
+        <div class="dashed-line"></div>
+        <div class="grid-container">
+            <div class="solution-pillar">
+                <div class="pillar-title"><i class="fas fa-layer-group"></i>Zero Stack Disruption</div>
+                <div class="pillar-desc">Keep your existing PSA, RMM, and reporting tools. RipoDoc works with the PDFs you already send.</div>
+            </div>
+            <div class="solution-pillar">
+                <div class="pillar-title"><i class="fas fa-magic"></i>Automated Evidence</div>
+                <div class="pillar-desc">AI-driven detection of figures and automated mapping to underlying audit logs and database records.</div>
+            </div>
+            <div class="solution-pillar">
+                <div class="pillar-title"><i class="fas fa-mouse-pointer"></i>Clickable Verification</div>
+                <div class="pillar-desc">Clients click any metric in the PDF to instantly inspect raw proof, eliminating billing disputes.</div>
+            </div>
+            <div class="solution-pillar">
+                <div class="pillar-title"><i class="fas fa-handshake"></i>Client Confidence</div>
+                <div class="pillar-desc">Reinforce trust and defend premium retainers by providing indisputable proof of service delivery.</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

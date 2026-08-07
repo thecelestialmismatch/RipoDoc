@@ -1,15 +1,19 @@
+
 'use client';
 
 import Image from 'next/image';
 import { useState, useCallback } from 'react';
-import { Upload, FileText, X, CheckCircle2, AlertCircle, Loader2, ArrowRight } from 'lucide-react';
+import { Upload, FileText, X, CheckCircle2, AlertCircle, Loader2, ArrowRight, Download } from 'lucide-react';
 
 interface UploadedFile {
   file: File;
   id: string;
-  status: 'uploading' | 'success' | 'error';
+  status: 'uploading' | 'processing' | 'success' | 'error';
   progress: number;
   message?: string;
+  pdfPath?: string;
+  placementsPath?: string;
+  downloadUrl?: string;
 }
 
 export default function UploadPage() {
@@ -30,32 +34,94 @@ export default function UploadPage() {
     selected.forEach(addFile);
   };
 
-  const addFile = (file: File) => {
+  const addFile = async (file: File) => {
     const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
     const uploaded: UploadedFile = { file, id, status: 'uploading', progress: 0 };
     setFiles((prev) => [...prev, uploaded]);
 
-    // Simulate upload progress
-    const interval = setInterval(() => {
-      setFiles((prev) =>
-        prev.map((f) =>
-          f.id === id
-            ? { ...f, progress: Math.min(f.progress + 15, 100) }
-            : f,
-        ),
-      );
-    }, 200);
+    const formData = new FormData();
+    formData.append('pdf', file);
 
-    setTimeout(() => {
-      clearInterval(interval);
+    try {
+      // Simulate upload progress initially
+      let currentProgress = 0;
+      const progressInterval = setInterval(() => {
+        currentProgress = Math.min(currentProgress + 10, 90);
+        setFiles((prev) =>
+          prev.map((f) => (f.id === id ? { ...f, progress: currentProgress } : f)),
+        );
+      }, 100);
+
+      const response = await fetch('/api/local/upload-pdf', {
+        method: 'POST',
+        body: formData,
+      });
+
+      clearInterval(progressInterval);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to upload PDF');
+      }
+
+      const data = await response.json();
       setFiles((prev) =>
         prev.map((f) =>
           f.id === id
-            ? { ...f, status: 'success', progress: 100, message: 'Ready to overlay' }
+            ? { ...f, status: 'processing', progress: 100, message: data.message, pdfPath: data.pdfPath, placementsPath: data.placementsPath }
             : f,
         ),
       );
-    }, 1500);
+    } catch (error: any) {
+      setFiles((prev) =>
+        prev.map((f) =>
+          f.id === id
+            ? { ...f, status: 'error', message: error.message, progress: 100 }
+            : f,
+        ),
+      );
+    }
+  };
+
+  const publishPdf = async (fileId: string, pdfPath: string, placementsPath: string) => {
+    setFiles((prev) =>
+      prev.map((f) => (f.id === fileId ? { ...f, status: 'processing', message: 'Publishing PDF...' } : f)),
+    );
+    try {
+      const response = await fetch('/api/local/publish-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          draftId: fileId,
+          pdfPath,
+          placementsPath,
+          origin: window.location.origin,
+          ttlDays: 14, // Default to 14 days expiry
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to publish PDF');
+      }
+
+      const data = await response.json();
+      setFiles((prev) =>
+        prev.map((f) =>
+          f.id === fileId
+            ? { ...f, status: 'success', message: data.message, downloadUrl: data.downloadUrl }
+            : f,
+        ),
+      );
+    } catch (error: any) {
+      setFiles((prev) =>
+        prev.map((f) =>
+          f.id === fileId
+            ? { ...f, status: 'error', message: error.message }
+            : f,
+        ),
+      );
+    }
   };
 
   const removeFile = (id: string) => {
@@ -156,6 +222,12 @@ export default function UploadPage() {
                         />
                       </div>
                     )}
+                    {f.status === 'processing' && (
+                      <p className="mt-1 flex items-center gap-1 text-xs font-medium text-blue-600">
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        {f.message}
+                      </p>
+                    )}
                     {f.status === 'success' && (
                       <p className="mt-1 flex items-center gap-1 text-xs font-medium text-emerald-600">
                         <CheckCircle2 className="h-3.5 w-3.5" />
@@ -172,7 +244,28 @@ export default function UploadPage() {
                   {f.status === 'uploading' && (
                     <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
                   )}
-                  {f.status === 'success' && (
+                  {f.status === 'success' && f.downloadUrl && (
+                    <a
+                      href={f.downloadUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-600/25 transition hover:shadow-xl"
+                    >
+                      <Download className="h-4 w-4" />
+                      Download PDF
+                    </a>
+                  )}
+                  {f.status === 'success' && !f.downloadUrl && f.pdfPath && f.placementsPath && (
+                    <button
+                      type="button"
+                      onClick={() => publishPdf(f.id, f.pdfPath!, f.placementsPath!)}
+                      className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-600/25 transition hover:shadow-xl"
+                    >
+                      <ArrowRight className="h-4 w-4" />
+                      Publish PDF
+                    </button>
+                  )}
+                  {f.status !== 'uploading' && (
                     <button
                       type="button"
                       onClick={() => removeFile(f.id)}
@@ -185,18 +278,6 @@ export default function UploadPage() {
                 </div>
               ))}
             </div>
-
-            {successfulFiles > 0 && (
-              <div className="mt-6 flex flex-wrap gap-3">
-                <button className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/25 transition hover:shadow-xl">
-                  Configure overlay
-                  <ArrowRight className="h-4 w-4" />
-                </button>
-                <button className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
-                  View as interactive report
-                </button>
-              </div>
-            )}
           </div>
         )}
 
@@ -206,10 +287,9 @@ export default function UploadPage() {
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
               <FileText className="h-5 w-5 text-blue-600" />
             </div>
-            <h3 className="mt-3 font-semibold text-slate-900">Your PDF stays yours</h3>
+            <h3 className="mt-3 font-semibold text-slate-900">Your PDF stays local</h3>
             <p className="mt-1 text-xs text-slate-500">
-              Files are processed locally in your browser. Nothing is sent to a server unless you
-              publish.
+              Files are processed locally in your browser. Nothing is sent to a server.
             </p>
           </div>
           <div className="rounded-xl border border-slate-200 bg-white p-5">
