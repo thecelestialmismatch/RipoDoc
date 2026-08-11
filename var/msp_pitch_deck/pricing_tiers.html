@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Source+Sans+Pro:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            box-sizing: border-box;
+            background: #FFFFFF;
+            font-family: 'Source Sans Pro', sans-serif;
+            color: #3E4A61;
+            position: relative;
+            overflow: hidden;
+        }
+        .header-serif {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: #1A2639;
+            font-size: 64px;
+            margin-top: 60px;
+            margin-left: 80px;
+            z-index: 2;
+            position: relative;
+        }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+            margin-top: 50px;
+            margin-left: 80px;
+            margin-right: 80px;
+            z-index: 2;
+            position: relative;
+        }
+        .pricing-card {
+            background: #F5F5F5;
+            border-top: 4px solid #1A2639;
+            padding: 20px;
+        }
+        .pricing-card.featured {
+            border-top: 4px solid #C24D2C;
+            background: #FFFFFF;
+            border: 2px solid #C24D2C;
+        }
+        .tier-name {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 28px;
+            color: #1A2639;
+            margin-bottom: 10px;
+        }
+        .tier-desc {
+            font-weight: 300;
+            font-size: 18px;
+            color: #3E4A61;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .feature-list li {
+            font-weight: 300;
+            font-size: 16px;
+            color: #3E4A61;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        .feature-list i {
+            color: #C24D2C;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+        .guarantee {
+            background: #1A2639;
+            color: #FFFFFF;
+            padding: 15px;
+            margin-top: 40px;
+            margin-left: 80px;
+            margin-right: 80px;
+            text-align: center;
+            font-weight: 300;
+            font-size: 20px;
+            z-index: 2;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header-serif">Pricing &amp; Partnership Tiers</div>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <div class="tier-name">Starter MSP</div>
+                <div class="tier-desc">Up to 50 clients</div>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check"></i>Core PDF overlay</li>
+                    <li><i class="fas fa-check"></i>Standard TTL security</li>
+                    <li><i class="fas fa-check"></i>Email support</li>
+                    <li><i class="fas fa-check"></i>30-day pilot</li>
+                </ul>
+            </div>
+            <div class="pricing-card featured">
+                <div class="tier-name">Professional MSP</div>
+                <div class="tier-desc">Unlimited clients</div>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check"></i>Advanced AI heuristics</li>
+                    <li><i class="fas fa-check"></i>Dedicated API access</li>
+                    <li><i class="fas fa-check"></i>Priority support</li>
+                    <li><i class="fas fa-check"></i>Custom integrations</li>
+                </ul>
+            </div>
+            <div class="pricing-card">
+                <div class="tier-name">Enterprise Partner</div>
+                <div class="tier-desc">Custom deployment</div>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check"></i>On-premises Docker</li>
+                    <li><i class="fas fa-check"></i>White-label branding</li>
+                    <li><i class="fas fa-check"></i>Dedicated account mgmt</li>
+                    <li><i class="fas fa-check"></i>SLA guarantee</li>
+                </ul>
+            </div>
+        </div>
+        <div class="guarantee">
+            <i class="fas fa-shield-alt"></i> 30-Day Pilot Program with Full Onboarding Support and Guaranteed Reduction in Client Reporting Disputes
+        </div>
+    </div>
+</body>
+</html>

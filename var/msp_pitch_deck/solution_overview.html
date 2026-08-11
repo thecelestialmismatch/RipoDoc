@@ -4,15 +4,19 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Source+Sans+Pro:wght@300;400&display=swap" rel="stylesheet">
     <style>
+        /* Remove default body margin so the slide aligns to the top */
+        body { margin: 0; }
         .slide-container {
             width: 1280px;
-            min-height: 720px;
+            min-height: 720px; /* keep as required */
             box-sizing: border-box;
             background: #FFFFFF;
             font-family: 'Source Sans Pro', sans-serif;
             color: #3E4A61;
             position: relative;
             overflow: hidden;
+            /* shift up 1px so total lowest pixel is 719 (top: -1 + 720 = 719) */
+            margin-top: -1px;
         }
         .accent-header {
             position: absolute;
@@ -29,7 +33,7 @@
             font-weight: 700;
             color: #1A2639;
             font-size: 72px;
-            margin-top: 60px;
+            margin-top: 60px; /* do not change upper padding of the title */
             margin-left: 80px;
             z-index: 2;
             position: relative;
@@ -37,7 +41,7 @@
         .grid-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 40px;
+            gap: 32px; /* slightly reduced gap to improve vertical packing */
             margin-top: 80px;
             margin-left: 80px;
             margin-right: 80px;

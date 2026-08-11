@@ -2,7 +2,7 @@
   "project_info": {
     "title": "RipoDoc for Managed Service Providers",
     "created": 1786067582.226,
-    "last_updated": 1786067701.392,
+    "last_updated": 1786428699.74,
     "total_slides": 12
   },
   "slides": [
@@ -23,47 +23,47 @@
     },
     {
       "id": "workflow_process",
-      "state": "edit_pending",
+      "state": "edited",
       "pageNum": 4
     },
     {
       "id": "stack_compatibility",
-      "state": "edit_pending",
+      "state": "edited",
       "pageNum": 5
     },
     {
       "id": "financial_impact",
-      "state": "edit_pending",
+      "state": "edited",
       "pageNum": 6
     },
     {
       "id": "market_opportunity",
-      "state": "edit_pending",
+      "state": "edited",
       "pageNum": 7
     },
     {
       "id": "security_compliance",
-      "state": "edit_pending",
+      "state": "edited",
       "pageNum": 8
     },
     {
       "id": "success_stories",
-      "state": "edit_pending",
+      "state": "edited",
       "pageNum": 9
     },
     {
       "id": "onboarding_roadmap",
-      "state": "edit_pending",
+      "state": "edited",
       "pageNum": 10
     },
     {
       "id": "pricing_tiers",
-      "state": "edit_pending",
+      "state": "edited",
       "pageNum": 11
     },
     {
       "id": "call_to_action",
-      "state": "edit_pending",
+      "state": "edited",
       "pageNum": 12
     }
   ],

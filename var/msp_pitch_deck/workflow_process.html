@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Source+Sans+Pro:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            box-sizing: border-box;
+            background: #FFFFFF;
+            font-family: 'Source Sans Pro', sans-serif;
+            color: #3E4A61;
+            position: relative;
+            overflow: hidden;
+        }
+        .header-serif {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: #1A2639;
+            font-size: 64px;
+            margin-top: 60px; /* keep this as required */
+            margin-left: 80px;
+            z-index: 2;
+            position: relative;
+        }
+        .workflow-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            margin-top: 40px; /* reduced from 100 to save vertical space */
+            margin-left: 80px;
+            margin-right: 80px;
+            gap: 30px;
+            z-index: 2;
+            position: relative;
+        }
+        .workflow-step {
+            flex: 1;
+            text-align: center;
+            max-width: 300px;
+        }
+        .step-number {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 72px;
+            color: #C24D2C;
+            line-height: 1;
+        }
+        .step-icon {
+            font-size: 64px;
+            color: #1A2639;
+            margin-top: 10px; /* reduced */
+            margin-bottom: 10px; /* reduced */
+        }
+        .step-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 32px;
+            color: #1A2639;
+            margin-bottom: 10px; /* reduced */
+        }
+        .step-desc {
+            font-weight: 300;
+            font-size: 20px;
+            line-height: 1.4;
+            color: #3E4A61;
+        }
+        .arrow {
+            position: absolute;
+            top: 300px; /* adjusted to match new layout */
+            font-size: 48px;
+            color: #C24D2C;
+            z-index: 2;
+        }
+        .arrow-1 { left: 340px; }
+        .arrow-2 { left: 780px; }
+        .highlight-box {
+            background: #F5F5F5;
+            border-left: 4px solid #C24D2C;
+            padding: 12px; /* reduced */
+            margin-top: 30px; /* reduced */
+            margin-left: 80px;
+            margin-right: 80px;
+            z-index: 2;
+            position: relative;
+        }
+        .highlight-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 28px;
+            color: #1A2639;
+            margin-bottom: 8px;
+        }
+        .highlight-desc {
+            font-weight: 300;
+            font-size: 20px;
+            color: #3E4A61;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header-serif">How It Works: The 2-Step Workflow</div>
+        <div class="workflow-container">
+            <div class="workflow-step">
+                <div class="step-number">1</div>
+                <div class="step-icon"><i class="fas fa-brain"></i></div>
+                <div class="step-title">Propose</div>
+                <div class="step-desc">AI analyzes the PDF, detects figures, and proposes precise placement coordinates.</div>
+            </div>
+            <div class="arrow arrow-1"><i class="fas fa-arrow-right"></i></div>
+            <div class="workflow-step">
+                <div class="step-number">2</div>
+                <div class="step-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="step-title">Review</div>
+                <div class="step-desc">Account managers verify placements in an intuitive dashboard to guarantee 100% accuracy.</div>
+            </div>
+            <div class="arrow arrow-2"><i class="fas fa-arrow-right"></i></div>
+            <div class="workflow-step">
+                <div class="step-number">3</div>
+                <div class="step-icon"><i class="fas fa-file-pdf"></i></div>
+                <div class="step-title">Publish</div>
+                <div class="step-desc">Deterministic injection of secure, cryptographic link annotations into the PDF.</div>
+            </div>
+        </div>
+        <div class="highlight-box">
+            <div class="highlight-title"><i class="fas fa-shield-alt"></i> Guaranteed Integrity</div>
+            <div class="highlight-desc">Pre-flight and post-flight verification ensure zero missing links or broken coordinate mappings before client delivery.</div>
+        </div>
+    </div>
+</body>
+</html>
