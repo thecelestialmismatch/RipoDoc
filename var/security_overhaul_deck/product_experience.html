@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="slide-container" style="width:1280px;min-height:720px;box-sizing:border-box;background:#f7fafc;color:#0f172a;font-family:Manrope,Arial,sans-serif;position:relative;overflow:hidden;">
+    <div style="position:absolute;left:0;top:0;width:1280px;height:16px;background:#061327;"></div>
+    <!-- Reduced right column height so inner content stays within 720px -->
+    <div style="position:absolute;right:0;top:16px;width:270px;height:675px;background:#ecfeff;"></div>
+
+    <div style="position:absolute;left:72px;top:46px;width:1136px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #cbd5e1;">
+      <div style="font-family:'DM Mono',monospace;font-size:11px;line-height:30px;letter-spacing:.15em;color:#0f766e;text-transform:uppercase;">09 / Product experience</div>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;line-height:30px;color:#64748b;">SECURITY MADE LEGIBLE</div>
+    </div>
+
+    <div style="position:absolute;left:72px;top:104px;width:730px;">
+      <h1 style="margin:0;font-size:43px;line-height:1.08;letter-spacing:-.045em;font-weight:800;">The product experience is now intentional.</h1>
+      <p style="margin:16px 0 0;max-width:710px;font-size:16px;line-height:1.52;color:#475569;">The hardened release makes security understandable at the point of use: MSP staff see tenant-scoped operations, recipients see a clear proof flow, and operators see safe posture signals.</p>
+    </div>
+
+    <div style="position:absolute;left:72px;right:72px;top:242px;height:260px;display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid #cbd5e1;border-bottom:1px solid #cbd5e1;">
+      <section style="box-sizing:border-box;padding-top:20px;padding-right:28px;border-right:1px solid #cbd5e1;">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:#0f766e;">01 / MSP WORKSPACE</div>
+        <h2 style="margin:16px 0 0;font-size:25px;line-height:1.14;letter-spacing:-.025em;">Dashboard built around report operations.</h2>
+        <p style="margin:14px 0 0;font-size:14px;line-height:1.55;color:#475569;">The authenticated dashboard now exposes only tenant-owned reports, client coverage, reviewed figure totals, latest publication state, and a guided first-report workflow.</p>
+        <div style="margin-top:16px;font-family:'DM Mono',monospace;font-size:11px;color:#0f766e;">TENANT-SCOPED · NO-STORE DOWNLOADS</div>
+      </section>
+      <section style="box-sizing:border-box;padding-top:20px;padding-left:28px;padding-right:28px;border-right:1px solid #cbd5e1;">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:#0f766e;">02 / RECIPIENT EXPERIENCE</div>
+        <h2 style="margin:16px 0 0;font-size:25px;line-height:1.14;letter-spacing:-.025em;">Evidence proof explains the trust boundary.</h2>
+        <p style="margin:14px 0 0;font-size:14px;line-height:1.55;color:#475569;">Recipients receive a guided two-step mailbox-proof flow, then a scoped access receipt, approved source rows, provenance, and expiry context for one figure.</p>
+        <div style="margin-top:16px;font-family:'DM Mono',monospace;font-size:11px;color:#0f766e;">MAILBOX PROOF · SCOPED RELEASE</div>
+      </section>
+      <section style="box-sizing:border-box;padding-top:20px;padding-left:28px;">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:#0f766e;">03 / PRIVATE OPERATIONS</div>
+        <h2 style="margin:16px 0 0;font-size:25px;line-height:1.14;letter-spacing:-.025em;">Operator attention without secret exposure.</h2>
+        <p style="margin:14px 0 0;font-size:14px;line-height:1.55;color:#475569;">The private console adds a safe control-attention strip and recent publication activity while keeping recipient identities, signing secrets, audit events, and credentials out of posture summaries.</p>
+        <div style="margin-top:16px;font-family:'DM Mono',monospace;font-size:11px;color:#0f766e;">PRIVATE ADMIN · SAFE POSTURE</div>
+      </section>
+    </div>
+
+    <div style="position:absolute;left:72px;right:72px;top:528px;height:86px;background:#061327;color:#e2e8f0;box-sizing:border-box;padding-top:12px;padding-left:22px;padding-right:22px;display:grid;grid-template-columns:185px 1fr 290px;gap:28px;align-items:start;">
+      <div>
+        <p style="margin:0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:#67e8f9;">DEPLOYMENT PROBE</p>
+        <p style="margin:8px 0 0;font-size:14px;font-weight:800;">/api/health</p>
+      </div>
+      <p style="margin:0;font-size:13px;line-height:1.5;color:#cbd5e1;">A no-store health route exposes only safe service and configuration indicators for monitoring. It never returns reports, recipients, sessions, secrets, or audit events.</p>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;line-height:1.55;color:#94a3b8;text-align:right;">status: ok<br><span style="color:#67e8f9;">service: ripodoc-web</span></div>
+    </div>
+
+    <div style="position:absolute;left:72px;bottom:40px;font-family:'DM Mono',monospace;font-size:10px;color:#64748b;">Sources: dashboard, recipient proof/evidence routes, admin console, and api/health implementation</div>
+  </div>
+</body>
+</html>

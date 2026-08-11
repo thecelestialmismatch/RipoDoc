@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="slide-container" style="width:1280px;min-height:720px;box-sizing:border-box;background:#f7fafc;color:#0f172a;font-family:Manrope,Arial,sans-serif;position:relative;overflow:hidden;">
+    <div style="position:absolute;left:0;top:0;width:18px;height:712px;background:#061327;"></div>
+    <div style="margin-left:72px;margin-right:72px;padding-top:40px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #cbd5e1;padding-top:0;">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;line-height:30px;letter-spacing:.15em;color:#0f766e;text-transform:uppercase;">08 / Read-only control assessment</div>
+        <div style="font-family:'DM Mono',monospace;font-size:11px;line-height:30px;color:#64748b;">20-ISSUE SECURITY AUDIT</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1.08fr .92fr;gap:48px;padding-top:24px;align-items:end;">
+        <h1 style="margin:0;font-size:42px;line-height:1.08;letter-spacing:-.045em;font-weight:800;">The audit is transparent about remaining work.</h1>
+        <p style="margin:0 0 2px;font-size:16px;line-height:1.52;color:#475569;">The hardened release closes core identity and browser boundaries while documenting residual worker and operational risks without hiding them.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1.08fr .92fr;gap:40px;margin-top:30px;">
+        <section style="border-top:2px solid #061327;">
+          <div style="display:grid;grid-template-columns:135px 1fr;gap:22px;min-height:88px;border-bottom:1px solid #cbd5e1;padding-top:10px;">
+            <div>
+              <div style="display:inline-block;background:#d1fae5;color:#065f46;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.08em;padding:7px 9px 0;height:25px;box-sizing:border-box;">IMPLEMENTED</div>
+              <p style="margin:12px 0 0;font-family:'DM Mono',monospace;font-size:11px;color:#0f766e;">CORE BOUNDARIES</p>
+            </div>
+            <p style="margin:0;font-size:15px;line-height:1.58;color:#334155;"><strong>CSRF, opaque sessions, parameterized database access, security headers, secret configuration, and production dependency remediation</strong> are implemented in the shipped release.</p>
+          </div>
+          <div style="display:grid;grid-template-columns:135px 1fr;gap:22px;min-height:100px;border-bottom:1px solid #cbd5e1;padding-top:10px;">
+            <div>
+              <div style="display:inline-block;background:#fef3c7;color:#92400e;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.08em;padding:7px 9px 0;height:25px;box-sizing:border-box;">PARTIAL</div>
+              <p style="margin:12px 0 0;font-family:'DM Mono',monospace;font-size:11px;color:#a16207;">NEXT HARDENING</p>
+            </div>
+            <p style="margin:0;font-size:15px;line-height:1.58;color:#334155;"><strong>Legacy evidence ownership, worker CORS/auth, server-side upload validation, strict CSP/HSTS operations, audit coverage, and DoS controls</strong> have protections but require deeper operational hardening.</p>
+          </div>
+          <div style="display:grid;grid-template-columns:135px 1fr;gap:22px;min-height:100px;border-bottom:1px solid #cbd5e1;padding-top:10px;">
+            <div>
+              <div style="display:inline-block;background:#fee2e2;color:#991b1b;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.08em;padding:7px 9px 0;height:25px;box-sizing:border-box;">FINDING</div>
+              <p style="margin:12px 0 0;font-family:'DM Mono',monospace;font-size:11px;color:#b91c1c;">RELEASE FOLLOW-UP</p>
+            </div>
+            <p style="margin:0;font-size:15px;line-height:1.58;color:#334155;"><strong>Raw worker error detail, infrastructure encryption at rest, entitlement enforcement, and bounded PDF job processing</strong> are openly recorded as future remediation work.</p>
+          </div>
+        </section>
+
+        <aside style="background:#061327;color:#f8fbff;min-height:320px;box-sizing:border-box;padding-top:12px;padding-left:25px;padding-right:25px;">
+          <p style="margin:0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:#67e8f9;">PRIORITY REMEDIATION SEQUENCE</p>
+          <h2 style="margin:18px 0 0;font-size:27px;line-height:1.16;letter-spacing:-.03em;">Fix the worker boundary next.</h2>
+          <div style="margin-top:18px;border-top:1px solid rgba(148,163,184,.35);padding-top:10px;">
+            <p style="margin:0;font-family:'DM Mono',monospace;font-size:11px;color:#67e8f9;">01 / SANITIZE</p>
+            <p style="margin:7px 0 0;font-size:14px;line-height:1.45;color:#cbd5e1;">Replace public raw exception detail with generic errors and protected correlation logging.</p>
+          </div>
+          <div style="margin-top:10px;border-top:1px solid rgba(148,163,184,.35);padding-top:10px;">
+            <p style="margin:0;font-family:'DM Mono',monospace;font-size:11px;color:#67e8f9;">02 / AUTHORIZE</p>
+            <p style="margin:7px 0 0;font-size:14px;line-height:1.45;color:#cbd5e1;">Bind worker artifacts and actions to authenticated operator and tenant identity.</p>
+          </div>
+          <div style="margin-top:10px;border-top:1px solid rgba(148,163,184,.35);padding-top:10px;">
+            <p style="margin:0;font-family:'DM Mono',monospace;font-size:11px;color:#67e8f9;">03 / BOUND</p>
+            <p style="margin:7px 0 0;font-size:14px;line-height:1.45;color:#cbd5e1;">Add a rate-limited queue, execution limits, disk quotas, and expiring authoring artifacts.</p>
+          </div>
+        </aside>
+      </div>
+
+      <div style="margin-top:12px;background:#ecfeff;border-top:1px solid #99f6e4;border-bottom:1px solid #99f6e4;min-height:60px;box-sizing:border-box;padding-top:8px;padding-left:18px;padding-right:18px;display:grid;grid-template-columns:190px 1fr;gap:20px;align-items:start;">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:#0f766e;">AUDIT-ONLY RULE</div>
+        <p style="margin:0;font-size:14px;line-height:1.55;color:#164e63;"><strong>Phase 2 did not silently modify these areas.</strong> The report records status, file and line references, and recommended remediations so the next hardening release can be deliberately scoped, implemented, tested, and independently re-verified.</p>
+      </div>
+      
+    </div>
+  </div>
+</body>
+</html>

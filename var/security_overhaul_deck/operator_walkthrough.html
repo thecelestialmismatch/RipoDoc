@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="slide-container" style="width:1280px;min-height:720px;box-sizing:border-box;background:#f7fafc;color:#0f172a;font-family:Manrope,Arial,sans-serif;position:relative;overflow:hidden;">
+    <div style="position:absolute;left:0;top:0;width:18px;height:700px;background:#061327;"></div>
+    <div style="margin-left:72px;margin-right:72px;padding-top:42px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #cbd5e1;padding-top:0;">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;line-height:30px;letter-spacing:.15em;color:#0f766e;text-transform:uppercase;">06 / Operator walkthrough</div>
+        <div style="font-family:'DM Mono',monospace;font-size:11px;line-height:30px;color:#64748b;">SELF-HOSTED DEPLOYMENT RUNBOOK</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1.08fr .92fr;gap:62px;padding-top:25px;align-items:end;">
+        <h1 style="margin:0;font-size:42px;line-height:1.08;letter-spacing:-.045em;font-weight:800;">Six disciplined steps<br>from clone to control.</h1>
+        <p style="margin:0 0 3px;font-size:16px;line-height:1.52;color:#475569;">The self-hosted bundle is designed for an MSP-operated environment—not an exposed document-processing endpoint.</p>
+      </div>
+
+      <div style="position:relative;margin-top:33px;border-top:1px solid #cbd5e1;border-bottom:1px solid #cbd5e1;height:316px;">
+        <div style="position:absolute;left:64px;right:64px;top:70px;height:1px;background:#14b8a6;"></div>
+        <div style="position:absolute;left:64px;right:64px;top:207px;height:1px;background:#94a3b8;"></div>
+
+        <section style="position:absolute;left:0;top:31px;width:300px;height:142px;box-sizing:border-box;padding-top:0;padding-right:32px;">
+          <div style="width:32px;height:32px;background:#061327;color:#67e8f9;display:grid;place-items:center;font-family:'DM Mono',monospace;font-size:12px;">01</div>
+          <h2 style="margin:14px 0 0;font-size:18px;line-height:1.18;letter-spacing:-.02em;">Prepare the managed host</h2>
+          <p style="margin:9px 0 0;font-size:13px;line-height:1.48;color:#475569;">Clone the reviewed repository on an MSP-controlled Docker host; restrict the operator directory.</p>
+        </section>
+        <section style="position:absolute;left:384px;top:31px;width:300px;height:142px;box-sizing:border-box;padding-top:0;padding-right:32px;">
+          <div style="width:32px;height:32px;background:#0f766e;color:#ecfeff;display:grid;place-items:center;font-family:'DM Mono',monospace;font-size:12px;">02</div>
+          <h2 style="margin:14px 0 0;font-size:18px;line-height:1.18;letter-spacing:-.02em;">Create a locked-down environment</h2>
+          <p style="margin:9px 0 0;font-size:13px;line-height:1.48;color:#475569;">Use a root-owned <span style="font-family:'DM Mono',monospace;">.env</span> with distinct database, auth, and evidence secrets plus the canonical HTTPS origin.</p>
+        </section>
+        <section style="position:absolute;right:0;top:31px;width:300px;height:142px;box-sizing:border-box;padding-top:0;">
+          <div style="width:32px;height:32px;background:#2563eb;color:#eff6ff;display:grid;place-items:center;font-family:'DM Mono',monospace;font-size:12px;">03</div>
+          <h2 style="margin:14px 0 0;font-size:18px;line-height:1.18;letter-spacing:-.02em;">Build and start Compose</h2>
+          <p style="margin:9px 0 0;font-size:13px;line-height:1.48;color:#475569;">Confirm a healthy PostgreSQL service and a loopback-only <span style="font-family:'DM Mono',monospace;">127.0.0.1:4000</span> worker mapping.</p>
+        </section>
+
+        <section style="position:absolute;left:0;top:190px;width:300px;height:118px;box-sizing:border-box;padding-top:0;padding-right:32px;">
+          <div style="width:32px;height:32px;background:#061327;color:#67e8f9;display:grid;place-items:center;font-family:'DM Mono',monospace;font-size:12px;">04</div>
+          <h2 style="margin:14px 0 0;font-size:18px;line-height:1.18;letter-spacing:-.02em;">Terminate TLS at the edge</h2>
+          <p style="margin:9px 0 0;font-size:13px;line-height:1.48;color:#475569;">Publish only the web service through the MSP reverse proxy. Do not expose the worker port publicly.</p>
+        </section>
+        <section style="position:absolute;left:384px;top:190px;width:300px;height:118px;box-sizing:border-box;padding-top:0;padding-right:32px;">
+          <div style="width:32px;height:32px;background:#0f766e;color:#ecfeff;display:grid;place-items:center;font-family:'DM Mono',monospace;font-size:12px;">05</div>
+          <h2 style="margin:14px 0 0;font-size:18px;line-height:1.18;letter-spacing:-.02em;">Verify the account lifecycle</h2>
+          <p style="margin:9px 0 0;font-size:13px;line-height:1.48;color:#475569;">Test email verification, sign-in, tenant authorization, and reviewed worker publication with a controlled inbox.</p>
+        </section>
+        <section style="position:absolute;right:0;top:190px;width:300px;height:118px;box-sizing:border-box;padding-top:0;">
+          <div style="width:32px;height:32px;background:#2563eb;color:#eff6ff;display:grid;place-items:center;font-family:'DM Mono',monospace;font-size:12px;">06</div>
+          <h2 style="margin:14px 0 0;font-size:18px;line-height:1.18;letter-spacing:-.02em;">Back up, validate, update</h2>
+          <p style="margin:9px 0 0;font-size:13px;line-height:1.48;color:#475569;">Back up PostgreSQL first, pull reviewed changes, rebuild, and rerun the release gate before rollout.</p>
+        </section>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 340px;gap:58px;padding-top:20px;align-items:center;">
+        <p style="margin:0;font-size:14px;line-height:1.52;color:#334155;"><strong>Operational rule:</strong> the production app origin, reverse proxy host, and Turnstile domain must agree exactly. The worker’s CORS allowlist is a browser boundary, not a replacement for keeping the worker private.</p>
+        <div style="height:54px;box-sizing:border-box;background:#061327;color:#e2e8f0;padding-top:13px;padding-left:17px;font-family:'DM Mono',monospace;font-size:12px;line-height:1.45;">docker compose up --build<br><span style="color:#67e8f9;">npm run verify</span></div>
+      </div>
+      <div style="margin-top:14px;font-family:'DM Mono',monospace;font-size:10px;color:#94a3b8;">Source: docs/05-security/self-hosted-deployment-and-read-only-audit.md · docker-compose.selfhost.yml</div>
+    </div>
+  </div>
+</body>
+</html>

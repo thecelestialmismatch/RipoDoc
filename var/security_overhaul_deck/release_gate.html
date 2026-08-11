@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="slide-container" style="width:1280px;min-height:720px;box-sizing:border-box;background:#061327;color:#f8fbff;font-family:Manrope,Arial,sans-serif;position:relative;overflow:hidden;">
+    <!-- shortened background gradient height to avoid overflow -->
+    <div style="position:absolute;right:0;top:0;width:410px;height:710px;background:linear-gradient(155deg,rgba(20,184,166,.20),rgba(37,99,235,.08) 55%,transparent 56%);"></div>
+    <div style="position:absolute;right:74px;top:94px;width:240px;height:240px;border:1px solid rgba(103,232,249,.30);border-radius:50%;"></div>
+    <div style="position:absolute;right:126px;top:146px;width:136px;height:136px;border:1px solid rgba(103,232,249,.52);border-radius:50%;"></div>
+    <div style="position:absolute;right:178px;top:198px;width:32px;height:32px;background:#67e8f9;border-radius:50%;box-shadow:0 0 38px rgba(103,232,249,.55);"></div>
+
+    <div style="position:absolute;left:74px;top:52px;width:1132px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(148,163,184,.36);padding-top:0;">
+      <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.15em;color:#67e8f9;text-transform:uppercase;line-height:34px;">10 / Release gate</div>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;color:#94a3b8;line-height:34px;">CONTROLLED ROLLOUT BRIEF</div>
+    </div>
+
+    <div style="position:absolute;left:74px;top:132px;width:680px;">
+      <p style="margin:0;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.15em;color:#67e8f9;text-transform:uppercase;">Verified release evidence</p>
+      <h1 style="margin:18px 0 0;font-size:51px;line-height:1.05;letter-spacing:-.052em;font-weight:800;">The gate passed.<br>The rollout stays disciplined.</h1>
+      <p style="margin:10px 0 0;max-width:620px;font-size:18px;line-height:1.55;color:#cbd5e1;">The hardened baseline is merged and deployed. The next release advances the operator and customer experience while following the same proof-first release gate.</p>
+    </div>
+
+    <div style="position:absolute;left:74px;top:392px;width:760px;border-top:1px solid rgba(148,163,184,.36);display:grid;grid-template-columns:repeat(4,1fr);">
+      <div style="min-height:110px;padding-top:12px;padding-right:12px;border-right:1px solid rgba(148,163,184,.30);">
+        <p style="margin:0;font-family:'DM Mono',monospace;font-size:29px;line-height:1;color:#67e8f9;">133</p>
+        <p style="margin:12px 0 0;font-size:13px;line-height:1.45;color:#cbd5e1;">automated tests<br>passed</p>
+      </div>
+      <div style="min-height:110px;padding-top:12px;padding-left:12px;padding-right:12px;border-right:1px solid rgba(148,163,184,.30);">
+        <p style="margin:0;font-family:'DM Mono',monospace;font-size:29px;line-height:1;color:#67e8f9;">0</p>
+        <p style="margin:12px 0 0;font-size:13px;line-height:1.45;color:#cbd5e1;">production dependency<br>audit findings</p>
+      </div>
+      <div style="min-height:110px;padding-top:12px;padding-left:12px;padding-right:12px;border-right:1px solid rgba(148,163,184,.30);">
+        <p style="margin:0;font-family:'DM Mono',monospace;font-size:29px;line-height:1;color:#67e8f9;">✓</p>
+        <p style="margin:12px 0 0;font-size:13px;line-height:1.45;color:#cbd5e1;">strict TypeScript<br>+ production build</p>
+      </div>
+      <div style="min-height:110px;padding-top:12px;padding-left:12px;">
+        <p style="margin:0;font-family:'DM Mono',monospace;font-size:29px;line-height:1;color:#67e8f9;">#7</p>
+        <p style="margin:12px 0 0;font-size:13px;line-height:1.45;color:#cbd5e1;">hardened baseline<br>merged + Vercel success</p>
+      </div>
+    </div>
+
+    <div style="position:absolute;left:74px;top:560px;width:760px;border-top:1px solid rgba(148,163,184,.36);padding-top:8px;display:flex;align-items:flex-start;gap:12px;">
+      <span style="display:inline-block;width:9px;height:9px;background:#14b8a6;margin-top:5px;flex:none;"></span>
+      <p style="margin:0;font-size:13px;line-height:1.5;color:#cbd5e1;"><strong style="color:#f8fbff;">Release command:</strong> <span style="font-family:'DM Mono',monospace;color:#67e8f9;">npm run verify</span> runs strict type checking, the full Node test suite, and the Next.js production build.</p>
+    </div>
+
+    <div style="position:absolute;right:73px;bottom:80px;width:300px;border-top:1px solid rgba(103,232,249,.45);padding-top:17px;">
+      <p style="margin:0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:#67e8f9;">DOCUMENTED NEXT PRIORITY</p>
+      <p style="margin:12px 0 0;font-size:17px;line-height:1.35;font-weight:700;color:#ffffff;">Harden the PDF worker’s operational boundary.</p>
+      <p style="margin:12px 0 0;font-size:13px;line-height:1.5;color:#cbd5e1;">Sanitize worker errors, require authenticated operator access, and place expensive PDF work behind a bounded queue.</p>
+    </div>
+
+    <div style="position:absolute;left:74px;bottom:36px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.02em;color:#64748b;">Sources: npm run verify and npm audit --omit=dev results · GitHub PR #7 / Vercel deployment evidence · 20-control audit report</div>
+  </div>
+</body>
+</html>
