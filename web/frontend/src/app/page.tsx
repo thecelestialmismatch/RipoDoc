@@ -1,592 +1,251 @@
-/**
- * RipoDoc marketing home — upgraded with modern design, animations, and features.
- */
-
-import Image from 'next/image';
 import Link from 'next/link';
 import {
   ArrowRight,
   CheckCircle2,
-  Download,
-  ExternalLink,
-  FileCheck,
+  FileCheck2,
   FileText,
   LockKeyhole,
-  ScrollText,
-  ShieldCheck,
-  Terminal,
-  Zap,
-  Upload,
-  BarChart3,
-  Users,
-  Eye,
-  Clock,
+  MousePointerClick,
   Send,
-  TrendingUp,
+  ShieldCheck,
+  TimerReset,
+  Upload,
+  UsersRound,
+  Zap,
 } from 'lucide-react';
 import { SampleReport } from '@/components/marketing/SampleReport.tsx';
 import { loadManifest } from '@/lib/evidence/store.ts';
 
 const SAMPLE_REPORT_ID = 'rpt-demo-0001';
 
-const HERO_STATS: readonly { readonly value: string; readonly label: string; readonly icon: typeof Send }[] = [
-  { value: '127', label: 'Tests passing', icon: CheckCircle2 },
-  { value: '412', label: 'Sample data rows', icon: FileText },
-  { value: '100%', label: 'PDF viewer support', icon: Eye },
-  { value: '0', label: 'Data in the PDF', icon: LockKeyhole },
-];
-
-const HERO_BADGES: readonly { readonly icon: typeof ArrowRight; readonly label: string }[] = [
-  { icon: FileCheck, label: 'Works in every PDF viewer' },
-  { icon: LockKeyhole, label: 'Recipient-bound, not a public link' },
-  { icon: ShieldCheck, label: 'Human-approved before publication' },
-  { icon: Zap, label: 'Fast & lightweight' },
-];
-
-const FEATURES: readonly {
-  readonly icon: typeof Upload;
-  readonly title: string;
-  readonly body: string;
-  readonly gradient: string;
-}[] = [
+const outcomes = [
   {
-    icon: Upload,
-    title: 'Upload your own PDF',
-    body: 'Drag and drop any PDF report. RipoDoc overlays interactive click zones on every figure \u2014 no reformatting required.',
-    gradient: 'from-blue-500 to-cyan-500',
-  },
-  {
-    icon: BarChart3,
-    title: 'Interactive evidence',
-    body: 'Every number in your report becomes clickable. Clients see the exact rows behind each figure, scoped to them.',
-    gradient: 'from-violet-500 to-purple-500',
+    icon: MousePointerClick,
+    title: 'A PDF that explains itself',
+    body: 'A reader clicks an approved figure and opens the exact rows and provenance behind that figure — not a broad export.',
   },
   {
     icon: LockKeyhole,
-    title: 'Recipient-bound links',
-    body: 'Evidence links are tied to one recipient\u2019s email hash. A forwarded link does not become a second reader.',
-    gradient: 'from-emerald-500 to-teal-500',
+    title: 'Evidence stays deliberately scoped',
+    body: 'Links are signed for one recipient, time-bound, and individually revocable. A forwarded report is not a second authorization.',
   },
   {
-    icon: Clock,
-    title: 'Expiring & revocable',
-    body: 'Set expiry on every link. Kill any single link by id without rotating keys or reissuing the report.',
-    gradient: 'from-amber-500 to-orange-500',
+    icon: FileCheck2,
+    title: 'Every claim has an accountable owner',
+    body: 'A human approves the evidence before publication, and access events are recorded in a tamper-evident audit chain.',
   },
-  {
-    icon: ShieldCheck,
-    title: 'Tamper-evident audit log',
-    body: 'Every access \u2014 granted or denied \u2014 is recorded in a hash-chained append-only log. Modification is detectable.',
-    gradient: 'from-rose-500 to-pink-500',
-  },
-  {
-    icon: Users,
-    title: 'Human review gate',
-    body: 'Each number is bound to the exact rows behind it and signed off by a person before publication. Nothing is hallucinated.',
-    gradient: 'from-indigo-500 to-blue-500',
-  },
-];
+] as const;
 
-const CONTROLS: readonly { readonly title: string; readonly body: string }[] = [
-  {
-    title: 'Bound to one recipient',
-    body: 'The reader\u2019s email is hashed into a signed token, never embedded. A forwarded link does not become a second reader.',
-  },
-  {
-    title: 'Expiring and revocable',
-    body: 'Expiry is signed into the link. Any single link can be killed by id, without rotating keys or reissuing the report.',
-  },
-  {
-    title: 'Scoped to one figure',
-    body: 'A click opens the rows behind that figure \u2014 not the rest of the report, and not other clients\u2019 data.',
-  },
-  {
-    title: 'Logged, every time',
-    body: 'Granted and denied access are both recorded before anything renders. \u201CWho opened it, and when\u201D is answerable.',
-  },
-];
-
-const STEPS: readonly { readonly step: string; readonly title: string; readonly body: string; readonly icon: typeof Upload }[] = [
+const workflow = [
   {
     step: '01',
-    title: 'Upload your PDF',
-    body: 'Drag and drop the PDF you already send. Or generate one from a manifest. Either way, every figure becomes clickable.',
+    title: 'Bring the report you already send',
+    body: 'Upload a PDF or render a report from a structured manifest. RipoDoc does not force a replacement reporting stack.',
     icon: Upload,
   },
   {
     step: '02',
-    title: 'A human approves every figure',
-    body: 'Each number is bound to the exact rows behind it and signed off by a person before publication. Nothing is computed at read time.',
-    icon: FileCheck,
+    title: 'Attach defensible evidence',
+    body: 'Approve the rows, query provenance, recipient, and expiry associated with each figure before release.',
+    icon: FileCheck2,
   },
   {
     step: '03',
-    title: 'Send a normal PDF',
-    body: 'It opens in Chrome, Preview, Acrobat or a phone like any other PDF \u2014 except every figure is clickable.',
+    title: 'Deliver a normal PDF',
+    body: 'Your client opens it in their usual viewer. A click opens a tightly scoped evidence view that is logged before it renders.',
     icon: Send,
   },
-];
+] as const;
 
-const COMPETITORS: readonly {
-  readonly name: string;
-  readonly document: boolean | string;
-  readonly rows: boolean | string;
-  readonly review: boolean;
-  readonly bound: boolean | string;
-  readonly audit: boolean;
-}[] = [
-  { name: 'MSPBots', document: false, rows: true, review: false, bound: false, audit: false },
-  { name: 'BrightGauge', document: false, rows: '~', review: false, bound: '~', audit: false },
-  { name: 'Cognition360', document: false, rows: 'via Power BI', review: false, bound: '~', audit: false },
-  { name: 'Lifecycle Insights', document: true, rows: false, review: false, bound: '~', audit: false },
-  { name: 'Handover', document: true, rows: false, review: false, bound: false, audit: false },
-  { name: 'Power BI', document: false, rows: true, review: false, bound: '~', audit: false },
-  { name: 'Foleon', document: true, rows: false, review: false, bound: '~', audit: false },
-];
-
-const renderCell = (value: boolean | string) => {
-  if (value === true) return <span className="text-emerald-600 font-bold">&#10003;</span>;
-  if (value === false) return <span className="text-slate-300">&#10007;</span>;
-  return <span className="text-amber-500 text-xs">{value}</span>;
-};
+const proofPoints = [
+  { icon: FileText, label: 'Standard PDF links work in common viewers' },
+  { icon: TimerReset, label: 'Expiry and individual revocation' },
+  { icon: ShieldCheck, label: 'Hash-chained access audit trail' },
+] as const;
 
 export default async function Home() {
   const manifest = await loadManifest(SAMPLE_REPORT_ID);
+  const figureCount = manifest?.elements.length ?? 0;
+  const evidenceRowCount = manifest?.elements.reduce((count, element) => count + element.evidence.table.rows.length, 0) ?? 0;
 
   return (
-    <div className="bg-white text-slate-900">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-50 via-white to-white" />
-        <div className="absolute inset-0 dot-pattern opacity-40" />
-        <div className="absolute left-1/2 top-0 -z-10 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-gradient-to-br from-blue-200/30 to-violet-200/30 blur-3xl" />
+    <div className="bg-white text-[#11162E]">
+      <section className="ripodoc-hero relative isolate overflow-hidden border-b border-slate-200">
+        <div className="ripodoc-grid pointer-events-none absolute inset-0 opacity-70" />
+        <div className="pointer-events-none absolute -right-32 top-20 h-[32rem] w-[32rem] rounded-full bg-[#12B9BE]/15 blur-3xl" />
+        <div className="pointer-events-none absolute bottom-0 left-[28%] h-72 w-72 rounded-full bg-[#1769E8]/10 blur-3xl" />
 
-        <div className="relative mx-auto max-w-7xl px-6 pt-20 pb-16">
-          <div className="text-center">
-            <Image
-              src="/ripodoc-logo.jpeg"
-              alt="RipoDoc logo"
-              width={96}
-              height={96}
-              className="mx-auto mb-6 rounded-2xl object-contain shadow-lg shadow-blue-600/20"
-              priority
-            />
-            <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-sm font-medium text-blue-700">
-              <span className="flex h-2 w-2 rounded-full bg-blue-600 pulse-glow" />
-              Secure interactive client reports for MSPs
-            </div>
-
-            <h1 className="mx-auto mt-4 max-w-4xl text-5xl font-bold leading-tight tracking-tight sm:text-6xl">
-              Send a PDF.{' '}
-              <span className="gradient-text">Every number is clickable.</span>
-            </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-600">
-              Your client asks where a number came from. Instead of digging through a spreadsheet,
-              they click it &mdash; and the exact rows behind it open, scoped to them, expiring,
-              revocable and logged. Now with PDF upload.
-            </p>
-
-            <div className="mt-8 flex flex-wrap justify-center gap-3 text-sm">
-              {HERO_BADGES.map((badge) => (
-                <span
-                  key={badge.label}
-                  className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-slate-700 shadow-sm ring-1 ring-slate-200 transition hover:shadow-md"
+        <div className="relative mx-auto max-w-7xl px-6 py-14 lg:py-20">
+          <div className="grid items-center gap-12 lg:grid-cols-[0.8fr_1.2fr]">
+            <div className="max-w-xl">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#12B9BE]/25 bg-white/80 px-3 py-1.5 text-xs font-semibold tracking-wide text-[#087E84] shadow-sm">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#12B9BE]" aria-hidden="true" />
+                Secure interactive client reports for MSPs
+              </div>
+              <h1 className="mt-6 text-5xl font-bold leading-[1.02] tracking-[-0.06em] text-[#11162E] sm:text-6xl lg:text-[4.15rem]">
+                Every report figure has <span className="brand-gradient-text">proof behind it.</span>
+              </h1>
+              <p className="mt-6 max-w-lg text-lg leading-8 text-slate-600">
+                RipoDoc turns the PDF your client already opens into an accountable evidence experience. A click reveals the approved detail behind one reported number, scoped to the intended reader and logged for review.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link
+                  href="/upload"
+                  className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-gradient-to-r from-[#1769E8] to-[#12B9BE] px-5 py-3 text-sm font-semibold text-white shadow-[0_16px_30px_-16px_rgba(23,105,232,0.8)] transition duration-200 hover:brightness-105 active:scale-[0.98]"
                 >
-                  <badge.icon aria-hidden="true" className="h-4 w-4 text-blue-600" />
-                  {badge.label}
-                </span>
-              ))}
+                  <Upload className="h-4 w-4" aria-hidden="true" />
+                  Create a report
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+                <Link
+                  href="#demo"
+                  className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-slate-300 bg-white/85 px-5 py-3 text-sm font-semibold text-[#11162E] shadow-sm transition hover:border-[#12B9BE]/60 hover:bg-white active:scale-[0.98]"
+                >
+                  Explore the live interaction
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+              </div>
+              <div className="mt-8 flex flex-wrap gap-x-5 gap-y-3 text-sm text-slate-600">
+                {proofPoints.map((point) => {
+                  const Icon = point.icon;
+                  return <span key={point.label} className="inline-flex items-center gap-2"><Icon className="h-4 w-4 text-[#078C68]" aria-hidden="true" />{point.label}</span>;
+                })}
+              </div>
             </div>
 
-            <div className="mt-10 flex flex-wrap justify-center gap-4">
-              <Link
-                href="/upload"
-                className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-7 py-3.5 text-base font-semibold text-white shadow-lg shadow-blue-600/25 transition hover:shadow-xl hover:shadow-blue-600/30"
-              >
-                <Upload className="h-5 w-5 transition group-hover:scale-110" />
-                Upload your PDF
-                <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
-              </Link>
-              <Link
-                href="#demo"
-                className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-7 py-3.5 text-base font-semibold text-slate-700 transition hover:bg-slate-50 hover:shadow-md"
-              >
-                Try the live demo
-                <ArrowRight aria-hidden="true" className="h-4 w-4" />
-              </Link>
+            <div className="relative">
+              <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-[#1769E8]/15 to-[#12B9BE]/25 blur-2xl" aria-hidden="true" />
+              <div className="relative rounded-[1.5rem] border border-white/80 bg-white/90 p-3 shadow-[0_32px_70px_-36px_rgba(17,22,46,0.65)] backdrop-blur sm:p-5">
+                <div className="mb-4 flex items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                  <div className="flex items-center gap-2.5">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#EAF5FF] text-[#1769E8]"><FileText className="h-4 w-4" aria-hidden="true" /></span>
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.13em] text-slate-500">RipoDoc proof view</p>
+                      <p className="text-sm font-semibold text-[#11162E]">Click a figure. Inspect the source.</p>
+                    </div>
+                  </div>
+                  <span className="hidden rounded-full bg-[#DDF9F7] px-2.5 py-1 text-[11px] font-semibold text-[#087E84] sm:inline-block">Sample data</span>
+                </div>
+                {manifest ? <SampleReport manifest={manifest} /> : <DemoUnavailable />}
+              </div>
             </div>
           </div>
 
-          {/* Stats Bar */}
-          <div className="mt-16 grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {HERO_STATS.map((stat) => {
-              const Icon = stat.icon;
+          <div className="mt-12 grid gap-3 border-t border-slate-200/80 pt-8 sm:grid-cols-3">
+            <Metric value={figureCount.toString()} label="approved sample figures" />
+            <Metric value={evidenceRowCount.toString()} label="evidence rows available to inspect" />
+            <Metric value="0" label="evidence rows stored in the PDF itself" />
+          </div>
+        </div>
+      </section>
+
+      <section id="product" className="mx-auto max-w-7xl px-6 py-20 lg:py-28">
+        <div className="grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#087E84]">Designed for the client-report moment</p>
+            <h2 className="mt-3 text-4xl font-bold tracking-[-0.045em] text-[#11162E] sm:text-5xl">Be ready when the client asks, “Where did that number come from?”</h2>
+          </div>
+          <p className="max-w-2xl text-lg leading-8 text-slate-600">
+            The answer should not be a longer meeting, a spreadsheet hunt, or an unprotected portal link. RipoDoc keeps the report familiar while making the evidence behind a published figure specific, reviewable, and defensible.
+          </p>
+        </div>
+        <div className="mt-12 grid gap-5 md:grid-cols-3">
+          {outcomes.map((outcome) => {
+            const Icon = outcome.icon;
+            return (
+              <article key={outcome.title} className="lift-on-hover rounded-3xl border border-slate-200 bg-white p-7 shadow-[0_14px_28px_-24px_rgba(17,22,46,0.5)] hover:border-[#12B9BE]/40">
+                <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#EAF5FF] to-[#DDF9F7] text-[#1769E8]"><Icon className="h-5 w-5" aria-hidden="true" /></span>
+                <h3 className="mt-6 text-xl font-bold tracking-[-0.03em] text-[#11162E]">{outcome.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-slate-600">{outcome.body}</p>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <section id="how-it-works" className="border-y border-slate-200 bg-[#F6F8FC] py-20 lg:py-28">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="max-w-2xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#087E84]">One accountable workflow</p>
+            <h2 className="mt-3 text-4xl font-bold tracking-[-0.045em] text-[#11162E] sm:text-5xl">Keep the client experience simple. Make the evidence rigorous.</h2>
+          </div>
+          <ol className="mt-12 grid gap-5 lg:grid-cols-3">
+            {workflow.map((item) => {
+              const Icon = item.icon;
               return (
-                <div
-                  key={stat.label}
-                  className="rounded-2xl border border-slate-200 bg-white/80 p-5 text-center shadow-sm backdrop-blur transition hover:shadow-md"
-                >
-                  <Icon className="mx-auto h-6 w-6 text-blue-600" />
-                  <div className="mt-2 text-3xl font-bold tracking-tight">{stat.value}</div>
-                  <div className="mt-1 text-xs text-slate-500">{stat.label}</div>
-                </div>
+                <li key={item.step} className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
+                  <span className="absolute right-6 top-5 text-6xl font-bold tracking-[-0.08em] text-[#EAF5FF]" aria-hidden="true">{item.step}</span>
+                  <span className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-[#11162E] text-white"><Icon className="h-5 w-5" aria-hidden="true" /></span>
+                  <h3 className="relative mt-12 text-xl font-bold tracking-[-0.03em] text-[#11162E]">{item.title}</h3>
+                  <p className="relative mt-3 text-sm leading-6 text-slate-600">{item.body}</p>
+                </li>
               );
             })}
-          </div>
+          </ol>
         </div>
       </section>
 
-      {/* Features Grid */}
-      <section className="mx-auto max-w-7xl px-6 py-20">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Everything you need</h2>
-          <p className="mx-auto mt-3 max-w-2xl text-slate-600">
-            From PDF upload to tamper-evident audit logs, RipoDoc covers the full trust chain.
-          </p>
-        </div>
-        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((feature) => {
-            const Icon = feature.icon;
-            return (
-              <div
-                key={feature.title}
-                className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-lg hover:-translate-y-1"
-              >
-                <div
-                  className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${feature.gradient} shadow-lg`}
-                >
-                  <Icon className="h-6 w-6 text-white" />
-                </div>
-                <h3 className="mt-4 text-lg font-bold">{feature.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-600">{feature.body}</p>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Demo Section */}
-      <section id="demo" className="border-y border-slate-200 bg-slate-50 py-16">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight">Try the interaction &mdash; right now</h2>
-            <p className="mx-auto mt-3 max-w-2xl text-slate-600">
-              This is the real thing, running on sample data &mdash; the same report the PDF generator
-              builds from. Click any figure on the left and watch the exact rows open on the right.
-            </p>
-          </div>
-          <div className="mt-10">
-            {manifest ? (
-              <SampleReport manifest={manifest} />
-            ) : (
-              <p className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-                The sample report could not be loaded.
-              </p>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section id="how-it-works" className="mx-auto max-w-7xl px-6 py-20">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight">How it works</h2>
-          <p className="mx-auto mt-3 max-w-2xl text-slate-600">
-            Three steps. No stack replacement. No new tool for your client to learn.
-          </p>
-        </div>
-        <div className="mt-12 grid gap-8 md:grid-cols-3">
-          {STEPS.map((step) => {
-            const Icon = step.icon;
-            return (
-              <div
-                key={step.step}
-                className="relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100">
-                    <Icon className="h-5 w-5 text-blue-600" />
-                  </div>
-                  <span className="text-3xl font-bold text-blue-100">{step.step}</span>
-                </div>
-                <h3 className="mt-3 text-lg font-semibold">{step.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-600">{step.body}</p>
-              </div>
-            );
-          })}
-        </div>
-        <div className="mt-12 rounded-2xl border border-slate-200 bg-slate-50 p-6">
-          <h3 className="flex items-center gap-2 text-lg font-semibold">
-            <ScrollText aria-hidden="true" className="h-5 w-5 text-blue-600" />
-            Why it works in every viewer
-          </h3>
-          <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">
-            Each figure carries a standard PDF link annotation. That is the one interaction mechanism
-            every viewer supports &mdash; Chrome, Safari, macOS Preview, Acrobat, iOS and Android. The
-            obvious alternative, embedded PDF JavaScript, is Acrobat-only: in a browser or on a phone
-            it does nothing, silently. RipoDoc does not use it.
-          </p>
-          <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">
-            The rows themselves never travel inside the PDF, so forwarding the file does not forward
-            the data.
-          </p>
-        </div>
-      </section>
-
-      {/* Two Ways In */}
-      <section className="border-y border-slate-200 bg-slate-50 py-16">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight">Two ways in</h2>
-            <p className="mx-auto mt-3 max-w-2xl text-slate-600">
-              Keep your existing tools, or let RipoDoc generate the report. Either way, every figure
-              is clickable.
-            </p>
-          </div>
-          <div className="mt-10 grid gap-6 md:grid-cols-2">
-            <div className="rounded-2xl border-2 border-blue-200 bg-white p-6 shadow-sm transition hover:shadow-md">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100">
-                  <FileText aria-hidden="true" className="h-5 w-5 text-blue-600" />
-                </div>
-                <h3 className="text-lg font-bold">Overlay</h3>
-              </div>
-              <p className="mt-3 text-sm text-slate-600">
-                Takes <strong>the PDF you already send</strong> and appends a click zone to every
-                figure. Your original file is a byte-for-byte prefix of the output &mdash; nothing
-                moves.
-              </p>
-              <div className="mt-4 rounded-lg bg-slate-900 p-4 text-xs text-slate-100">
-                <div className="flex items-center gap-2 text-slate-400">
-                  <Terminal aria-hidden="true" className="h-3.5 w-3.5" />
-                  <span>Make an existing PDF clickable</span>
-                </div>
-                <pre className="mt-2 overflow-x-auto">
-                  <code>{`npm run overlay:propose   # detect zones
-npm run overlay:sample    # publish clickable PDF`}</code>
-                </pre>
-              </div>
-            </div>
-            <div className="rounded-2xl border-2 border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100">
-                  <FileCheck aria-hidden="true" className="h-5 w-5 text-slate-600" />
-                </div>
-                <h3 className="text-lg font-bold">Generate</h3>
-              </div>
-              <p className="mt-3 text-sm text-slate-600">
-                Renders a report from a manifest. KPIs, bar charts, and supported claims &mdash; each
-                with a link annotation to its evidence page.
-              </p>
-              <div className="mt-4 rounded-lg bg-slate-900 p-4 text-xs text-slate-100">
-                <div className="flex items-center gap-2 text-slate-400">
-                  <Terminal aria-hidden="true" className="h-3.5 w-3.5" />
-                  <span>Generate a clickable report</span>
-                </div>
-                <pre className="mt-2 overflow-x-auto">
-                  <code>{`npm run build:pdf          # https origin
-npm run build:pdf:local   # localhost`}</code>
-                </pre>
-              </div>
+      <section id="demo" className="mx-auto max-w-7xl px-6 py-20 lg:py-28">
+        <div className="grid gap-10 rounded-[2rem] bg-[#11162E] px-6 py-10 text-white sm:px-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-center lg:px-14 lg:py-14">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-teal-300/20 bg-teal-300/10 px-3 py-1.5 text-xs font-semibold text-teal-100"><Zap className="h-3.5 w-3.5" aria-hidden="true" />Use the real interaction</div>
+            <h2 className="mt-5 text-4xl font-bold tracking-[-0.045em] sm:text-5xl">The report is just the beginning.</h2>
+            <p className="mt-5 max-w-lg text-base leading-7 text-slate-300">Open the demo to see a report figure resolve to the evidence grid that supports it. The same interaction is available from a generated or overlaid RipoDoc PDF.</p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/dashboard" className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-[#11162E] transition hover:bg-[#DDF9F7]"><UsersRound className="h-4 w-4" aria-hidden="true" />Open client workspace</Link>
+              <Link href="/security" className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/20 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"><ShieldCheck className="h-4 w-4" aria-hidden="true" />Inspect security controls</Link>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Security */}
-      <section id="security" className="mx-auto max-w-7xl px-6 py-20">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight">Not a public link</h2>
-          <p className="mx-auto mt-3 max-w-2xl text-slate-600">
-            Most &ldquo;shareable report&rdquo; links authorise anyone who holds the URL, forever.
-            These do not.
-          </p>
-        </div>
-        <div className="mt-10 grid gap-6 sm:grid-cols-2">
-          {CONTROLS.map((control) => (
-            <div
-              key={control.title}
-              className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
-            >
-              <div className="flex items-start gap-3">
-                <CheckCircle2 aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
-                <div>
-                  <dt className="font-semibold">{control.title}</dt>
-                  <dd className="mt-1.5 text-sm leading-6 text-slate-600">{control.body}</dd>
-                </div>
-              </div>
+          <div className="rounded-3xl border border-white/10 bg-white/[0.06] p-5">
+            <div className="grid gap-4 sm:grid-cols-3">
+              <ProofStat label="Identity" value="Recipient-bound" />
+              <ProofStat label="Access" value="Expiring + revocable" />
+              <ProofStat label="Review" value="Logged before render" />
             </div>
-          ))}
-        </div>
-        <div className="mt-10 rounded-2xl border border-slate-200 bg-slate-50 p-6">
-          <h3 className="flex items-center gap-2 text-lg font-semibold">
-            <ShieldCheck aria-hidden="true" className="h-5 w-5 text-emerald-600" />
-            The audit chain
-          </h3>
-          <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">
-            Every access &mdash; granted or denied &mdash; is recorded before rendering, in a
-            hash-chained append-only log. Each record commits to the one before it. Deleting a record,
-            reordering two, or changing a single timestamp breaks the chain at that point and every
-            point after it. Modification is not impossible, it is <strong>detectable</strong> &mdash;
-            which is the honest claim and the one an auditor cares about.
-          </p>
-          <div className="mt-4 rounded-lg bg-slate-900 p-4 text-xs text-slate-100">
-            <div className="flex items-center gap-2 text-slate-400">
-              <Terminal aria-hidden="true" className="h-3.5 w-3.5" />
-              <span>Verify the audit log</span>
-            </div>
-            <pre className="mt-2">
-              <code>{`npm run audit:verify   # asserts hash chain integrity`}</code>
-            </pre>
+            <p className="mt-6 border-t border-white/10 pt-5 text-sm leading-6 text-slate-300">Each report element is bound to its evidence, provenance, approver, and delivery controls. The application exposes safe operational status without displaying any secret or recipient identity.</p>
           </div>
         </div>
       </section>
 
-      {/* Competitive Advantage */}
-      <section className="border-y border-slate-200 bg-slate-50 py-16">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight">What sets RipoDoc apart</h2>
-            <p className="mx-auto mt-3 max-w-2xl text-slate-600">
-              Click-to-evidence is commodity inside BI tools. Nobody delivers it from the PDF an MSP
-              actually emails a client.
-            </p>
+      <section className="border-t border-slate-200 bg-gradient-to-br from-[#EAF5FF] via-white to-[#DDF9F7] py-20">
+        <div className="mx-auto max-w-3xl px-6 text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#087E84]">Ready to send a report that stands up to questions?</p>
+          <h2 className="mt-4 text-4xl font-bold tracking-[-0.045em] text-[#11162E] sm:text-5xl">Start with the report you already have.</h2>
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-slate-600">Upload a PDF, review the proposed overlays, and publish evidence-aware reporting for your managed services practice.</p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Link href="/upload" className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-[#11162E] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0A3E9B]"><Upload className="h-4 w-4" aria-hidden="true" />Create a report</Link>
+            <a href="https://github.com/thecelestialmismatch/RipoDoc" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-[#11162E] transition hover:border-[#1769E8]">View the repository<ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
           </div>
-          <div className="mt-10 overflow-x-auto">
-            <table className="mx-auto w-full max-w-4xl border-collapse text-sm">
-              <thead>
-                <tr className="border-b-2 border-slate-300">
-                  <th className="px-4 py-3 text-left font-semibold text-slate-900"></th>
-                  <th className="px-3 py-3 text-center font-semibold text-slate-700">Document-shaped</th>
-                  <th className="px-3 py-3 text-center font-semibold text-slate-700">Reader sees rows</th>
-                  <th className="px-3 py-3 text-center font-semibold text-slate-700">Review gate</th>
-                  <th className="px-3 py-3 text-center font-semibold text-slate-700">Recipient-bound</th>
-                  <th className="px-3 py-3 text-center font-semibold text-slate-700">Audit trail</th>
-                </tr>
-              </thead>
-              <tbody>
-                {COMPETITORS.map((row) => (
-                  <tr key={row.name} className="border-b border-slate-200">
-                    <td className="px-4 py-3 font-medium text-slate-900">{row.name}</td>
-                    <td className="px-3 py-3 text-center">{renderCell(row.document)}</td>
-                    <td className="px-3 py-3 text-center">{renderCell(row.rows)}</td>
-                    <td className="px-3 py-3 text-center">{renderCell(row.review)}</td>
-                    <td className="px-3 py-3 text-center">{renderCell(row.bound)}</td>
-                    <td className="px-3 py-3 text-center">{renderCell(row.audit)}</td>
-                  </tr>
-                ))}
-                <tr className="border-b-2 border-blue-300 bg-blue-50">
-                  <td className="px-4 py-3 font-bold text-blue-900">RipoDoc</td>
-                  <td className="px-3 py-3 text-center"><span className="text-emerald-600 font-bold">&#10003;</span></td>
-                  <td className="px-3 py-3 text-center"><span className="text-emerald-600 font-bold">&#10003;</span></td>
-                  <td className="px-3 py-3 text-center"><span className="text-emerald-600 font-bold">&#10003;</span></td>
-                  <td className="px-3 py-3 text-center"><span className="text-emerald-600 font-bold">&#10003;</span></td>
-                  <td className="px-3 py-3 text-center"><span className="text-emerald-600 font-bold">&#10003;</span></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <p className="mt-6 text-center text-sm text-slate-500">
-            RipoDoc's uniqueness is not any single column &mdash; it is the{' '}
-            <strong>combination</strong>. Three columns nobody occupies:{' '}
-            <em>human review gate</em>, <em>recipient-bound + revocable</em>,{' '}
-            <em>immutable audit trail</em>.
-          </p>
         </div>
       </section>
+    </div>
+  );
+}
 
-      {/* Download / Get Started */}
-      <section id="download" className="mx-auto max-w-7xl px-6 py-20">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight">Get started in 60 seconds</h2>
-          <p className="mx-auto mt-3 max-w-2xl text-slate-600">
-            Clone the repo, set a secret, and generate your first clickable PDF. No signup, no API
-            key, no credit card.
-          </p>
-        </div>
-        <div className="mt-10 grid gap-6 lg:grid-cols-2">
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h3 className="flex items-center gap-2 text-lg font-bold">
-              <Terminal aria-hidden="true" className="h-5 w-5 text-blue-600" />
-              Quick start
-            </h3>
-            <div className="mt-4 rounded-lg bg-slate-900 p-4 text-xs leading-relaxed text-slate-100">
-              <pre className="overflow-x-auto">
-                <code>{`# 1. Clone
-git clone https://github.com/thecelestialmismatch/RipoDoc.git
-cd RipoDoc
+function Metric({ value, label }: { readonly value: string; readonly label: string }) {
+  return (
+    <div className="border-l border-slate-200 pl-4 first:border-l-0 first:pl-0">
+      <p className="text-3xl font-bold tracking-[-0.055em] text-[#11162E]">{value}</p>
+      <p className="mt-1 text-xs font-medium text-slate-500">{label}</p>
+    </div>
+  );
+}
 
-# 2. Install
-npm install --prefix web/frontend
+function ProofStat({ label, value }: { readonly label: string; readonly value: string }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-4">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-slate-400">{label}</p>
+      <p className="mt-2 text-sm font-semibold text-white">{value}</p>
+    </div>
+  );
+}
 
-# 3. Set the signing secret (32+ chars)
-export RIPODOC_EVIDENCE_SECRET="$(openssl rand -base64 32)"
-
-# 4. Verify everything works
-npm run verify
-
-# 5. Generate a clickable PDF
-npm run build:pdf:local
-
-# 6. Open it and click any figure
-open build/demo-report.local.pdf`}</code>
-              </pre>
-            </div>
-            <p className="mt-3 text-xs text-slate-500">Requires Node 22.6+ (native TypeScript execution).</p>
-          </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h3 className="flex items-center gap-2 text-lg font-bold">
-              <CheckCircle2 aria-hidden="true" className="h-5 w-5 text-emerald-600" />
-              What you get
-            </h3>
-            <ul className="mt-4 space-y-3 text-sm text-slate-700">
-              <li className="flex items-start gap-2">
-                <CheckCircle2 aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
-                <span>A clickable PDF that opens in every viewer &mdash; Chrome, Safari, Preview, Acrobat, mobile</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
-                <span>Recipient-bound, expiring, revocable evidence links &mdash; not a public URL</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
-                <span>A hash-chained audit log that detects any tampering</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
-                <span>An overlay engine that makes your existing PDF clickable &mdash; byte-for-byte preserved</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
-                <span>Upload your own PDFs directly from the web UI</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
-                <span>A dashboard with analytics and access logs</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="mt-8 flex flex-wrap justify-center gap-4">
-          <a
-            href="https://github.com/thecelestialmismatch/RipoDoc"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3 text-base font-semibold text-white transition hover:bg-slate-700"
-          >
-            View on GitHub
-          </a>
-          <a
-            href="https://github.com/thecelestialmismatch/RipoDoc/fork"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-6 py-3 text-base font-semibold text-slate-700 transition hover:bg-slate-50"
-          >
-            <ExternalLink aria-hidden="true" className="h-4 w-4" />
-            Fork the repo
-          </a>
-        </div>
-      </section>
+function DemoUnavailable() {
+  return (
+    <div className="rounded-2xl border border-amber-200 bg-amber-50 p-6 text-sm leading-6 text-amber-950">
+      <CheckCircle2 className="h-5 w-5 text-amber-700" aria-hidden="true" />
+      <p className="mt-3 font-semibold">The interactive sample is not available in this runtime.</p>
+      <p className="mt-1">You can still create a report from the upload workflow or inspect the customer workspace.</p>
     </div>
   );
 }

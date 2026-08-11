@@ -1,318 +1,206 @@
-
 'use client';
 
-import Image from 'next/image';
-import { useState, useCallback } from 'react';
-import { Upload, FileText, X, CheckCircle2, AlertCircle, Loader2, ArrowRight, Download } from 'lucide-react';
+import { useCallback, useState } from 'react';
+import {
+  AlertCircle,
+  ArrowRight,
+  CheckCircle2,
+  Download,
+  FileJson2,
+  FileText,
+  Info,
+  Loader2,
+  MonitorCog,
+  ShieldCheck,
+  Upload,
+  X,
+} from 'lucide-react';
+import { BrandLockup } from '@/components/BrandLockup.tsx';
+
+const MAX_PDF_BYTES = 50 * 1024 * 1024;
+const LOCAL_API = process.env.NEXT_PUBLIC_LOCAL_API ?? 'http://localhost:4000/api/local';
+const LOCAL_API_CONFIGURED = Boolean(process.env.NEXT_PUBLIC_LOCAL_API);
+
+type UploadStatus = 'uploading' | 'awaiting-review' | 'reviewing' | 'ready-to-publish' | 'publishing' | 'success' | 'error';
 
 interface UploadedFile {
-  file: File;
-  id: string;
-  status: 'uploading' | 'processing' | 'success' | 'error';
+  readonly file: File;
+  readonly id: string;
+  status: UploadStatus;
   progress: number;
   message?: string;
-  pdfPath?: string;
-  placementsPath?: string;
+  draftId?: string;
+  proposalUrl?: string;
   downloadUrl?: string;
+}
+
+interface LocalUploadReply { readonly draftId?: string; readonly proposalUrl?: string; readonly message?: string; }
+interface LocalReply { readonly message?: string; readonly downloadUrl?: string; }
+
+const errorMessage = (error: unknown): string => error instanceof Error ? error.message : 'An unexpected error occurred.';
+const isPdf = (file: File) => file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+
+async function responseData<T>(response: Response): Promise<T> {
+  const data: unknown = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const message = typeof data === 'object' && data !== null && 'error' in data && typeof data.error === 'string'
+      ? data.error
+      : `Request failed with status ${response.status}.`;
+    throw new Error(message);
+  }
+  return data as T;
+}
+
+function needsConfiguredWorker() {
+  if (typeof window === 'undefined') return false;
+  return !LOCAL_API_CONFIGURED && !['localhost', '127.0.0.1'].includes(window.location.hostname);
 }
 
 export default function UploadPage() {
   const [isDragging, setIsDragging] = useState(false);
+  const [manifest, setManifest] = useState<{ readonly name: string; readonly text: string } | null>(null);
+  const [manifestError, setManifestError] = useState<string | null>(null);
   const [files, setFiles] = useState<UploadedFile[]>([]);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const droppedFiles = Array.from(e.dataTransfer.files).filter(
-      (f) => f.type === 'application/pdf' || f.name.endsWith('.pdf'),
-    );
-    droppedFiles.forEach(addFile);
-  }, []);
-
-  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selected = Array.from(e.target.files ?? []);
-    selected.forEach(addFile);
+  const chooseManifest = async (file: File | undefined) => {
+    if (!file) return;
+    setManifestError(null);
+    try {
+      const text = await file.text();
+      const parsed: unknown = JSON.parse(text);
+      const valid = typeof parsed === 'object' && parsed !== null && 'reportId' in parsed && 'elements' in parsed && Array.isArray(parsed.elements) && parsed.elements.length > 0;
+      if (!valid) throw new Error('A RipoDoc manifest needs a reportId and at least one evidence element.');
+      setManifest({ name: file.name, text });
+    } catch (error: unknown) {
+      setManifest(null);
+      setManifestError(errorMessage(error));
+    }
   };
 
-  const addFile = async (file: File) => {
+  const addFile = useCallback(async (file: File) => {
     const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-    const uploaded: UploadedFile = { file, id, status: 'uploading', progress: 0 };
-    setFiles((prev) => [...prev, uploaded]);
+    if (!isPdf(file)) {
+      setFiles((current) => [...current, { file, id, status: 'error', progress: 100, message: 'Choose a PDF file.' }]);
+      return;
+    }
+    if (file.size > MAX_PDF_BYTES) {
+      setFiles((current) => [...current, { file, id, status: 'error', progress: 100, message: 'This PDF is larger than the 50 MB local-worker limit.' }]);
+      return;
+    }
+    if (!manifest) {
+      setFiles((current) => [...current, { file, id, status: 'error', progress: 100, message: 'Choose a validated RipoDoc manifest before uploading a PDF.' }]);
+      return;
+    }
+    if (needsConfiguredWorker()) {
+      setFiles((current) => [...current, { file, id, status: 'error', progress: 100, message: 'The public website does not host a document processor. Run RipoDoc locally or configure NEXT_PUBLIC_LOCAL_API for your self-hosted worker.' }]);
+      return;
+    }
 
+    setFiles((current) => [...current, { file, id, status: 'uploading', progress: 0 }]);
     const formData = new FormData();
     formData.append('pdf', file);
+    formData.append('manifest', manifest.text);
+    let interval: ReturnType<typeof setInterval> | undefined;
 
     try {
-      // Simulate upload progress initially
-      let currentProgress = 0;
-      const progressInterval = setInterval(() => {
-        currentProgress = Math.min(currentProgress + 10, 90);
-        setFiles((prev) =>
-          prev.map((f) => (f.id === id ? { ...f, progress: currentProgress } : f)),
-        );
-      }, 100);
+      let progress = 0;
+      interval = setInterval(() => {
+        progress = Math.min(progress + 9, 90);
+        setFiles((current) => current.map((item) => item.id === id ? { ...item, progress } : item));
+      }, 120);
+      const response = await fetch(`${LOCAL_API}/upload-pdf`, { method: 'POST', body: formData });
+      const data = await responseData<LocalUploadReply>(response);
+      if (!data.draftId || !data.proposalUrl) throw new Error('The worker did not return a placement proposal.');
+      const draftId = data.draftId;
+      const proposalUrl = data.proposalUrl;
+      setFiles((current) => current.map((item) => item.id === id ? {
+        ...item,
+        status: 'awaiting-review',
+        progress: 100,
+        message: data.message ?? 'Overlay proposal generated. Review it before publication.',
+        draftId,
+        proposalUrl: new URL(proposalUrl, LOCAL_API).toString(),
+      } : item));
+    } catch (error: unknown) {
+      const unavailable = error instanceof TypeError;
+      setFiles((current) => current.map((item) => item.id === id ? {
+        ...item,
+        status: 'error',
+        progress: 100,
+        message: unavailable ? 'Local RipoDoc worker is unavailable. Start it with “npm run dev:local-server” and try again.' : errorMessage(error),
+      } : item));
+    } finally {
+      if (interval) clearInterval(interval);
+    }
+  }, [manifest]);
 
-      const response = await fetch('/api/local/upload-pdf', {
-        method: 'POST',
-        body: formData,
-      });
-
-      clearInterval(progressInterval);
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to upload PDF');
-      }
-
-      const data = await response.json();
-      setFiles((prev) =>
-        prev.map((f) =>
-          f.id === id
-            ? { ...f, status: 'processing', progress: 100, message: data.message, pdfPath: data.pdfPath, placementsPath: data.placementsPath }
-            : f,
-        ),
-      );
-    } catch (error: any) {
-      setFiles((prev) =>
-        prev.map((f) =>
-          f.id === id
-            ? { ...f, status: 'error', message: error.message, progress: 100 }
-            : f,
-        ),
-      );
+  const uploadReviewedProposal = async (fileId: string, draftId: string, proposal: File) => {
+    setFiles((current) => current.map((item) => item.id === fileId ? { ...item, status: 'reviewing', message: 'Validating reviewed placement proposal…' } : item));
+    try {
+      const body = new FormData();
+      body.append('draftId', draftId);
+      body.append('proposal', proposal);
+      const response = await fetch(`${LOCAL_API}/review-placement`, { method: 'POST', body });
+      const data = await responseData<LocalReply>(response);
+      setFiles((current) => current.map((item) => item.id === fileId ? { ...item, status: 'ready-to-publish', message: data.message ?? 'Reviewed placement proposal accepted.' } : item));
+    } catch (error: unknown) {
+      setFiles((current) => current.map((item) => item.id === fileId ? { ...item, status: 'error', message: errorMessage(error) } : item));
     }
   };
 
-  const publishPdf = async (fileId: string, pdfPath: string, placementsPath: string) => {
-    setFiles((prev) =>
-      prev.map((f) => (f.id === fileId ? { ...f, status: 'processing', message: 'Publishing PDF...' } : f)),
-    );
+  const publishPdf = async (fileId: string, draftId: string) => {
+    setFiles((current) => current.map((item) => item.id === fileId ? { ...item, status: 'publishing', message: 'Publishing clickable PDF…' } : item));
     try {
-      const response = await fetch('/api/local/publish-pdf', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          draftId: fileId,
-          pdfPath,
-          placementsPath,
-          origin: window.location.origin,
-          ttlDays: 14, // Default to 14 days expiry
-        }),
+      const response = await fetch(`${LOCAL_API}/publish-pdf`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ draftId, origin: window.location.origin, ttlDays: 14 }),
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to publish PDF');
-      }
-
-      const data = await response.json();
-      setFiles((prev) =>
-        prev.map((f) =>
-          f.id === fileId
-            ? { ...f, status: 'success', message: data.message, downloadUrl: data.downloadUrl }
-            : f,
-        ),
-      );
-    } catch (error: any) {
-      setFiles((prev) =>
-        prev.map((f) =>
-          f.id === fileId
-            ? { ...f, status: 'error', message: error.message }
-            : f,
-        ),
-      );
+      const data = await responseData<LocalReply>(response);
+      if (!data.downloadUrl) throw new Error('The worker did not return a download URL.');
+      const downloadUrl = data.downloadUrl;
+      setFiles((current) => current.map((item) => item.id === fileId ? { ...item, status: 'success', message: data.message ?? 'Clickable PDF generated.', downloadUrl: new URL(downloadUrl, LOCAL_API).toString() } : item));
+    } catch (error: unknown) {
+      setFiles((current) => current.map((item) => item.id === fileId ? { ...item, status: 'error', message: errorMessage(error) } : item));
     }
   };
 
-  const removeFile = (id: string) => {
-    setFiles((prev) => prev.filter((f) => f.id !== id));
-  };
+  const handleDrop = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
+    setIsDragging(false);
+    Array.from(event.dataTransfer.files).forEach((file) => { void addFile(file); });
+  }, [addFile]);
 
-  const totalFiles = files.length;
-  const successfulFiles = files.filter((f) => f.status === 'success').length;
+  const readyFiles = files.filter((file) => file.status === 'ready-to-publish').length;
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-gradient-to-b from-blue-50/50 via-white to-white">
-      <div className="mx-auto max-w-4xl px-6 py-12">
-        {/* Header */}
-        <div className="text-center">
-          <Image
-            src="/ripodoc-logo.jpeg"
-            alt="RipoDoc logo"
-            width={64}
-            height={64}
-            className="mx-auto mb-4 rounded-2xl object-contain shadow-lg shadow-blue-600/25"
-            priority
-          />
-          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Upload your PDF</h1>
-          <p className="mx-auto mt-3 max-w-2xl text-slate-600">
-            Drag and drop any PDF report. RipoDoc will overlay interactive click zones on every
-            figure, making each number clickable and traceable to its source data.
-          </p>
-        </div>
+    <div className="min-h-[calc(100vh-64px)] bg-[#F6F8FC]">
+      <section className="ripodoc-hero border-b border-slate-200"><div className="mx-auto max-w-5xl px-6 py-12 text-center sm:py-16"><div className="flex justify-center"><BrandLockup showDescriptor /></div><div className="mx-auto mt-7 inline-flex items-center gap-2 rounded-full border border-[#12B9BE]/25 bg-white/80 px-3 py-1.5 text-xs font-semibold text-[#087E84]"><MonitorCog className="h-3.5 w-3.5" aria-hidden="true" />Self-hosted report processor</div><h1 className="mt-5 text-4xl font-bold tracking-[-0.05em] text-[#11162E] sm:text-5xl">Make the PDF you already send accountable.</h1><p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-600">Use your validated RipoDoc manifest to propose PDF click zones, review each zone, then publish a downloadable evidence-aware report.</p></div></section>
 
-        {/* Drop Zone */}
-        <div
-          onDragOver={(e) => {
-            e.preventDefault();
-            setIsDragging(true);
-          }}
-          onDragLeave={() => setIsDragging(false)}
-          onDrop={handleDrop}
-          className={`mt-10 rounded-2xl border-2 border-dashed p-12 text-center transition ${
-            isDragging
-              ? 'border-blue-500 bg-blue-50 scale-[1.02]'
-              : 'border-slate-300 bg-white hover:border-blue-400 hover:bg-blue-50/30'
-          }`}
-        >
-          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-blue-100">
-            <Upload className={`h-10 w-10 text-blue-600 transition ${isDragging ? 'scale-110' : ''}`} />
-          </div>
-          <p className="mt-4 text-lg font-semibold text-slate-900">
-            {isDragging ? 'Drop your PDF here' : 'Drag and drop your PDF'}
-          </p>
-          <p className="mt-1 text-sm text-slate-500">or click to browse</p>
-          <label className="mt-6 inline-flex cursor-pointer items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/25 transition hover:shadow-xl">
-            <FileText className="h-4 w-4" />
-            Browse files
-            <input
-              type="file"
-              accept=".pdf,application/pdf"
-              multiple
-              onChange={handleFileInput}
-              className="hidden"
-            />
-          </label>
-          <p className="mt-4 text-xs text-slate-400">PDF files only &middot; Max 50MB per file</p>
-        </div>
+      <main className="mx-auto max-w-5xl px-6 py-10 sm:py-14">
+        <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_20px_45px_-34px_rgba(17,22,46,0.35)] sm:p-7" aria-labelledby="authoring-title">
+          <div className="flex flex-col gap-5 border-b border-slate-200 pb-6 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#087E84]">Required first step</p><h2 id="authoring-title" className="mt-1 text-xl font-bold tracking-[-0.03em] text-[#11162E]">Choose the approved evidence manifest</h2><p className="mt-1 text-sm text-slate-600">The manifest determines what the PDF can link to; RipoDoc never invents evidence at read time.</p></div><label className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold text-[#11162E] transition hover:border-[#1769E8] hover:bg-[#EAF5FF]"><FileJson2 className="h-4 w-4" aria-hidden="true" />Choose manifest<input type="file" accept="application/json,.json" className="hidden" onChange={(event) => { void chooseManifest(event.target.files?.[0]); event.target.value = ''; }} /></label></div>
+          {manifest ? <div className="mt-4 flex items-center gap-2 rounded-xl bg-[#DDF9F7] px-3 py-2.5 text-sm text-[#087E84]"><CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden="true" /><span className="truncate"><strong>{manifest.name}</strong> is ready to use for overlay proposals.</span></div> : <div className="mt-4 flex items-start gap-2 rounded-xl bg-[#EAF5FF] px-3 py-2.5 text-sm leading-6 text-[#0A3E9B]"><Info className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" /><span>Use a schema-valid RipoDoc report manifest. Generate one with the CLI or begin with the repository&apos;s demo fixture.</span></div>}
+          {manifestError && <p className="mt-3 flex items-start gap-2 text-sm text-[#B42345]"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />{manifestError}</p>}
 
-        {/* File List */}
-        {files.length > 0 && (
-          <div className="mt-8">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-semibold">
-                Uploaded files ({totalFiles})
-              </h2>
-              {successfulFiles > 0 && (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-700">
-                  <CheckCircle2 className="h-4 w-4" />
-                  {successfulFiles} ready
-                </span>
-              )}
-            </div>
-            <div className="space-y-3">
-              {files.map((f) => (
-                <div
-                  key={f.id}
-                  className="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
-                >
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-red-50">
-                    <FileText className="h-5 w-5 text-red-500" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="truncate text-sm font-medium text-slate-900">{f.file.name}</p>
-                    <p className="text-xs text-slate-500">
-                      {(f.file.size / 1024 / 1024).toFixed(2)} MB
-                    </p>
-                    {f.status === 'uploading' && (
-                      <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
-                        <div
-                          className="h-full rounded-full bg-gradient-to-r from-blue-600 to-violet-600 transition-all"
-                          style={{ width: `${f.progress}%` }}
-                        />
-                      </div>
-                    )}
-                    {f.status === 'processing' && (
-                      <p className="mt-1 flex items-center gap-1 text-xs font-medium text-blue-600">
-                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                        {f.message}
-                      </p>
-                    )}
-                    {f.status === 'success' && (
-                      <p className="mt-1 flex items-center gap-1 text-xs font-medium text-emerald-600">
-                        <CheckCircle2 className="h-3.5 w-3.5" />
-                        {f.message}
-                      </p>
-                    )}
-                    {f.status === 'error' && (
-                      <p className="mt-1 flex items-center gap-1 text-xs font-medium text-red-600">
-                        <AlertCircle className="h-3.5 w-3.5" />
-                        {f.message}
-                      </p>
-                    )}
-                  </div>
-                  {f.status === 'uploading' && (
-                    <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
-                  )}
-                  {f.status === 'success' && f.downloadUrl && (
-                    <a
-                      href={f.downloadUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-600/25 transition hover:shadow-xl"
-                    >
-                      <Download className="h-4 w-4" />
-                      Download PDF
-                    </a>
-                  )}
-                  {f.status === 'success' && !f.downloadUrl && f.pdfPath && f.placementsPath && (
-                    <button
-                      type="button"
-                      onClick={() => publishPdf(f.id, f.pdfPath!, f.placementsPath!)}
-                      className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-600/25 transition hover:shadow-xl"
-                    >
-                      <ArrowRight className="h-4 w-4" />
-                      Publish PDF
-                    </button>
-                  )}
-                  {f.status !== 'uploading' && (
-                    <button
-                      type="button"
-                      onClick={() => removeFile(f.id)}
-                      className="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
-                      aria-label="Remove file"
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+          <div onDragOver={(event) => { event.preventDefault(); setIsDragging(true); }} onDragLeave={() => setIsDragging(false)} onDrop={handleDrop} className={`mt-6 rounded-2xl border-2 border-dashed px-5 py-12 text-center transition duration-200 sm:px-10 ${isDragging ? 'scale-[1.01] border-[#12B9BE] bg-[#DDF9F7]' : 'border-slate-300 bg-[#F6F8FC] hover:border-[#1769E8]/50 hover:bg-[#EAF5FF]/50'}`}><span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#EAF5FF] to-[#DDF9F7] text-[#1769E8]"><Upload className={`h-7 w-7 transition ${isDragging ? 'scale-110' : ''}`} aria-hidden="true" /></span><h2 className="mt-5 text-xl font-bold tracking-[-0.03em] text-[#11162E]">{isDragging ? 'Drop the PDF to propose overlays' : 'Drop the matching PDF report here'}</h2><p className="mt-2 text-sm text-slate-600">The worker will generate a placement proposal for human review.</p><label className="mt-6 inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-xl bg-[#11162E] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0A3E9B] active:scale-[0.98]"><FileText className="h-4 w-4" aria-hidden="true" />Choose PDF<input type="file" accept=".pdf,application/pdf" multiple className="hidden" onChange={(event) => { Array.from(event.target.files ?? []).forEach((file) => { void addFile(file); }); event.target.value = ''; }} /></label><p className="mt-4 text-xs text-slate-500">PDF only · 50 MB maximum · processed by your configured local worker</p></div>
+          {needsConfiguredWorker() && <div className="mt-5 flex gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-left text-sm leading-6 text-amber-950"><Info className="mt-0.5 h-5 w-5 shrink-0 text-amber-700" aria-hidden="true" /><p><strong>Public demonstration mode:</strong> the hosted website does not receive report files. Run <code className="rounded bg-white px-1.5 py-0.5 text-xs">npm run dev:local-server</code> locally, or configure <code className="rounded bg-white px-1.5 py-0.5 text-xs">NEXT_PUBLIC_LOCAL_API</code> for your private worker.</p></div>}
+        </section>
 
-        {/* Info Cards */}
-        <div className="mt-12 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-xl border border-slate-200 bg-white p-5">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
-              <FileText className="h-5 w-5 text-blue-600" />
-            </div>
-            <h3 className="mt-3 font-semibold text-slate-900">Your PDF stays local</h3>
-            <p className="mt-1 text-xs text-slate-500">
-              Files are processed locally in your browser. Nothing is sent to a server.
-            </p>
-          </div>
-          <div className="rounded-xl border border-slate-200 bg-white p-5">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-100">
-              <CheckCircle2 className="h-5 w-5 text-violet-600" />
-            </div>
-            <h3 className="mt-3 font-semibold text-slate-900">Byte-for-byte preserved</h3>
-            <p className="mt-1 text-xs text-slate-500">
-              Your original file is a byte-for-byte prefix of the output. Nothing moves, nothing
-              changes.
-            </p>
-          </div>
-          <div className="rounded-xl border border-slate-200 bg-white p-5">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-100">
-              <ArrowRight className="h-5 w-5 text-emerald-600" />
-            </div>
-            <h3 className="mt-3 font-semibold text-slate-900">Every figure clickable</h3>
-            <p className="mt-1 text-xs text-slate-500">
-              Each number gets a standard PDF link annotation that works in every viewer.
-            </p>
-          </div>
-        </div>
-      </div>
+        {files.length > 0 && <section className="mt-7" aria-labelledby="processing-title"><div className="mb-3 flex flex-wrap items-center justify-between gap-3"><h2 id="processing-title" className="text-lg font-bold tracking-[-0.025em] text-[#11162E]">Authoring workflow</h2>{readyFiles > 0 && <span className="rounded-full bg-[#EAF5FF] px-2.5 py-1 text-xs font-semibold text-[#0A3E9B]">{readyFiles} ready to publish</span>}</div><div className="space-y-3">{files.map((file) => <FileRow key={file.id} file={file} onReview={uploadReviewedProposal} onPublish={publishPdf} onRemove={(id) => setFiles((current) => current.filter((item) => item.id !== id))} />)}</div></section>}
+
+        <section className="mt-12 grid gap-4 md:grid-cols-3"><InfoCard icon={MonitorCog} title="Your worker, your data" body="In self-hosted mode, the report is sent only to the RipoDoc worker you operate or explicitly configure." /><InfoCard icon={ShieldCheck} title="Human review is mandatory" body="Publication accepts only a placement proposal with an approver and timestamp on every linked figure." /><InfoCard icon={ArrowRight} title="Original pages preserved" body="The overlay engine appends standard PDF link annotations; it does not redraw the report your client approved." /></section>
+      </main>
     </div>
   );
+}
+
+function FileRow({ file, onReview, onPublish, onRemove }: { readonly file: UploadedFile; readonly onReview: (id: string, draftId: string, proposal: File) => void; readonly onPublish: (id: string, draftId: string) => void; readonly onRemove: (id: string) => void }) {
+  const working = file.status === 'uploading' || file.status === 'reviewing' || file.status === 'publishing';
+  const failed = file.status === 'error';
+  const success = file.status === 'success';
+  return <article className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EAF5FF] text-[#1769E8]"><FileText className="h-5 w-5" aria-hidden="true" /></span><div className="min-w-0 flex-1"><div className="flex items-start justify-between gap-3"><p className="truncate text-sm font-semibold text-[#11162E]">{file.file.name}</p><p className="shrink-0 text-xs text-slate-500">{(file.file.size / 1024 / 1024).toFixed(2)} MB</p></div>{file.status === 'uploading' && <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-gradient-to-r from-[#1769E8] to-[#12B9BE]" style={{ width: `${file.progress}%` }} /></div>}{file.message && <p className={`mt-1.5 flex items-start gap-1.5 text-xs leading-5 ${failed ? 'text-[#B42345]' : success ? 'text-[#078C68]' : 'text-slate-600'}`}>{failed ? <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" /> : success ? <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" /> : working ? <Loader2 className="mt-0.5 h-3.5 w-3.5 shrink-0 animate-spin text-[#1769E8]" aria-hidden="true" /> : <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#1769E8]" aria-hidden="true" />}{file.message}</p>}</div><div className="flex flex-wrap items-center gap-2">{file.status === 'awaiting-review' && file.draftId && <><a href={file.proposalUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-300 px-3.5 py-2 text-sm font-semibold text-[#11162E] transition hover:bg-[#EAF5FF]"><Download className="h-4 w-4" aria-hidden="true" />Proposal</a><label className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-xl bg-[#11162E] px-3.5 py-2 text-sm font-semibold text-white transition hover:bg-[#0A3E9B]"><Upload className="h-4 w-4" aria-hidden="true" />Upload review<input type="file" accept="application/json,.json" className="hidden" onChange={(event) => { const proposal = event.target.files?.[0]; if (proposal) void onReview(file.id, file.draftId!, proposal); event.target.value = ''; }} /></label></>}{file.status === 'ready-to-publish' && file.draftId && <button type="button" onClick={() => onPublish(file.id, file.draftId!)} className="inline-flex min-h-10 items-center gap-2 rounded-xl bg-gradient-to-r from-[#1769E8] to-[#12B9BE] px-3.5 py-2 text-sm font-semibold text-white transition hover:brightness-105"><ArrowRight className="h-4 w-4" aria-hidden="true" />Publish PDF</button>}{success && file.downloadUrl && <a href={file.downloadUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-10 items-center gap-2 rounded-xl bg-[#11162E] px-3.5 py-2 text-sm font-semibold text-white transition hover:bg-[#0A3E9B]"><Download className="h-4 w-4" aria-hidden="true" />Download</a>}{working && <Loader2 className="h-5 w-5 animate-spin text-[#1769E8]" aria-label="Processing" />}{!working && <button type="button" onClick={() => onRemove(file.id)} className="rounded-xl p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700" aria-label={`Remove ${file.file.name}`}><X className="h-4 w-4" aria-hidden="true" /></button>}</div></article>;
+}
+
+function InfoCard({ icon: Icon, title, body }: { readonly icon: typeof MonitorCog; readonly title: string; readonly body: string }) {
+  return <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#DDF9F7] text-[#087E84]"><Icon className="h-5 w-5" aria-hidden="true" /></span><h2 className="mt-4 text-sm font-bold text-[#11162E]">{title}</h2><p className="mt-2 text-xs leading-5 text-slate-600">{body}</p></article>;
 }
