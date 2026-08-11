@@ -21,6 +21,7 @@ RipoDoc preserves the client reporting workflow MSPs already use while adding a 
 | --- | --- | --- |
 | `/` | Prospects and MSP teams | Outcome-led product page with an interactive sample report backed by real fixture data. |
 | `/upload` | Self-hosted operators | Propose overlays and create a downloadable clickable PDF through a configured local RipoDoc worker. |
+| `/api/health` | Deployment monitoring | No-store operational health response with safe configuration indicators only; never returns tenants, reports, recipients, sessions, or secrets. |
 | `/dashboard` | Verified MSP workspace users | Review only reports owned by the authenticated tenant; report manifests require tenant-scoped session authorization. |
 | `/signup`, `/login`, `/verify-email`, `/forgot-password`, `/reset-password` | MSP workspace users | Complete account lifecycle with email activation, one-time codes, private sessions, rate limits, and CAPTCHA protection. |
 | `/security` | Operators and security reviewers | Inspect safe, live operational posture without exposing secrets, recipient identities, or audit records. |
@@ -116,6 +117,23 @@ Store all values below in the relevant server environment. Do not expose `RIPODO
 
 RipoDoc does not treat possession of a PDF URL as permanent authorization. Its evidence token contains the report identifier, version, recipient email hash, expiry, and revocation identifier; the email address itself is not embedded in the token. Before rendering scoped evidence, the recipient must complete a one-time code challenge delivered to the address whose hash is embedded in the signed claim. One-time codes are stored only as keyed hashes, expire quickly, are consumed atomically, and are never placed in links or audit logs.
 
+### Authentication technology stack
+
+The workspace identity service is deliberately implemented as a small, server-side TypeScript boundary rather than a browser-side identity shim. Next.js 16 App Router supplies the request and response surfaces; Node.js `crypto` provides random generation, HMAC, constant-time comparison, and scrypt; PostgreSQL is the durable authority for users, sessions, one-time codes, rate limits, audit events, tenants, and report ownership; the `pg` client uses parameterized statements and transactions; Resend delivers verification, recovery, and recipient-proof codes through HTTPS; and Cloudflare Turnstile is verified server-side for production anti-automation. The Next.js middleware sets the browser security headers and CSRF cookie.
+
+| Required authentication control | Shipped implementation | Primary source |
+| --- | --- | --- |
+| Enumeration-resistant lifecycle | Signup and recovery return one generic message, and login performs a dummy scrypt verification for unknown accounts before a fixed 900 ms response floor. | [`service.ts`](web/frontend/src/lib/auth/service.ts), [`primitives.ts`](web/frontend/src/lib/auth/primitives.ts) |
+| Rate limiting and CAPTCHA | PostgreSQL rate-limit buckets enforce address and IP limits; every production auth action verifies Turnstile before it invokes the auth service. | [`service.ts`](web/frontend/src/lib/auth/service.ts), [`captcha.ts`](web/frontend/src/lib/auth/captcha.ts), [`[action]/route.ts`](web/frontend/src/app/api/auth/[action]/route.ts) |
+| Verified account activation | New tenants are inactive until a one-time verification code is consumed; sign-in excludes unverified or disabled users. | [`service.ts`](web/frontend/src/lib/auth/service.ts) |
+| Slow password hashing | Passwords use Node.js scrypt with a random 16-byte salt and a 64-byte derived key; no plaintext, MD5, or raw SHA-256 password storage is used. | [`primitives.ts`](web/frontend/src/lib/auth/primitives.ts) |
+| Secure reset and proof codes | Codes are cryptographically random, HMAC-hashed before storage, single-use through an atomic transaction, delivered outside URLs, and expire after 30 minutes. | [`service.ts`](web/frontend/src/lib/auth/service.ts), [`recipient-proof.ts`](web/frontend/src/lib/evidence/recipient-proof.ts) |
+| Session and CSRF controls | Opaque session secrets are stored only as keyed hashes; session cookies use `HttpOnly`, strict same-site handling, and production-only `Secure`; state-changing actions require same-origin plus double-submit CSRF validation. | [`server.ts`](web/frontend/src/lib/auth/server.ts), [`middleware.ts`](web/frontend/src/middleware.ts) |
+
+A deeper test and control inventory is maintained in [`docs/05-security/authentication-and-test-coverage.md`](docs/05-security/authentication-and-test-coverage.md). The self-hosted operator walkthrough and read-only 20-control security assessment are maintained in [`docs/05-security/self-hosted-deployment-and-read-only-audit.md`](docs/05-security/self-hosted-deployment-and-read-only-audit.md).
+
+> RipoDoc fails closed for hosted account actions until PostgreSQL, Resend, the canonical app origin, an authentication secret, and the production Turnstile configuration are present. It never substitutes ephemeral Vercel filesystem state or silent email failure for a durable identity deployment.
+
 > The evidence rows are not embedded in the PDF. Forwarding the document does not automatically forward the underlying dataset.
 
 Published manifests are schema-validated and immutable at the file-store boundary. When a durable `RIPODOC_AUDIT_LOG` is configured, audit events can be verified with:
@@ -128,7 +146,7 @@ The `/security` page provides operator-safe indicators for this posture. It neve
 
 ## Verification
 
-The repository uses the built-in Node.js test runner for evidence and application-runtime boundaries. The latest local verification completed **131 tests** with no failures, including an end-to-end local worker test that verifies the manifest requirement, review gate, signed publication, and PDF download, followed by clean linting, type checking, and a production build.
+The repository uses the built-in Node.js test runner for evidence and application-runtime boundaries. The current regression suite completes **133 tests** with no failures, including an end-to-end local worker test that verifies the manifest requirement, review gate, signed publication, and PDF download, followed by clean linting, type checking, and a production build. See [`docs/05-security/authentication-and-test-coverage.md`](docs/05-security/authentication-and-test-coverage.md) for the full file-by-file coverage map.
 
 ```bash
 npm test              # evidence, audit, runtime-posture, and admin-key tests
@@ -146,7 +164,7 @@ The document processor is intentionally not bundled into the public Vercel appli
 | Release gate | Required result |
 | --- | --- |
 | Automated checks | `npm run verify` exits successfully. |
-| Public route review | `/`, `/upload`, `/dashboard`, and `/security` render without broken navigation. |
+| Public route review | `/`, `/upload`, `/dashboard`, `/security`, and the safe `/api/health` deployment probe render without broken navigation. |
 | Private workspace review | `/admin` redirects unauthenticated visitors to `/admin/login`. |
 | Worker review | A validated manifest, matching PDF, and reviewed placement proposal produce a downloadable PDF from a reachable, trusted worker endpoint. |
 | Environment review | Server-only variables are present in the deployment environment and never committed. |

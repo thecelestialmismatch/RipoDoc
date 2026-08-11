@@ -32,6 +32,11 @@ export default async function AdminPage() {
     0,
   );
   const auditHealthy = posture.auditLog.verification?.ok === true;
+  const latestReports = reports.slice(0, 3);
+  const controlIssues = [
+    !posture.evidenceSecretConfigured ? 'Evidence signing needs configuration' : null,
+    !auditHealthy ? 'Audit-chain verification needs review' : null,
+  ].filter((item): item is string => Boolean(item));
 
   return (
     <div className="min-h-[calc(100vh-64px)] bg-slate-950 text-slate-100">
@@ -85,6 +90,38 @@ export default async function AdminPage() {
             <p className="mt-4 text-3xl font-bold tracking-tight text-white">{auditHealthy ? 'Healthy' : 'Review'}</p>
             <p className="mt-1 text-sm text-slate-400">Audit-chain status</p>
           </article>
+        </section>
+
+        <section className="mt-8 grid gap-4 lg:grid-cols-[1.25fr_0.75fr]" aria-label="Operator command strip">
+          <article className="rounded-2xl border border-cyan-400/20 bg-cyan-400/5 p-6">
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.15em] text-cyan-200">Operator attention</p>
+                <h2 className="mt-2 text-xl font-semibold text-white">{controlIssues.length === 0 ? 'All reported controls are operational.' : 'Review the outstanding operational controls.'}</h2>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">This summary intentionally reports safe deployment posture only. It does not disclose recipient identities, signing secrets, raw audit events, or authentication credentials.</p>
+              </div>
+              <Link href="/security" className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-cyan-300 px-3.5 py-2 text-sm font-semibold text-slate-950 hover:bg-cyan-200">
+                Review controls <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </div>
+            <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+              {(controlIssues.length ? controlIssues : ['Evidence signing is configured', 'Audit-chain verification is healthy']).map((item) => (
+                <li key={item} className="flex items-center gap-3 rounded-xl bg-slate-950/55 px-4 py-3 text-sm text-slate-200">
+                  {controlIssues.length ? <ShieldAlert className="h-4 w-4 shrink-0 text-amber-300" aria-hidden="true" /> : <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-300" aria-hidden="true" />}
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </article>
+          <aside className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-slate-500">Latest publication activity</p>
+            {latestReports.length > 0 ? <ul className="mt-4 space-y-3">{latestReports.map((report) => (
+              <li key={report.reportId} className="border-l-2 border-cyan-300/70 pl-3">
+                <p className="truncate text-sm font-medium text-white">{report.title}</p>
+                <p className="mt-1 text-xs text-slate-500">Published {formatDate(report.publishedAt)} · {report.elements.length} figures</p>
+              </li>
+            ))}</ul> : <p className="mt-4 text-sm leading-6 text-slate-400">No validated report activity is available in this deployment.</p>}
+          </aside>
         </section>
 
         <section className="mt-8 grid gap-6 xl:grid-cols-[1.4fr_0.6fr]">
