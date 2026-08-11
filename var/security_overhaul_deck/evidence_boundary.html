@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="slide-container" style="width:1280px;min-height:720px;box-sizing:border-box;background:#f7fafc;color:#0f172a;font-family:Manrope,Arial,sans-serif;position:relative;overflow:hidden;">
+    <div style="position:absolute;left:0;top:0;width:18px;height:720px;background:#061327;"></div>
+    <div style="margin-left:72px;margin-right:72px;padding-top:44px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #cbd5e1;padding-top:0;">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.15em;color:#0f766e;text-transform:uppercase;line-height:30px;">04 / Evidence boundary</div>
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:#64748b;line-height:30px;">RECIPIENT-SCOPED DELIVERY</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1.1fr .9fr;gap:60px;padding-top:30px;align-items:end;">
+        <h1 style="margin:0;font-size:43px;line-height:1.1;letter-spacing:-.045em;font-weight:800;">A PDF can travel.<br>Its evidence does not.</h1>
+        <p style="margin:0;font-size:17px;line-height:1.52;color:#475569;">RipoDoc releases one approved evidence view only after claim validation and intended-recipient mailbox proof.</p>
+      </div>
+      <div style="position:relative;height:210px;margin-top:20px;border-top:1px solid #94a3b8;">
+        <div style="position:absolute;left:70px;right:70px;top:83px;height:2px;background:#0f766e;"></div>
+        <div style="position:absolute;left:0;top:44px;width:220px;text-align:left;">
+          <div style="width:30px;height:30px;background:#061327;color:#67e8f9;display:grid;place-items:center;font-family:'DM Mono',monospace;font-size:12px;">01</div>
+          <h2 style="margin:15px 0 0;font-size:18px;line-height:1.25;">Signed evidence claim</h2>
+          <p style="margin:9px 0 0;font-size:13px;line-height:1.5;color:#64748b;">Report, version, recipient hash, expiry, and revocation ID are bound into the claim.</p>
+        </div>
+        <div style="position:absolute;left:306px;top:44px;width:220px;text-align:left;">
+          <div style="width:30px;height:30px;background:#0f766e;color:white;display:grid;place-items:center;font-family:'DM Mono',monospace;font-size:12px;">02</div>
+          <h2 style="margin:15px 0 0;font-size:18px;line-height:1.25;">Mailbox proof</h2>
+          <p style="margin:9px 0 0;font-size:13px;line-height:1.5;color:#64748b;">A one-time code confirms access with the address bound to the signed evidence claim.</p>
+        </div>
+        <div style="position:absolute;left:612px;top:44px;width:220px;text-align:left;">
+          <div style="width:30px;height:30px;background:#061327;color:#67e8f9;display:grid;place-items:center;font-family:'DM Mono',monospace;font-size:12px;">03</div>
+          <h2 style="margin:15px 0 0;font-size:18px;line-height:1.25;">Scoped release</h2>
+          <p style="margin:9px 0 0;font-size:13px;line-height:1.5;color:#64748b;">Only the selected approved figure and its source rows are rendered for the recipient.</p>
+        </div>
+        <div style="position:absolute;right:0;top:44px;width:220px;text-align:left;">
+          <div style="width:30px;height:30px;background:#0f766e;color:white;display:grid;place-items:center;font-family:'DM Mono',monospace;font-size:12px;">04</div>
+          <h2 style="margin:15px 0 0;font-size:18px;line-height:1.25;">Access recorded</h2>
+          <p style="margin:9px 0 0;font-size:13px;line-height:1.5;color:#64748b;">RipoDoc records the access outcome before evidence rows render in the client view.</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;border-top:1px solid #cbd5e1;margin-top:12px;padding-top:12px;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:9px;height:9px;background:#14b8a6;margin-top:5px;flex:none;"></div>
+          <p style="margin:0;font-size:14px;line-height:1.5;color:#334155;"><strong>Recipient view:</strong> evidence is not embedded in the PDF and forwarding the document is not a second authorization.</p>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:9px;height:9px;background:#1d4ed8;margin-top:5px;flex:none;"></div>
+          <p style="margin:0;font-size:14px;line-height:1.5;color:#334155;"><strong>Workspace view:</strong> report manifest downloads require a verified session and matching tenant ownership.</p>
+        </div>
+      </div>
+      <p style="margin:8px 0 0;font-family:'DM Mono',monospace;font-size:10px;color:#64748b;letter-spacing:.03em;">SOURCE: evidence token, recipient-proof, audit, and tenant report authorization implementation</p>
+    </div>
+  </div>
+</body>
+</html>

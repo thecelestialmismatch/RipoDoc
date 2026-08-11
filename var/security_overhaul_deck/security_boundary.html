@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>body{margin:0} .slide-container{width:1280px;min-height:720px;box-sizing:border-box;background:#f7fafc;color:#0f172a;font-family:Manrope,Arial,sans-serif;position:relative;overflow:hidden;} .cols-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;padding-top:35px;align-items:end;} .three-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid #cbd5e1;margin-top:40px;} section{min-height:228px;padding-top:12px;padding-right:31px;border-right:1px solid #cbd5e1;} section.mid{padding-left:31px;padding-right:31px;} section.last{padding-left:31px;border-right:0;} .meta-row{display:flex;align-items:center;gap:16px;border-top:1px solid #cbd5e1;margin-top:10px;padding-top:6px;font-size:12px;color:#64748b;} </style>
+</head>
+<body>
+  <div class="slide-container">
+    <div style="position:absolute;left:0;top:0;width:18px;height:712px;background:#061327;"></div>
+    <div style="margin-left:72px;margin-right:72px;padding-top:44px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #cbd5e1;padding-top:0;padding-bottom:12px;">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.15em;color:#0f766e;text-transform:uppercase;">01 / Executive outcome</div>
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:#64748b;">RIPODOC HARDENED RELEASE</div>
+      </div>
+      <div class="cols-grid">
+        <div><h1 style="margin:0;font-size:45px;line-height:1.08;letter-spacing:-.045em;font-weight:800;">Security moved from a promise to a product boundary.</h1></div>
+        <p style="margin:0 0 4px;font-size:17px;line-height:1.5;color:#475569;">The release binds secure identity, evidence delivery, and self-hosted operations into the MSP reporting workflow.</p>
+      </div>
+      <div class="three-cols">
+        <section>
+          <div style="font-family:'DM Mono',monospace;font-size:12px;color:#0f766e;">01 / IDENTITY</div>
+          <h2 style="margin:18px 0 0;font-size:24px;line-height:1.18;letter-spacing:-.025em;">Protected workspace access</h2>
+          <p style="margin:12px 0 0;font-size:14px;line-height:1.55;color:#475569;">Verified email, opaque sessions, CSRF checks, rate limits, and CAPTCHA controls protect the tenant workspace.</p>
+        </section>
+        <section class="mid">
+          <div style="font-family:'DM Mono',monospace;font-size:12px;color:#0f766e;">02 / DELIVERY</div>
+          <h2 style="margin:18px 0 0;font-size:24px;line-height:1.18;letter-spacing:-.025em;">Recipient proof before evidence</h2>
+          <p style="margin:12px 0 0;font-size:14px;line-height:1.55;color:#475569;">Signed PDF claims remain scoped until the intended recipient completes mailbox proof for one evidence view.</p>
+        </section>
+        <section class="last">
+          <div style="font-family:'DM Mono',monospace;font-size:12px;color:#0f766e;">03 / CONTROL</div>
+          <h2 style="margin:18px 0 0;font-size:24px;line-height:1.18;letter-spacing:-.025em;">Self-hosted report authoring</h2>
+          <p style="margin:12px 0 0;font-size:14px;line-height:1.55;color:#475569;">A separate local worker processes reviewed PDFs instead of routing authoring through the public marketing deployment.</p>
+        </section>
+      </div>
+      <div class="meta-row">
+        <span style="display:inline-block;width:8px;height:8px;background:#14b8a6;"></span>
+        Release evidence: hardened authentication, evidence recipient proof, tenant-scoped downloads, and Docker Compose self-hosting.
+      </div>
+    </div>
+  </div>
+</body>
+</html>
