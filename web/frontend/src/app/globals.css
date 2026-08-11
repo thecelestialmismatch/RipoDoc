@@ -2,42 +2,48 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #0a0a0a;
-  --primary: #2563eb;
-  --primary-light: #3b82f6;
-  --primary-dark: #1d4ed8;
-  --accent: #8b5cf6;
-  --surface: #f8fafc;
-  --surface-2: #f1f5f9;
-  --border: #e2e8f0;
-  --text-secondary: #64748b;
-  --success: #10b981;
-  --warning: #f59e0b;
-  --danger: #ef4444;
-  --radius: 12px;
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-  --shadow-glow: 0 0 40px -10px rgb(37 99 235 / 0.3);
+  --foreground: #11162e;
+  --ink-muted: #46526a;
+  --primary: #1769e8;
+  --primary-deep: #0a3e9b;
+  --teal: #12b9be;
+  --teal-pale: #ddf9f7;
+  --sky: #eaf5ff;
+  --mist: #f6f8fc;
+  --surface: #ffffff;
+  --surface-2: #f6f8fc;
+  --border: #dce4f0;
+  --success: #078c68;
+  --warning: #bb6a00;
+  --danger: #cf3655;
+  --radius: 16px;
+  --shadow-sm: 0 1px 2px 0 rgb(17 22 46 / 0.05);
+  --shadow-md: 0 10px 25px -18px rgb(17 22 46 / 0.3), 0 2px 8px -4px rgb(17 22 46 / 0.08);
+  --shadow-lg: 0 24px 48px -24px rgb(17 22 46 / 0.28), 0 8px 20px -12px rgb(23 105 232 / 0.2);
+  --shadow-xl: 0 32px 72px -32px rgb(17 22 46 / 0.42), 0 16px 32px -20px rgb(18 185 190 / 0.25);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
-  --color-primary-light: var(--primary-light);
-  --color-primary-dark: var(--primary-dark);
-  --color-accent: var(--accent);
+  --color-primary-deep: var(--primary-deep);
+  --color-teal: var(--teal);
+  --color-teal-pale: var(--teal-pale);
+  --color-sky: var(--sky);
+  --color-mist: var(--mist);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
   --color-border: var(--border);
-  --color-text-secondary: var(--text-secondary);
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-danger: var(--danger);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+}
+
+* {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -48,110 +54,77 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+::selection {
+  background: rgb(18 185 190 / 0.22);
+  color: #11162e;
 }
+
+:focus-visible {
+  outline: 3px solid rgb(23 105 232 / 0.42);
+  outline-offset: 3px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
+  background: #b8c7dc;
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #869ab8;
+  border: 3px solid transparent;
+  background-clip: padding-box;
 }
 
-/* Gradient text utility */
-.gradient-text {
-  background: linear-gradient(135deg, #2563eb 0%, #8b5cf6 100%);
+.brand-gradient-text {
+  background: linear-gradient(100deg, #1769e8 0%, #0b83db 43%, #12b9be 100%);
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   background-clip: text;
+  color: transparent;
 }
 
-/* Glass morphism */
-.glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+.ripodoc-grid {
+  background-image: linear-gradient(rgb(23 105 232 / 0.06) 1px, transparent 1px), linear-gradient(90deg, rgb(23 105 232 / 0.06) 1px, transparent 1px);
+  background-size: 36px 36px;
 }
 
-/* Animated gradient background */
-.animated-gradient-bg {
-  background: linear-gradient(-45deg, #dbeafe, #ede9fe, #fce7f3, #dbeafe);
-  background-size: 400% 400%;
-  animation: gradientShift 15s ease infinite;
+.ripodoc-hero {
+  background:
+    radial-gradient(circle at 78% 22%, rgb(18 185 190 / 0.22), transparent 29%),
+    radial-gradient(circle at 64% 72%, rgb(23 105 232 / 0.17), transparent 33%),
+    linear-gradient(124deg, #ffffff 0%, #f8fcff 47%, #e9fbfb 100%);
 }
 
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.subtle-panel {
+  box-shadow: var(--shadow-md);
 }
 
-/* Shimmer effect */
-.shimmer {
-  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
-  background-size: 200% 100%;
-  animation: shimmer 2s infinite;
+.lift-on-hover {
+  transition: transform 180ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 180ms cubic-bezier(0.23, 1, 0.32, 1), border-color 180ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+.lift-on-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
 }
 
-/* Fade in animation */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.fade-in-up {
-  animation: fadeInUp 0.6s ease-out forwards;
-}
-
-/* Pulse glow */
-@keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 20px -5px rgb(37 99 235 / 0.3); }
-  50% { box-shadow: 0 0 40px -5px rgb(37 99 235 / 0.5); }
-}
-
-.pulse-glow {
-  animation: pulseGlow 3s ease-in-out infinite;
-}
-
-/* Grid pattern background */
-.grid-pattern {
-  background-image:
-    linear-gradient(rgb(226 232 240 / 0.5) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(226 232 240 / 0.5) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
-
-/* Dot pattern background */
-.dot-pattern {
-  background-image: radial-gradient(rgb(203 213 225 / 0.5) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
-/* Smooth transitions */
-* {
-  scroll-behavior: smooth;
-}
-
-/* Selection color */
-::selection {
-  background: rgb(37 99 235 / 0.15);
-  color: inherit;
 }

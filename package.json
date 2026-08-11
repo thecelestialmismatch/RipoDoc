@@ -8,7 +8,7 @@
     "node": ">=22.6.0"
   },
   "scripts": {
-    "test": "node --test --experimental-strip-types \"tools/evidence-pdf/test/*.test.ts\"",
+    "test": "node --test --experimental-strip-types \"tools/evidence-pdf/test/*.test.ts\" \"docker/local/server.test.mjs\"",
     "typecheck": "npm run typecheck:web && npm run typecheck:tools",
     "typecheck:web": "cd web/frontend && npx tsc --noEmit",
     "typecheck:tools": "cd tools && ../web/frontend/node_modules/.bin/tsc --noEmit -p tsconfig.json",
