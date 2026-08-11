@@ -11,6 +11,8 @@ services:
     environment:
       - PORT=4000
       - DATA_DIR=/data
+      # Use the same secret as the evidence-serving RipoDoc application.
+      - RIPODOC_EVIDENCE_SECRET=${RIPODOC_EVIDENCE_SECRET:?Set a 32+ character RipoDoc evidence secret before starting the worker}
     volumes:
       - ripodoc-local-data:/data
 
