@@ -21,7 +21,8 @@ RipoDoc preserves the client reporting workflow MSPs already use while adding a 
 | --- | --- | --- |
 | `/` | Prospects and MSP teams | Outcome-led product page with an interactive sample report backed by real fixture data. |
 | `/upload` | Self-hosted operators | Propose overlays and create a downloadable clickable PDF through a configured local RipoDoc worker. |
-| `/dashboard` | Customer-facing MSP teams | Review validated published reports, report metadata, manifests, and available PDF downloads. |
+| `/dashboard` | Verified MSP workspace users | Review only reports owned by the authenticated tenant; report manifests require tenant-scoped session authorization. |
+| `/signup`, `/login`, `/verify-email`, `/forgot-password`, `/reset-password` | MSP workspace users | Complete account lifecycle with email activation, one-time codes, private sessions, rate limits, and CAPTCHA protection. |
 | `/security` | Operators and security reviewers | Inspect safe, live operational posture without exposing secrets, recipient identities, or audit records. |
 | `/e/[token]/[elementId]` | Intended report recipient | Open the evidence authorized by a signed link. |
 | `/admin` | Private operators only | Protected report and recipient operations workspace. It is intentionally excluded from public navigation. |
@@ -49,6 +50,23 @@ npm run build:pdf:local
 ```
 
 Open `build/demo-report.local.pdf` and select a report figure. The local application will show the approved evidence rows, provenance, and review metadata for that figure.
+
+## Download and self-host the complete platform
+
+RipoDoc is downloadable as a complete MSP deployment bundle, not merely a public marketing site. The bundle starts PostgreSQL, the protected workspace application, and a loopback-only PDF worker together. Copy the repository, create the required environment values, then run:
+
+```bash
+git clone https://github.com/thecelestialmismatch/RipoDoc.git
+cd RipoDoc
+export POSTGRES_PASSWORD="$(openssl rand -base64 32)"
+export RIPODOC_AUTH_SECRET="$(openssl rand -base64 32)"
+export RIPODOC_EVIDENCE_SECRET="$(openssl rand -base64 32)"
+# Set RIPODOC_APP_ORIGIN, RIPODOC_RESEND_API_KEY, RIPODOC_EMAIL_FROM,
+# RIPODOC_TURNSTILE_SECRET, and NEXT_PUBLIC_RIPODOC_TURNSTILE_SITE_KEY.
+docker compose -f docker-compose.selfhost.yml up --build
+```
+
+The browser-facing app listens on `${RIPODOC_PORT:-3000}`. PostgreSQL is internal to the compose network, and the PDF worker binds its host port to `127.0.0.1` by default. Deploy it behind an HTTPS reverse proxy using the same origin configured in `RIPODOC_APP_ORIGIN`.
 
 ## Self-hosted report authoring
 
@@ -80,7 +98,14 @@ Store all values below in the relevant server environment. Do not expose `RIPODO
 | Variable | Required | Purpose |
 | --- | --- | --- |
 | `RIPODOC_EVIDENCE_SECRET` | Yes for evidence delivery | A 32-character-or-longer secret used to sign recipient-bound evidence claims. |
-| `RIPODOC_ADMIN_ACCESS_KEY` | Yes for `/admin` | A 16-character-or-longer server-only administrator access key. The browser receives only a signed HttpOnly session cookie. |
+| `RIPODOC_ADMIN_ACCESS_KEY` | Yes for legacy `/admin` | A 16-character-or-longer server-only administrator access key. The browser receives only a signed HttpOnly session cookie. |
+| `RIPODOC_DATABASE_URL` | Yes for workspace authentication | PostgreSQL connection URL for tenant users, opaque sessions, one-time codes, rate-limit counters, and tenant report records. |
+| `RIPODOC_AUTH_SECRET` | Yes for workspace authentication | A separate 32-character-or-longer server-only HMAC secret for session, privacy, and one-time-code hashing. |
+| `RIPODOC_APP_ORIGIN` | Yes for workspace authentication | Canonical HTTPS application origin used in email messages and CSRF checks. |
+| `RIPODOC_RESEND_API_KEY` | Yes for workspace authentication | Server-only Resend API key used for verification, reset, and recipient-proof codes. |
+| `RIPODOC_EMAIL_FROM` | Yes for workspace authentication | Verified sender address for security notices. |
+| `RIPODOC_TURNSTILE_SECRET` | Yes in production | Server-only Cloudflare Turnstile secret used by every authentication action. |
+| `NEXT_PUBLIC_RIPODOC_TURNSTILE_SITE_KEY` | Yes in production | Public Cloudflare Turnstile site key for the authentication forms. |
 | `RIPODOC_AUDIT_LOG` | Recommended on durable infrastructure | File path for a persisted, locally verifiable hash-chained audit log. Without it, events are emitted as structured stdout. |
 | `RIPODOC_REVOKED_JTIS` | Optional | Comma-separated claim identifiers that must no longer authorize evidence access. |
 | `RIPODOC_ALLOW_EXPORT` | Optional | Set to `false` to disable evidence CSV export. The default is enabled. |
@@ -89,7 +114,7 @@ Store all values below in the relevant server environment. Do not expose `RIPODO
 
 ## Security model
 
-RipoDoc is designed to avoid treating possession of a URL as permanent authorization. Its evidence token contains the report identifier, version, recipient email hash, expiry, and revocation identifier; the email address itself is not embedded in the token. The evidence page verifies each request before rendering the scoped response.
+RipoDoc does not treat possession of a PDF URL as permanent authorization. Its evidence token contains the report identifier, version, recipient email hash, expiry, and revocation identifier; the email address itself is not embedded in the token. Before rendering scoped evidence, the recipient must complete a one-time code challenge delivered to the address whose hash is embedded in the signed claim. One-time codes are stored only as keyed hashes, expire quickly, are consumed atomically, and are never placed in links or audit logs.
 
 > The evidence rows are not embedded in the PDF. Forwarding the document does not automatically forward the underlying dataset.
 
@@ -114,7 +139,7 @@ npm run verify        # typecheck + test + production frontend build
 
 ## Deployment
 
-The public product site is designed for Vercel deployment from the `main` branch. Set `RIPODOC_EVIDENCE_SECRET` before enabling recipient-bound evidence links and set `RIPODOC_ADMIN_ACCESS_KEY` before using the private operator workspace.
+The public product site is designed for Vercel deployment from the `main` branch. Before enabling workspace accounts on Vercel, provision PostgreSQL and configure `RIPODOC_DATABASE_URL`, `RIPODOC_AUTH_SECRET`, `RIPODOC_APP_ORIGIN`, Resend, and Turnstile variables listed above. The application fails closed for account actions until that durable authentication configuration exists.
 
 The document processor is intentionally not bundled into the public Vercel application. Deploy the worker separately on infrastructure you control, then configure its trusted URL through `NEXT_PUBLIC_LOCAL_API` for the operator environment. This separation prevents report files from being silently routed through a public marketing deployment.
 

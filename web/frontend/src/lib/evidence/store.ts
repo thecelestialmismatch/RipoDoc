@@ -30,7 +30,7 @@ export const loadManifest = async (
 
   let raw: string;
   try {
-    raw = await readFile(path, 'utf8');
+    raw = await readFile(/* turbopackIgnore: true */ path, 'utf8');
   } catch {
     return undefined;
   }

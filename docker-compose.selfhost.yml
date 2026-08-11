@@ -1,0 +1,61 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ripodoc
+      POSTGRES_USER: ripodoc
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set a long random POSTGRES_PASSWORD}
+    volumes:
+      - ripodoc-postgres:/var/lib/postgresql/data
+      - ./migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ripodoc -d ripodoc"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/web.Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${RIPODOC_PORT:-3000}:3000"
+    environment:
+      RIPODOC_DATABASE_URL: postgres://ripodoc:${POSTGRES_PASSWORD}@postgres:5432/ripodoc
+      RIPODOC_AUTH_SECRET: ${RIPODOC_AUTH_SECRET:?Set a 32+ character auth secret}
+      RIPODOC_EVIDENCE_SECRET: ${RIPODOC_EVIDENCE_SECRET:?Set a 32+ character evidence secret}
+      RIPODOC_APP_ORIGIN: ${RIPODOC_APP_ORIGIN:?Set the HTTPS public application origin}
+      RIPODOC_RESEND_API_KEY: ${RIPODOC_RESEND_API_KEY:?Set a Resend API key}
+      RIPODOC_EMAIL_FROM: ${RIPODOC_EMAIL_FROM:?Set the verified sender address}
+      RIPODOC_TURNSTILE_SECRET: ${RIPODOC_TURNSTILE_SECRET:?Set Cloudflare Turnstile secret}
+      NEXT_PUBLIC_RIPODOC_TURNSTILE_SITE_KEY: ${NEXT_PUBLIC_RIPODOC_TURNSTILE_SITE_KEY:?Set Cloudflare Turnstile site key}
+      NEXT_PUBLIC_LOCAL_API: ${NEXT_PUBLIC_LOCAL_API:-http://localhost:4000/api/local}
+      RIPODOC_CONTENT_ROOT: /app/content/reports
+
+  worker:
+    build:
+      context: .
+      dockerfile: docker/local/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      web:
+        condition: service_started
+    ports:
+      - "127.0.0.1:4000:4000"
+    environment:
+      PORT: 4000
+      RIPODOC_BIND_HOST: 0.0.0.0
+      RIPODOC_ALLOWED_ORIGIN: ${RIPODOC_APP_ORIGIN:?Set the HTTPS public application origin}
+      RIPODOC_EVIDENCE_SECRET: ${RIPODOC_EVIDENCE_SECRET:?Set a 32+ character evidence secret}
+      DATA_DIR: /data
+    volumes:
+      - ripodoc-worker:/data
+
+volumes:
+  ripodoc-postgres:
+  ripodoc-worker:

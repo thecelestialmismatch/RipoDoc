@@ -28,5 +28,6 @@
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true
   },
-  "include": ["**/*.ts", "../web/frontend/src/lib/evidence/**/*.ts"]
+  "include": ["**/*.ts", "../web/frontend/src/lib/evidence/**/*.ts"],
+  "exclude": ["../web/frontend/src/lib/evidence/recipient-proof.ts"]
 }

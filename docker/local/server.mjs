@@ -31,16 +31,17 @@ const MANIFESTS_DIR = join(DATA_DIR, 'manifests');
 const UPLOADS_DIR = join(DATA_DIR, 'uploads');
 const PLACEMENTS_DIR = join(DATA_DIR, 'placements');
 
-const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*',
+const ALLOWED_ORIGIN = process.env.RIPODOC_ALLOWED_ORIGIN || 'http://localhost:3000';
+const corsHeaders = (origin) => ({
+  ...(origin === ALLOWED_ORIGIN ? { 'Access-Control-Allow-Origin': ALLOWED_ORIGIN, Vary: 'Origin' } : {}),
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-};
+});
 
-const sendJson = (res, status, body) => {
+const sendJson = (res, status, body, origin = undefined) => {
   const data = body === null ? '' : JSON.stringify(body);
   res.writeHead(status, {
-    ...CORS_HEADERS,
+    ...corsHeaders(origin),
     'Content-Type': 'application/json',
     'Content-Length': Buffer.byteLength(data),
   });
@@ -72,8 +73,10 @@ const firstField = (fields, name) => {
 };
 
 const handler = async (req, res) => {
+  const origin = req.headers.origin;
+  if (origin && origin !== ALLOWED_ORIGIN) return sendJson(res, 403, { error: 'Origin not allowed' }, origin);
   if (req.method === 'OPTIONS') {
-    res.writeHead(204, CORS_HEADERS);
+    res.writeHead(204, corsHeaders(origin));
     res.end();
     return;
   }
@@ -264,17 +267,18 @@ const handler = async (req, res) => {
           'Content-Type': 'application/json',
           'Content-Disposition': `attachment; filename="${draftId}.placements.json"`,
           'Content-Length': content.length,
-          ...CORS_HEADERS,
+          ...corsHeaders(origin),
         });
         res.end(content);
       } catch {
-        return sendJson(res, 404, { error: 'Placement proposal not found' });
+        return sendJson(res, 404, { error: 'Placement proposal not found' }, origin);
       }
       return;
     }
 
     if (segments.length === 2 && segments[0] === 'download-pdf' && req.method === 'GET') {
       const filename = segments[1];
+      if (!/^draft-[a-f0-9]{16}-clickable\.pdf$/.test(filename)) return sendJson(res, 400, { error: 'Invalid file id' }, origin);
       const filePath = join(UPLOADS_DIR, filename);
       try {
         const fileContent = await readFile(filePath);
@@ -282,11 +286,11 @@ const handler = async (req, res) => {
           'Content-Type': 'application/pdf',
           'Content-Disposition': `attachment; filename="${filename}"`, 
           'Content-Length': fileContent.length,
-          ...CORS_HEADERS,
+          ...corsHeaders(origin),
         });
         res.end(fileContent);
       } catch {
-        return sendJson(res, 404, { error: 'File not found' });
+        return sendJson(res, 404, { error: 'File not found' }, origin);
       }
       return;
     }
@@ -304,7 +308,7 @@ await mkdir(UPLOADS_DIR, { recursive: true });
 await mkdir(PLACEMENTS_DIR, { recursive: true });
 
 const server = http.createServer(handler);
-server.listen(PORT, () => {
+server.listen(PORT, process.env.RIPODOC_BIND_HOST || '127.0.0.1', () => {
   console.log(`[ripodoc-local] Dev server listening on port ${PORT}`);
   console.log(`[ripodoc-local] Data dir: ${DATA_DIR}`);
 });
