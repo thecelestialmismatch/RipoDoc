@@ -8,6 +8,7 @@
  */
 
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { AlertTriangle, ArrowLeft, Clock, ShieldCheck } from 'lucide-react';
 import { EvidenceGrid } from '@/components/evidence/EvidenceGrid.tsx';
 import { recordAccess } from '@/lib/evidence/audit.ts';
@@ -16,6 +17,7 @@ import { currentUnixSeconds } from '@/lib/evidence/clock.ts';
 import { loadManifest } from '@/lib/evidence/store.ts';
 import { failureMessage, hashRecipient, verifyEvidenceToken } from '@/lib/evidence/token.ts';
 import { findElement } from '@/lib/evidence/types.ts';
+import { hasRecipientProof } from '@/lib/evidence/recipient-proof.ts';
 
 export const dynamic = 'force-dynamic';
 
@@ -43,6 +45,7 @@ function Denied({ message }: { message: string }) {
 
 export default async function EvidencePage({ params }: PageProps) {
   const { token, elementId } = await params;
+  if (!(await hasRecipientProof(token))) redirect(`/e/${encodeURIComponent(token)}/access`);
 
   const verified = verifyEvidenceToken(token, evidenceSecret(), {
     now: await currentUnixSeconds(),

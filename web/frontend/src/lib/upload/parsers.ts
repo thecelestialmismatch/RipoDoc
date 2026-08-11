@@ -130,17 +130,12 @@ export const parseTxt = (text: string): readonly (readonly string[])[] => {
 };
 
 /**
- * Parse an XLSX file (via SheetJS dynamic import).
- * Returns rows of string values from the first sheet.
+ * XLSX upload parsing is deliberately disabled pending an independently audited
+ * parser. CSV and tabular text remain available for safe client-side import.
  */
 export const parseXlsx = async (buffer: ArrayBuffer): Promise<readonly (readonly string[])[]> => {
-  const XLSX = await import('xlsx');
-  const workbook = XLSX.read(Buffer.from(buffer), { type: 'buffer' });
-  const firstSheetName = workbook.SheetNames[0];
-  if (!firstSheetName) return [];
-  const sheet = workbook.Sheets[firstSheetName];
-  const rows: string[][] = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' }) as unknown as string[][];
-  return rows.filter((row) => row.some((cell) => String(cell).trim() !== ''));
+  void buffer;
+  throw new Error('XLSX import is temporarily unavailable. Export the worksheet as CSV before uploading.');
 };
 
 /**
