@@ -1,52 +1,62 @@
-import Image from 'next/image';
 import Link from 'next/link';
+import { ArrowUpRight } from 'lucide-react';
+import { BrandLockup } from '@/components/BrandLockup.tsx';
+
+const productLinks = [
+  { href: '/#demo', label: 'Interactive demo' },
+  { href: '/upload', label: 'Create report' },
+  { href: '/dashboard', label: 'Client workspace' },
+  { href: '/security', label: 'Security controls' },
+] as const;
+
+const resourceLinks = [
+  { href: 'https://github.com/thecelestialmismatch/RipoDoc', label: 'GitHub repository' },
+  { href: 'https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/00-strategy/master-plan.md', label: 'Master plan' },
+  { href: 'https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/02-product/prd.md', label: 'Product requirements' },
+  { href: 'https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/02-product/interaction-spec.md', label: 'Interaction specification' },
+] as const;
 
 export function Footer() {
   return (
-    <footer className="border-t border-slate-200 bg-slate-50 py-12">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="grid gap-8 md:grid-cols-4">
-          <div className="md:col-span-2">
-            <div className="flex items-center gap-2">
-              <Image
-                src="/ripodoc-logo.jpeg"
-                alt="RipoDoc logo"
-                width={32}
-                height={32}
-                className="rounded-lg object-contain"
-              />
-              <span className="text-lg font-bold">RipoDoc</span>
-            </div>
-            <p className="mt-3 max-w-sm text-sm text-slate-600">
-              The secure reporting delivery and evidence layer for MSPs. Send a normal PDF where
-              every figure is clickable, recipient-bound and audited.
-            </p>
-            <p className="mt-4 text-xs text-slate-400">
-              Pre-revenue, validation phase. The interaction and overlay are implemented and verified
-              end to end. The authoring UI and PSA connectors are not built yet.
-            </p>
-          </div>
+    <footer className="border-t border-slate-200 bg-[#F6F8FC]">
+      <div className="mx-auto max-w-7xl px-6 py-12">
+        <div className="grid gap-10 md:grid-cols-[1.3fr_0.65fr_0.8fr]">
           <div>
-            <h4 className="text-sm font-semibold text-slate-900">Product</h4>
-            <ul className="mt-3 space-y-2 text-sm text-slate-600">
-              <li><Link href="/#demo" className="hover:text-blue-700 transition">Live demo</Link></li>
-              <li><Link href="/upload" className="hover:text-blue-700 transition">Upload PDF</Link></li>
-              <li><Link href="/dashboard" className="hover:text-blue-700 transition">Dashboard</Link></li>
-              <li><Link href="/security" className="hover:text-blue-700 transition">Security model</Link></li>
+            <BrandLockup showDescriptor />
+            <p className="mt-5 max-w-md text-sm leading-6 text-slate-600">
+              The secure reporting delivery and evidence layer for MSPs. Send a normal PDF where every figure is clickable, recipient-bound, and auditable.
+            </p>
+            <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-teal-200 bg-white px-3 py-1.5 text-xs font-semibold text-[#087E84]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#12B9BE]" aria-hidden="true" />
+              Evidence workflow ready for deployment
+            </div>
+          </div>
+
+          <div>
+            <h2 className="text-sm font-semibold text-[#11162E]">Product</h2>
+            <ul className="mt-4 space-y-3 text-sm text-slate-600">
+              {productLinks.map((link) => (
+                <li key={link.href}><Link href={link.href} className="transition hover:text-[#1769E8]">{link.label}</Link></li>
+              ))}
             </ul>
           </div>
+
           <div>
-            <h4 className="text-sm font-semibold text-slate-900">Resources</h4>
-            <ul className="mt-3 space-y-2 text-sm text-slate-600">
-              <li><a href="https://github.com/thecelestialmismatch/RipoDoc" target="_blank" rel="noopener noreferrer" className="hover:text-blue-700 transition">GitHub repository</a></li>
-              <li><a href="https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/00-strategy/master-plan.md" target="_blank" rel="noopener noreferrer" className="hover:text-blue-700 transition">Master plan</a></li>
-              <li><a href="https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/02-product/prd.md" target="_blank" rel="noopener noreferrer" className="hover:text-blue-700 transition">Product requirements</a></li>
-              <li><a href="https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/02-product/interaction-spec.md" target="_blank" rel="noopener noreferrer" className="hover:text-blue-700 transition">Interaction spec</a></li>
+            <h2 className="text-sm font-semibold text-[#11162E]">Resources</h2>
+            <ul className="mt-4 space-y-3 text-sm text-slate-600">
+              {resourceLinks.map((link) => (
+                <li key={link.href}>
+                  <a href={link.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 transition hover:text-[#1769E8]">
+                    {link.label}<ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
-        <div className="mt-8 border-t border-slate-200 pt-6 text-center text-xs text-slate-400">
-          <p>RipoDoc &mdash; Built for MSPs who send client reports and get asked <em>&ldquo;where did that number come from?&rdquo;</em></p>
+        <div className="mt-12 flex flex-col gap-3 border-t border-slate-200 pt-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+          <p>© {new Date().getFullYear()} RipoDoc. Built for clear, defensible MSP client reporting.</p>
+          <p>Every reported number deserves its evidence.</p>
         </div>
       </div>
     </footer>
