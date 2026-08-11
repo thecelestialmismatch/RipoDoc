@@ -8,11 +8,13 @@
  */
 
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { AlertTriangle, ChevronRight } from 'lucide-react';
 import { recordAccess } from '@/lib/evidence/audit.ts';
 import { evidenceSecret, revokedTokenIds } from '@/lib/evidence/config.ts';
 import { currentUnixSeconds } from '@/lib/evidence/clock.ts';
 import { loadManifest } from '@/lib/evidence/store.ts';
+import { hasRecipientProof } from '@/lib/evidence/recipient-proof.ts';
 import { failureMessage, hashRecipient, verifyEvidenceToken } from '@/lib/evidence/token.ts';
 
 export const dynamic = 'force-dynamic';
@@ -31,6 +33,7 @@ const KIND_LABEL: Record<string, string> = {
 
 export default async function ReportIndexPage({ params }: PageProps) {
   const { token } = await params;
+  if (!(await hasRecipientProof(token))) redirect(`/e/${encodeURIComponent(token)}/access`);
 
   const verified = verifyEvidenceToken(token, evidenceSecret(), {
     now: await currentUnixSeconds(),

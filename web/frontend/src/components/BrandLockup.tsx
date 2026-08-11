@@ -13,11 +13,11 @@ export function BrandLockup({ compact = false, showDescriptor = false, className
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
       <span className="relative flex shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200">
         <Image
-          src="/ripodoc-logo.jpeg"
+          src="/ripodoc-mark.png"
           alt=""
           width={iconSize}
           height={iconSize}
-          className="h-auto w-auto object-contain"
+          className="h-full w-full object-contain p-0.5"
           priority
         />
       </span>
