@@ -20,7 +20,7 @@ RipoDoc preserves the client reporting workflow MSPs already use while adding a 
 | Route | Audience | Purpose |
 | --- | --- | --- |
 | `/` | Prospects and MSP teams | Outcome-led product page with an interactive sample report backed by real fixture data. |
-| `/upload` | Self-hosted operators | Propose overlays and create a downloadable clickable PDF through a configured local RipoDoc worker. |
+| `/upload` | Verified self-hosted operators | Propose overlays and create a downloadable clickable PDF through the same-origin authoring gateway and a private RipoDoc worker. |
 | `/api/health` | Deployment monitoring | No-store operational health response with safe configuration indicators only; never returns tenants, reports, recipients, sessions, or secrets. |
 | `/dashboard` | Verified MSP workspace users | Review only reports owned by the authenticated tenant; report manifests require tenant-scoped session authorization. |
 | `/signup`, `/login`, `/verify-email`, `/forgot-password`, `/reset-password` | MSP workspace users | Complete account lifecycle with email activation, one-time codes, private sessions, rate limits, and CAPTCHA protection. |
@@ -62,29 +62,32 @@ cd RipoDoc
 export POSTGRES_PASSWORD="$(openssl rand -base64 32)"
 export RIPODOC_AUTH_SECRET="$(openssl rand -base64 32)"
 export RIPODOC_EVIDENCE_SECRET="$(openssl rand -base64 32)"
+export RIPODOC_WORKER_AUTH_SECRET="$(openssl rand -base64 32)"
 # Set RIPODOC_APP_ORIGIN, RIPODOC_RESEND_API_KEY, RIPODOC_EMAIL_FROM,
 # RIPODOC_TURNSTILE_SECRET, and NEXT_PUBLIC_RIPODOC_TURNSTILE_SITE_KEY.
 docker compose -f docker-compose.selfhost.yml up --build
 ```
 
-The browser-facing app listens on `${RIPODOC_PORT:-3000}`. PostgreSQL is internal to the compose network, and the PDF worker binds its host port to `127.0.0.1` by default. Deploy it behind an HTTPS reverse proxy using the same origin configured in `RIPODOC_APP_ORIGIN`.
+The browser-facing app listens on `${RIPODOC_PORT:-3000}`. PostgreSQL remains internal to the compose network, while the PDF worker binds its host port to `127.0.0.1` and accepts only short-lived server-issued authoring capabilities. The browser never receives a worker credential or direct worker URL. The bundle runs the web and worker containers as non-root with read-only root filesystems, temporary `tmpfs` mounts, dropped Linux capabilities, health checks, and conservative CPU/memory limits. Deploy the web service behind an HTTPS reverse proxy using the canonical origin configured in `RIPODOC_APP_ORIGIN`.
 
 ## Self-hosted report authoring
 
-The `/upload` route intentionally uses a **separate local processing worker**. A public Vercel site must not receive an MSP's client report by default. The authoring sequence is explicit: select a validated RipoDoc manifest, upload its matching PDF, download and review the proposed click zones, add an approver and approval time to every zone, upload the reviewed proposal, then publish the downloadable PDF. For local development, start the worker with Docker and open the frontend locally.
+The `/upload` route intentionally uses a **private self-hosted processing worker**. A public Vercel site must not receive an MSP's client report by default. Every upload, proposal download, review, publish, and artifact download starts with a verified workspace session. The web server issues a single-use, short-lived, tenant-bound capability to the worker; browser CORS and draft IDs are never treated as authorization. The authoring sequence is explicit: select a validated RipoDoc manifest, upload its matching PDF, review the proposed click zones, record a server-bound reviewer decision, then publish the downloadable PDF. Publication rechecks the exact source PDF, manifest, and reviewed-proposal digests.
 
 ```bash
-# The worker signs links with the same secret as the evidence-serving app.
+# The worker signs evidence links and verifies a separate server-only
+# authoring credential. Do not place either value in NEXT_PUBLIC_ variables.
 export RIPODOC_EVIDENCE_SECRET="$(openssl rand -base64 32)"
+export RIPODOC_WORKER_AUTH_SECRET="$(openssl rand -base64 32)"
+export RIPODOC_LOCAL_WORKER_URL="http://127.0.0.1:4000/api/local"
 
-# Start the local PDF worker on http://localhost:4000/api/local
-npm run docker:run
-
-# In a second terminal, run the Next.js app.
+# Start the private PDF worker, then run the Next.js app with the same
+# RIPODOC_WORKER_AUTH_SECRET and RIPODOC_LOCAL_WORKER_URL values.
+npm run dev:local-server
 npm --prefix web/frontend run dev
 ```
 
-The upload page defaults to `http://localhost:4000/api/local`. Set `NEXT_PUBLIC_LOCAL_API` only when your browser should use a different trusted, self-hosted worker endpoint.
+The upload page uses same-origin `/api/authoring/*` routes. Configure `RIPODOC_LOCAL_WORKER_URL` only in the trusted web-server environment; never publish it as `NEXT_PUBLIC_*`, and never expose `RIPODOC_WORKER_AUTH_SECRET` to the browser. The worker rejects browser-originated requests, unsigned requests, expired/replayed capabilities, wrong-purpose capabilities, and cross-tenant draft access.
 
 | Mode | Use it when | Command |
 | --- | --- | --- |
@@ -94,12 +97,11 @@ The upload page defaults to `http://localhost:4000/api/local`. Set `NEXT_PUBLIC_
 
 ## Environment configuration
 
-Store all values below in the relevant server environment. Do not expose `RIPODOC_EVIDENCE_SECRET` or `RIPODOC_ADMIN_ACCESS_KEY` to the browser.
+Store all values below in the relevant server environment. Do not expose `RIPODOC_EVIDENCE_SECRET`, `RIPODOC_AUTH_SECRET`, or `RIPODOC_WORKER_AUTH_SECRET` to the browser.
 
 | Variable | Required | Purpose |
 | --- | --- | --- |
 | `RIPODOC_EVIDENCE_SECRET` | Yes for evidence delivery | A 32-character-or-longer secret used to sign recipient-bound evidence claims. |
-| `RIPODOC_ADMIN_ACCESS_KEY` | Yes for legacy `/admin` | A 16-character-or-longer server-only administrator access key. The browser receives only a signed HttpOnly session cookie. |
 | `RIPODOC_DATABASE_URL` | Yes for workspace authentication | PostgreSQL connection URL for tenant users, opaque sessions, one-time codes, rate-limit counters, and tenant report records. |
 | `RIPODOC_AUTH_SECRET` | Yes for workspace authentication | A separate 32-character-or-longer server-only HMAC secret for session, privacy, and one-time-code hashing. |
 | `RIPODOC_APP_ORIGIN` | Yes for workspace authentication | Canonical HTTPS application origin used in email messages and CSRF checks. |
@@ -111,7 +113,9 @@ Store all values below in the relevant server environment. Do not expose `RIPODO
 | `RIPODOC_REVOKED_JTIS` | Optional | Comma-separated claim identifiers that must no longer authorize evidence access. |
 | `RIPODOC_ALLOW_EXPORT` | Optional | Set to `false` to disable evidence CSV export. The default is enabled. |
 | `RIPODOC_CONTENT_ROOT` | Optional | Filesystem root for published report manifests in a self-hosted runtime. Defaults to `content/reports` under the active working directory. |
-| `NEXT_PUBLIC_LOCAL_API` | Optional | Browser-visible URL of a trusted, self-hosted PDF worker. Defaults to `http://localhost:4000/api/local` during local use. |
+| `RIPODOC_LOCAL_WORKER_URL` | Yes for private authoring | Server-only URL for the private worker. Compose sets this to `http://worker:4000/api/local`; local development may use `http://127.0.0.1:4000/api/local`. |
+| `RIPODOC_WORKER_AUTH_SECRET` | Yes for private authoring | A separate 32-character-or-longer server-only HMAC secret shared only by the web service and worker to issue and verify single-use, 90-second authoring capabilities. |
+| `RIPODOC_WORKER_MAX_CONCURRENT_JOBS` | Optional | Private worker concurrency cap. Defaults to `2` and is constrained to a maximum of `4`. |
 
 ## Security model
 
@@ -130,7 +134,7 @@ The workspace identity service is deliberately implemented as a small, server-si
 | Secure reset and proof codes | Codes are cryptographically random, HMAC-hashed before storage, single-use through an atomic transaction, delivered outside URLs, and expire after 30 minutes. | [`service.ts`](web/frontend/src/lib/auth/service.ts), [`recipient-proof.ts`](web/frontend/src/lib/evidence/recipient-proof.ts) |
 | Session and CSRF controls | Opaque session secrets are stored only as keyed hashes; session cookies use `HttpOnly`, strict same-site handling, and production-only `Secure`; state-changing actions require same-origin plus double-submit CSRF validation. | [`server.ts`](web/frontend/src/lib/auth/server.ts), [`middleware.ts`](web/frontend/src/middleware.ts) |
 
-A deeper test and control inventory is maintained in [`docs/05-security/authentication-and-test-coverage.md`](docs/05-security/authentication-and-test-coverage.md). The self-hosted operator walkthrough and read-only 20-control security assessment are maintained in [`docs/05-security/self-hosted-deployment-and-read-only-audit.md`](docs/05-security/self-hosted-deployment-and-read-only-audit.md).
+A deeper test and control inventory is maintained in [`docs/05-security/authentication-and-test-coverage.md`](docs/05-security/authentication-and-test-coverage.md). The historical read-only 20-control assessment is maintained in [`docs/05-security/self-hosted-deployment-and-read-only-audit.md`](docs/05-security/self-hosted-deployment-and-read-only-audit.md). The current private-worker threat model is maintained in [`docs/05-security/worker-hardening-threat-model.md`](docs/05-security/worker-hardening-threat-model.md), and the complete self-hosted operational procedure is maintained in [`docs/05-engineering/self-hosted-operations-runbook.md`](docs/05-engineering/self-hosted-operations-runbook.md).
 
 > RipoDoc fails closed for hosted account actions until PostgreSQL, Resend, the canonical app origin, an authentication secret, and the production Turnstile configuration are present. It never substitutes ephemeral Vercel filesystem state or silent email failure for a durable identity deployment.
 
@@ -159,14 +163,14 @@ npm run verify        # typecheck + test + production frontend build
 
 The public product site is designed for Vercel deployment from the `main` branch. Before enabling workspace accounts on Vercel, provision PostgreSQL and configure `RIPODOC_DATABASE_URL`, `RIPODOC_AUTH_SECRET`, `RIPODOC_APP_ORIGIN`, Resend, and Turnstile variables listed above. The application fails closed for account actions until that durable authentication configuration exists.
 
-The document processor is intentionally not bundled into the public Vercel application. Deploy the worker separately on infrastructure you control, then configure its trusted URL through `NEXT_PUBLIC_LOCAL_API` for the operator environment. This separation prevents report files from being silently routed through a public marketing deployment.
+The document processor is intentionally not bundled into the public Vercel application. Deploy the worker on infrastructure you control and configure its URL only through server-side `RIPODOC_LOCAL_WORKER_URL`, paired with `RIPODOC_WORKER_AUTH_SECRET`. This separation prevents report files from being silently routed through a public marketing deployment and prevents a browser from directly calling the worker.
 
 | Release gate | Required result |
 | --- | --- |
 | Automated checks | `npm run verify` exits successfully. |
 | Public route review | `/`, `/upload`, `/dashboard`, `/security`, and the safe `/api/health` deployment probe render without broken navigation. |
-| Private workspace review | `/admin` redirects unauthenticated visitors to `/admin/login`. |
-| Worker review | A validated manifest, matching PDF, and reviewed placement proposal produce a downloadable PDF from a reachable, trusted worker endpoint. |
+| Private operations review | `/admin` redirects unauthenticated visitors to `/login`; verified `owner` and `admin` users see only their tenant-scoped operational summary. |
+| Worker review | A verified tenant session completes upload, review, and publication through `/api/authoring`; direct browser, unsigned, replayed, wrong-purpose, and cross-tenant worker requests fail without disclosing artifacts. |
 | Environment review | Server-only variables are present in the deployment environment and never committed. |
 
 ## Project structure
