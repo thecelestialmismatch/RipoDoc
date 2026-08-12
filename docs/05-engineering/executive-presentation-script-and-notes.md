@@ -19,7 +19,7 @@
 ## Slide 2: Executive Summary
 
 ### Speaker Script
-"Our engineering and security effort focused on three pillars: implementation achievements, automated verification, and production validation. On the implementation side, we replaced browser-visible worker access with a capability-driven proxy model, retired legacy shared-key admin access in favor of role-bound individual accounts, and hardened our container runtimes. On the verification side, all 133 automated test cases passed, the production dependency audit reported zero known vulnerabilities, and we verified fail-closed live production behavior on Vercel."
+"Our engineering and security effort focused on three pillars: implementation achievements, automated verification, and production validation. On the implementation side, we replaced browser-visible worker access with a capability-driven proxy model, retired legacy shared-key admin access in favor of role-bound individual accounts, and hardened our container runtimes. On the verification side, all 135 automated test cases passed, the production dependency audit reported zero known vulnerabilities, and we verified fail-closed live production behavior on Vercel."
 
 ### Speaker Notes
 - **Tone**: Structured and balanced.
@@ -67,11 +67,11 @@
 ## Slide 6: Automated Verification Results
 
 ### Speaker Script
-"Quality without testing is just an assumption. RipoDoc’s release gate requires 100% test success across the regression suite. I am proud to report that all 133 automated test cases passed successfully. The production-only dependency audit reports zero known vulnerabilities following the removal of legacy packages and the integration of secure HTTPS API adapters. Strict TypeScript compilation and the Next.js production build both passed; the build also surfaced the upstream Next.js middleware-convention deprecation notice, which is tracked separately and does not alter the release result."
+"Quality without testing is just an assumption. RipoDoc’s release gate requires 100% test success across the regression suite. I am proud to report that all 135 automated test cases passed successfully. The production-only dependency audit reports zero known vulnerabilities following the removal of legacy packages and the integration of secure HTTPS API adapters. Strict TypeScript compilation and the Next.js production build both passed; the build also surfaced the upstream Next.js middleware-convention deprecation notice, which is tracked separately and does not alter the release result."
 
 ### Speaker Notes
 - **Tone**: Analytical and reassuring.
-- **Key Message**: 133 passed tests, zero vulnerabilities, and 100% type safety.
+- **Key Message**: 135 passed tests, zero known production dependency vulnerabilities, and a clean TypeScript gate.
 - **Visual Reference**: Large metric callouts paired with verification status tables.
 
 ---
@@ -79,7 +79,7 @@
 ## Slide 7: Security Coverage Map
 
 ### Speaker Script
-"This security coverage map illustrates the distribution of our 133 tests across seven core domains. The largest concentration—45 tests—focuses on PDF serialization and link safety, ensuring that every generated report is injection-safe and strictly limited to HTTPS URIs. Twenty-nine tests cover strict input validation and manifest schemas. Twenty-six tests validate runtime posture and safe indicator exposure. Sixteen tests secure evidence token authorization, 11 verify our hash-chained audit integrity, 5 validate scrypt and session crypto primitives, and 1 comprehensive integration test validates the end-to-end hardened worker boundary."
+"This security coverage map illustrates our current 135-test release gate across the core trust domains. Coverage includes PDF serialization and safe-link behavior, strict input validation and manifest schemas, runtime posture and safe indicator exposure, evidence-claim authorization, hash-chained audit integrity, scrypt and session primitives, and an end-to-end hardened worker boundary. The two newest contract tests verify that the downloadable self-hosted route continues to document server-only worker configuration and that the dashboard remains backed by a verified tenant-scoped server query."
 
 ### Speaker Notes
 - **Tone**: Data-driven and thorough.
@@ -127,7 +127,7 @@
 ## Slide 11: Production-Ready MSP Intelligence
 
 ### Speaker Script
-"In conclusion, RipoDoc PR #9 delivers a materially hardened and defensible MSP reporting platform. The release provides worker hardening, role-bound operations, container security, ISO 27001 and SOC 2 control mapping, simulated boundary-test evidence, and 133 passing automated test cases. The self-hosted package is ready for a controlled deployment when the operator completes the documented environment, TLS, backup, and final-image scanning prerequisites. Thank you."
+"In conclusion, RipoDoc PR #9 delivers a materially hardened and defensible MSP reporting platform. The release provides worker hardening, role-bound operations, container security, ISO 27001 and SOC 2 control mapping, simulated boundary-test evidence, and 135 passing automated test cases. The self-hosted package is ready for a controlled deployment when the operator completes the documented environment, TLS, backup, and final-image scanning prerequisites. Thank you."
 
 ### Speaker Notes
 - **Tone**: Inspiring and conclusive.

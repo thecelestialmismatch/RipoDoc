@@ -6,6 +6,7 @@ const productLinks = [
   { href: '/#demo', label: 'Interactive demo' },
   { href: '/upload', label: 'Create report' },
   { href: '/dashboard', label: 'Client workspace' },
+  { href: '/download', label: 'Download & self-host' },
   { href: '/security', label: 'Security controls' },
 ] as const;
 
@@ -14,6 +15,7 @@ const resourceLinks = [
   { href: 'https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/00-strategy/master-plan.md', label: 'Master plan' },
   { href: 'https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/02-product/prd.md', label: 'Product requirements' },
   { href: 'https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/02-product/interaction-spec.md', label: 'Interaction specification' },
+  { href: 'https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/05-security/pr11-self-hosted-security-advisory-and-migration-guide.md', label: 'PR #11 migration guide' },
 ] as const;
 
 export function Footer() {

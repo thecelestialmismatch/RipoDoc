@@ -3,13 +3,14 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { LayoutDashboard, Menu, ShieldCheck, Upload, X, type LucideIcon } from 'lucide-react';
+import { Download, LayoutDashboard, Menu, ShieldCheck, Upload, X, type LucideIcon } from 'lucide-react';
 import { BrandLockup } from '@/components/BrandLockup.tsx';
 
 const NAV_LINKS: readonly { readonly href: string; readonly label: string; readonly icon?: LucideIcon }[] = [
   { href: '/#product', label: 'Product' },
   { href: '/#how-it-works', label: 'How it works' },
   { href: '/security', label: 'Security', icon: ShieldCheck },
+  { href: '/download', label: 'Self-host', icon: Download },
   { href: '/dashboard', label: 'Client workspace', icon: LayoutDashboard },
 ];
 
