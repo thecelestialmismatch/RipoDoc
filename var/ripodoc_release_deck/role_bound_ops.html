@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+      * { margin: 0; padding: 0; }
+      .slide-container {
+        width: 1280px;
+        min-height: 720px;
+        box-sizing: border-box;
+        background: #020617;
+        color: #f8fafc;
+        font-family: 'Inter', -apple-system, sans-serif;
+        padding-top: 60px;
+      }
+      .header {
+        padding: 0 80px;
+        margin-bottom: 40px;
+      }
+      .header h2 {
+        font-size: 48px;
+        font-weight: 800;
+        color: #22d3ee;
+      }
+      .main-content {
+        padding: 0 80px;
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+      }
+      .comparison-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+      }
+      .model-box {
+        border: 1px solid #1e293b;
+        background: #0f172a;
+        padding: 32px;
+      }
+      .model-title {
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .legacy .model-title { color: #94a3b8; }
+      .hardened .model-title { color: #22d3ee; }
+      
+      .model-feature {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 20px;
+        font-size: 18px;
+        color: #cbd5e1;
+      }
+      .model-feature i {
+        margin-top: 4px;
+        width: 20px;
+        text-align: center;
+      }
+      .legacy i { color: #64748b; }
+      .hardened i { color: #22d3ee; }
+
+      .audit-strip {
+        background: #020617;
+        border: 1px solid #1e293b;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 30px;
+      }
+      .audit-label {
+        font-size: 14px;
+        font-weight: 700;
+        color: #22d3ee;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        width: 200px;
+      }
+      .audit-text {
+        font-size: 18px;
+        color: #94a3b8;
+        line-height: 1.6;
+      }
+      .strike {
+        text-decoration: line-through;
+        color: #64748b;
+      }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header">
+            <h2>Role-Bound Operations</h2>
+        </div>
+        <div class="main-content">
+            <div class="comparison-grid">
+                <div class="model-box legacy">
+                    <div class="model-title"><i class="fas fa-history"></i> Legacy Model</div>
+                    <div class="model-feature">
+                        <i class="fas fa-key"></i>
+                        <div><span class="strike">RIPODOC_ADMIN_ACCESS_KEY</span><br><span style="font-size: 15px; color: #64748b;">Shared deployment-wide secret.</span></div>
+                    </div>
+                    <div class="model-feature">
+                        <i class="fas fa-user-secret"></i>
+                        <div>Anonymous Sessions<br><span style="font-size: 15px; color: #64748b;">No individual operator identity.</span></div>
+                    </div>
+                    <div class="model-feature">
+                        <i class="fas fa-globe"></i>
+                        <div>Global Data Access<br><span style="font-size: 15px; color: #64748b;">Full visibility into all tenant reports.</span></div>
+                    </div>
+                </div>
+                <div class="model-box hardened">
+                    <div class="model-title"><i class="fas fa-shield-check"></i> Hardened Model</div>
+                    <div class="model-feature">
+                        <i class="fas fa-user-check"></i>
+                        <div>Verified Individual Roles<br><span style="font-size: 15px; color: #94a3b8;">Attributable owner and admin accounts.</span></div>
+                    </div>
+                    <div class="model-feature">
+                        <i class="fas fa-building-lock"></i>
+                        <div>Tenant-Scoped Isolation<br><span style="font-size: 15px; color: #94a3b8;">Operations restricted to the MSP's own data.</span></div>
+                    </div>
+                    <div class="model-feature">
+                        <i class="fas fa-fingerprint"></i>
+                        <div>Attributable Audit Trail<br><span style="font-size: 15px; color: #94a3b8;">Every administrative action linked to a user.</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="audit-strip">
+                <div class="audit-label">Audit Integrity</div>
+                <div class="audit-text">
+                    The shared admin path is <strong>fully retired</strong>. All operations now require a verified workspace session, ensuring that every report publication and security change is recorded in the hash-chained audit log with a specific operator identity.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

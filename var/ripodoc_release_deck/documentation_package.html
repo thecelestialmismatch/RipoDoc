@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+      * { margin: 0; padding: 0; }
+      .slide-container {
+        width: 1280px;
+        min-height: 720px;
+        box-sizing: border-box;
+        background: #020617;
+        color: #f8fafc;
+        font-family: 'Inter', -apple-system, sans-serif;
+        padding-top: 60px;
+      }
+      .header {
+        padding: 0 80px;
+        margin-bottom: 50px;
+      }
+      .header h2 {
+        font-size: 48px;
+        font-weight: 800;
+        color: #22d3ee;
+      }
+      .docs-grid {
+        display: flex;
+        padding: 0 80px;
+        gap: 30px;
+      }
+      .doc-card {
+        flex: 1;
+        background: #0f172a;
+        border: 1px solid #1e293b;
+        padding: 40px 30px;
+        text-align: center;
+      }
+      .doc-icon {
+        font-size: 48px;
+        color: #22d3ee;
+        margin-bottom: 24px;
+      }
+      .doc-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 16px;
+        min-height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .doc-summary {
+        font-size: 16px;
+        color: #94a3b8;
+        line-height: 1.6;
+        text-align: left;
+      }
+      .doc-summary ul {
+        list-style: none;
+        margin-top: 16px;
+      }
+      .doc-summary li {
+        margin-bottom: 8px;
+        display: flex;
+        gap: 10px;
+      }
+      .doc-summary i {
+        color: #22d3ee;
+        font-size: 12px;
+        margin-top: 4px;
+      }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header">
+            <h2>Operational Documentation</h2>
+        </div>
+        <div class="docs-grid">
+            <div class="doc-card">
+                <div class="doc-icon"><i class="fas fa-book-atlas"></i></div>
+                <div class="doc-title">Self-Hosted Operations Runbook</div>
+                <div class="doc-summary">
+                    Comprehensive guide for production MSP operators.
+                    <ul>
+                        <li><i class="fas fa-circle"></i> Secure Installation & Setup</li>
+                        <li><i class="fas fa-circle"></i> Backup & Restore Rehearsal</li>
+                        <li><i class="fas fa-circle"></i> Incident Response Procedures</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="doc-card">
+                <div class="doc-icon"><i class="fas fa-user-shield"></i></div>
+                <div class="doc-title">Worker-Hardening Threat Model</div>
+                <div class="doc-summary">
+                    Analysis of the private worker security perimeter.
+                    <ul>
+                        <li><i class="fas fa-circle"></i> Boundary Attack Surface</li>
+                        <li><i class="fas fa-circle"></i> Capability Auth Mitigations</li>
+                        <li><i class="fas fa-circle"></i> Approval Integrity Controls</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="doc-card">
+                <div class="doc-icon"><i class="fas fa-file-invoice"></i></div>
+                <div class="doc-title">Historical Audit Baseline</div>
+                <div class="doc-summary">
+                    Preserved record of the initial security assessment.
+                    <ul>
+                        <li><i class="fas fa-circle"></i> 20-Control Audit Matrix</li>
+                        <li><i class="fas fa-circle"></i> Original Risk Triage</li>
+                        <li><i class="fas fa-circle"></i> Remediation Evidence Trail</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

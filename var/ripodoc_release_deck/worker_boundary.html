@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+      * { margin: 0; padding: 0; }
+      .slide-container {
+        width: 1280px;
+        min-height: 720px;
+        box-sizing: border-box;
+        background: #020617;
+        color: #f8fafc;
+        font-family: 'Inter', -apple-system, sans-serif;
+        padding-top: 60px;
+      }
+      .header {
+        padding: 0 80px;
+        margin-bottom: 40px;
+      }
+      .header h2 {
+        font-size: 48px;
+        font-weight: 800;
+        color: #22d3ee;
+      }
+      .main-content {
+        padding: 0 80px;
+        display: flex;
+        gap: 60px;
+      }
+      .text-block {
+        flex: 1;
+      }
+      .diagram-block {
+        flex: 1.2;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .box {
+        border: 1px solid #1e293b;
+        background: #0f172a;
+        padding: 24px;
+        border-radius: 4px;
+      }
+      .box-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #22d3ee;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 12px;
+      }
+      .feature-list {
+        list-style: none;
+        margin-top: 30px;
+      }
+      .feature-list li {
+        font-size: 20px;
+        margin-bottom: 24px;
+        display: flex;
+        gap: 16px;
+        color: #cbd5e1;
+      }
+      .feature-list i {
+        color: #22d3ee;
+        margin-top: 4px;
+      }
+      .flow-step {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      .arrow {
+        color: #475569;
+        font-size: 24px;
+      }
+      .label {
+        font-size: 14px;
+        color: #64748b;
+        margin-top: 4px;
+      }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header">
+            <h2>The Private Worker Boundary</h2>
+        </div>
+        <div class="main-content">
+            <div class="text-block">
+                <p style="font-size: 20px; line-height: 1.6; color: #94a3b8;">
+                    The PDF authoring worker is now unreachable from the browser. All authoring operations are gated by a trusted server-side capability issuer.
+                </p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-key"></i> <div><strong>Capability-Based Auth</strong><br><span style="font-size: 16px;">Server-issued, single-use, 90-second HMAC tokens.</span></div></li>
+                    <li><i class="fas fa-users-slash"></i> <div><strong>Tenant Isolation</strong><br><span style="font-size: 16px;">Worker enforces tenant ID and draft ID matching.</span></div></li>
+                    <li><i class="fas fa-file-shield"></i> <div><strong>Approval Integrity</strong><br><span style="font-size: 16px;">Publication rechecks source PDF and manifest digests.</span></div></li>
+                </ul>
+            </div>
+            <div class="diagram-block">
+                <div class="box">
+                    <div class="box-title">Hardened Authoring Flow</div>
+                    <div class="flow-step">
+                        <div style="text-align: center;"><i class="fas fa-browser" style="font-size: 32px; color: #94a3b8;"></i><div class="label">Browser</div></div>
+                        <div class="arrow"><i class="fas fa-long-arrow-right"></i></div>
+                        <div style="text-align: center;"><i class="fas fa-server" style="font-size: 32px; color: #22d3ee;"></i><div class="label">Web API</div></div>
+                        <div class="arrow"><i class="fas fa-long-arrow-right"></i></div>
+                        <div style="text-align: center;"><i class="fas fa-microchip" style="font-size: 32px; color: #22d3ee;"></i><div class="label">Worker</div></div>
+                    </div>
+                    <div style="margin-top: 20px; font-size: 13px; color: #64748b; font-family: monospace; background: #020617; padding: 12px;">
+                        X-RipoDoc-Capability: Bearer &lt;HMAC_JWT&gt;
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="box-title">Request Validation Matrix</div>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; color: #cbd5e1;">
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                            <td style="padding: 10px 0;">Direct Browser Request</td>
+                            <td style="padding: 10px 0; text-align: right; color: #ef4444;">REJECTED (401)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                            <td style="padding: 10px 0;">Cross-Tenant Draft Access</td>
+                            <td style="padding: 10px 0; text-align: right; color: #ef4444;">REJECTED (404)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #1e293b;">
+                            <td style="padding: 10px 0;">Expired/Replayed Token</td>
+                            <td style="padding: 10px 0; text-align: right; color: #ef4444;">REJECTED (403/409)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px 0;">Verified Tenant Capability</td>
+                            <td style="padding: 10px 0; text-align: right; color: #10b981;">ACCEPTED (200)</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

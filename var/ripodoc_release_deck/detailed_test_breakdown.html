@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+      * { margin: 0; padding: 0; }
+      .slide-container {
+        width: 1280px;
+        min-height: 720px;
+        box-sizing: border-box;
+        background: #020617;
+        color: #f8fafc;
+        font-family: 'Inter', -apple-system, sans-serif;
+        padding-top: 60px;
+      }
+      .header {
+        padding: 0 80px;
+        margin-bottom: 30px;
+      }
+      .header h2 {
+        font-size: 42px;
+        font-weight: 800;
+        color: #22d3ee;
+      }
+      .table-container {
+        padding: 0 80px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 15px;
+      }
+      th {
+        text-align: left;
+        padding: 12px 16px;
+        background: #0f172a;
+        color: #22d3ee;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 2px solid #1e293b;
+      }
+      td {
+        padding: 10px 16px;
+        border-bottom: 1px solid #1e293b;
+        color: #cbd5e1;
+      }
+      .count {
+        font-weight: 700;
+        color: #fff;
+        text-align: center;
+      }
+      .file-name {
+        font-family: monospace;
+        color: #94a3b8;
+      }
+      .category-tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 700;
+        background: rgba(34, 211, 238, 0.1);
+        color: #22d3ee;
+        margin-right: 8px;
+      }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header">
+            <h2>Detailed Test Inventory</h2>
+            <p style="color: #94a3b8; font-size: 18px; margin-top: 8px;">File-by-file breakdown of the 133-test regression suite.</p>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 350px;">Test Suite / File</th>
+                        <th style="width: 80px; text-align: center;">Tests</th>
+                        <th>Security & Product Coverage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="file-name"><span class="category-tag">IDENTITY</span>auth-primitives.test.ts</td>
+                        <td class="count">2</td>
+                        <td>Scrypt derivation safety and privacy-hash behavior.</td>
+                    </tr>
+                    <tr>
+                        <td class="file-name"><span class="category-tag">RUNTIME</span>application-runtime.test.ts</td>
+                        <td class="count">3</td>
+                        <td>Manifest discovery, safe posture, and admin key retirement.</td>
+                    </tr>
+                    <tr>
+                        <td class="file-name"><span class="category-tag">AUDIT</span>audit.test.ts</td>
+                        <td class="count">11</td>
+                        <td>Hash chaining, tamper detection, and concurrent append safety.</td>
+                    </tr>
+                    <tr>
+                        <td class="file-name"><span class="category-tag">EVIDENCE</span>token.test.ts</td>
+                        <td class="count">12</td>
+                        <td>HMAC integrity, recipient binding, and JTI revocation.</td>
+                    </tr>
+                    <tr>
+                        <td class="file-name"><span class="category-tag">MANIFEST</span>manifest.test.ts</td>
+                        <td class="count">13</td>
+                        <td>Schema enforcement, ID safety, and approval requirements.</td>
+                    </tr>
+                    <tr>
+                        <td class="file-name"><span class="category-tag">PDF</span>pdf.test.ts</td>
+                        <td class="count">18</td>
+                        <td>Serialization safety, link enforcement, and HTTPS requirements.</td>
+                    </tr>
+                    <tr>
+                        <td class="file-name"><span class="category-tag">PDF</span>report.test.ts</td>
+                        <td class="count">9</td>
+                        <td>Evidence exclusion and clickable zone geometry.</td>
+                    </tr>
+                    <tr>
+                        <td class="file-name"><span class="category-tag">WORKER</span>server.test.mjs</td>
+                        <td class="count">1</td>
+                        <td>End-to-end hardened authoring and tenant isolation.</td>
+                    </tr>
+                    <tr>
+                        <td class="file-name"><span class="category-tag">OVERLAY</span>overlay-*.test.ts (5 files)</td>
+                        <td class="count">64</td>
+                        <td>Placement discovery, approval gates, and sample generation.</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr style="background: #0f172a;">
+                        <td style="font-weight: 800; color: #fff;">TOTAL VERIFIED TESTS</td>
+                        <td class="count" style="font-size: 18px; color: #22d3ee;">133</td>
+                        <td style="color: #94a3b8; font-style: italic;">100% Pass Rate across all security boundaries.</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
