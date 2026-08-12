@@ -20,7 +20,10 @@ COPY --chown=ripodoc:ripodoc web/frontend/src/lib/evidence ./web/frontend/src/li
 ENV NODE_ENV=production
 ENV PORT=4000
 ENV DATA_DIR=/data
-RUN mkdir -p /data && chown -R ripodoc:ripodoc /data
+# The final worker executes Node directly; do not ship the npm CLI dependency tree.
+RUN mkdir -p /data \
+  && chown -R ripodoc:ripodoc /data \
+  && rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 EXPOSE 4000
 ENTRYPOINT ["/usr/local/bin/ripodoc-worker-entrypoint"]
 CMD ["node", "docker/local/server.mjs"]
