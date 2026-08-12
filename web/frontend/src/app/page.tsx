@@ -104,6 +104,13 @@ export default async function Home() {
                   Explore the live interaction
                   <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </Link>
+                <Link
+                  href="/download"
+                  className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-[#1769E8]/20 bg-[#EAF5FF] px-5 py-3 text-sm font-semibold text-[#0A3E9B] transition hover:border-[#1769E8]/45 hover:bg-white active:scale-[0.98]"
+                >
+                  Download & self-host
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
               </div>
               <div className="mt-8 flex flex-wrap gap-x-5 gap-y-3 text-sm text-slate-600">
                 {proofPoints.map((point) => {
@@ -214,7 +221,7 @@ export default async function Home() {
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-slate-600">Upload a PDF, review the proposed overlays, and publish evidence-aware reporting for your managed services practice.</p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link href="/upload" className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-[#11162E] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0A3E9B]"><Upload className="h-4 w-4" aria-hidden="true" />Create a report</Link>
-            <a href="https://github.com/thecelestialmismatch/RipoDoc" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-[#11162E] transition hover:border-[#1769E8]">View the repository<ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
+            <Link href="/download" className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-[#11162E] transition hover:border-[#1769E8]">Download & self-host<ArrowRight className="h-4 w-4" aria-hidden="true" /></Link>
           </div>
         </div>
       </section>

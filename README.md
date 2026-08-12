@@ -150,7 +150,7 @@ The `/security` page provides operator-safe indicators for this posture. It neve
 
 ## Verification
 
-The repository uses the built-in Node.js test runner for evidence and application-runtime boundaries. The current regression suite completes **133 tests** with no failures, including an end-to-end local worker test that verifies the manifest requirement, review gate, signed publication, and PDF download, followed by clean linting, type checking, and a production build. See [`docs/05-security/authentication-and-test-coverage.md`](docs/05-security/authentication-and-test-coverage.md) for the full file-by-file coverage map.
+The repository uses the built-in Node.js test runner for evidence and application-runtime boundaries. The current regression suite completes **135 tests** with no failures, including an end-to-end local worker test that verifies the manifest requirement, review gate, signed publication, and PDF download, plus dashboard/download route-contract coverage, followed by clean linting, type checking, and a production build. See [`docs/05-security/authentication-and-test-coverage.md`](docs/05-security/authentication-and-test-coverage.md) for the full file-by-file coverage map.
 
 ```bash
 npm test              # evidence, audit, runtime-posture, and admin-key tests

@@ -24,7 +24,7 @@ This document maps RipoDoc’s implemented technical controls directly to **ISO/
 | **A.8.16** | Monitoring Activities | Hash-chained audit logging (`web/frontend/src/lib/audit/audit-log.ts`) records security-relevant events with tamper-evident chain verification tested in `audit.test.ts`. |
 | **A.8.20** | Network Security | Private PDF authoring worker is bound to loopback or isolated internal networks, inaccessible directly from the browser; communication requires server-issued HMAC capabilities. |
 | **A.8.24** | Use of Cryptography | HMAC-SHA-256 for evidence tokens, recipient challenge hashes, and capability signing; strict validation rejecting weak secrets (`tools/evidence-pdf/test/token.test.ts`). |
-| **A.8.28** | Secure Coding | Strict TypeScript static analysis, ESLint validation, automated regression test suite (`npm run verify` passing 133 tests), and zero-vulnerability dependency audits. |
+| **A.8.28** | Secure Coding | Strict TypeScript static analysis, ESLint validation, automated regression test suite (`npm run verify` passing 135 tests), and zero-vulnerability dependency audits. |
 
 ---
 
@@ -49,6 +49,6 @@ This crosswalk describes implemented technical controls and the evidence availab
 ## 5. Continuous Compliance & Audit Readiness
 
 RipoDoc’s architecture supports continuous auditability through:
-1. **Verifiable Test Artifacts**: 133 automated unit and integration tests executing on every commit.
+1. **Verifiable Test Artifacts**: 135 automated unit and integration tests in the current release gate.
 2. **Tamper-Evident Logs**: Hash-chained event logging ensuring audit logs cannot be altered without detection.
 3. **Fail-Closed Design**: All security-sensitive paths default to denial when configuration or session verification fails.
