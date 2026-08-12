@@ -7,7 +7,8 @@ RUN npm ci --prefix web/frontend --ignore-scripts
 FROM dependencies AS build
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN npm --prefix web/frontend run build
+RUN npm --prefix web/frontend run build \
+  && npm --prefix web/frontend prune --omit=dev
 
 FROM node:22-bookworm-slim AS runtime
 WORKDIR /app
@@ -19,10 +20,14 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN groupadd --system --gid 10001 ripodoc \
   && useradd --system --uid 10001 --gid ripodoc --home-dir /nonexistent --shell /usr/sbin/nologin ripodoc
 COPY --chown=ripodoc:ripodoc --from=build /app/web/frontend ./web/frontend
-COPY --chown=ripodoc:ripodoc --from=build /app/node_modules ./node_modules
 COPY --chown=ripodoc:ripodoc --from=build /app/tools ./tools
-COPY --chown=ripodoc:ripodoc --from=build /app/content ./content
+# Compose configures RIPODOC_CONTENT_ROOT=/app/content/reports; copy the manifests to that runtime root.
+COPY --chown=ripodoc:ripodoc --from=build /app/web/frontend/content ./content
 
+# npm is required only to build the application. Remove its bundled CLI dependency tree
+# from the runtime image and invoke the already-installed Next.js binary with node.
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
+WORKDIR /app/web/frontend
 USER ripodoc
 EXPOSE 3000
-CMD ["npm", "--prefix", "web/frontend", "run", "start"]
+CMD ["node", "node_modules/next/dist/bin/next", "start"]
