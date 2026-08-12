@@ -14,14 +14,27 @@ services:
       interval: 5s
       timeout: 5s
       retries: 20
+      start_period: 10s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    deploy:
+      resources:
+        limits:
+          cpus: "1.00"
+          memory: 1G
 
   web:
     build:
       context: .
       dockerfile: docker/web.Dockerfile
     restart: unless-stopped
+    init: true
     depends_on:
       postgres:
+        condition: service_healthy
+      worker:
         condition: service_healthy
     ports:
       - "${RIPODOC_PORT:-3000}:3000"
@@ -34,27 +47,69 @@ services:
       RIPODOC_EMAIL_FROM: ${RIPODOC_EMAIL_FROM:?Set the verified sender address}
       RIPODOC_TURNSTILE_SECRET: ${RIPODOC_TURNSTILE_SECRET:?Set Cloudflare Turnstile secret}
       NEXT_PUBLIC_RIPODOC_TURNSTILE_SITE_KEY: ${NEXT_PUBLIC_RIPODOC_TURNSTILE_SITE_KEY:?Set Cloudflare Turnstile site key}
-      NEXT_PUBLIC_LOCAL_API: ${NEXT_PUBLIC_LOCAL_API:-http://localhost:4000/api/local}
+      RIPODOC_LOCAL_WORKER_URL: http://worker:4000/api/local
+      RIPODOC_WORKER_AUTH_SECRET: ${RIPODOC_WORKER_AUTH_SECRET:?Set a 32+ character private worker authorization secret}
       RIPODOC_CONTENT_ROOT: /app/content/reports
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: "1.00"
+          memory: 768M
 
   worker:
     build:
       context: .
       dockerfile: docker/local/Dockerfile
     restart: unless-stopped
-    depends_on:
-      web:
-        condition: service_started
+    init: true
     ports:
       - "127.0.0.1:4000:4000"
     environment:
       PORT: 4000
       RIPODOC_BIND_HOST: 0.0.0.0
-      RIPODOC_ALLOWED_ORIGIN: ${RIPODOC_APP_ORIGIN:?Set the HTTPS public application origin}
       RIPODOC_EVIDENCE_SECRET: ${RIPODOC_EVIDENCE_SECRET:?Set a 32+ character evidence secret}
+      RIPODOC_WORKER_AUTH_SECRET: ${RIPODOC_WORKER_AUTH_SECRET:?Set a 32+ character private worker authorization secret}
+      RIPODOC_WORKER_MAX_CONCURRENT_JOBS: ${RIPODOC_WORKER_MAX_CONCURRENT_JOBS:-2}
       DATA_DIR: /data
     volumes:
       - ripodoc-worker:/data
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=128m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    # Used only by the init entrypoint to correct the named-volume ownership;
+    # the entrypoint then execs the worker as the unprivileged ripodoc user.
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:4000/api/local/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "1.00"
+          memory: 768M
 
 volumes:
   ripodoc-postgres:

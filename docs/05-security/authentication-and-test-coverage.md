@@ -1,7 +1,7 @@
 # Authentication Architecture and Test Coverage
 
-**Maintainer:** Manus AI  
-**Release baseline:** PR #7, merged commit `a0a04dd`  
+**Maintainer:** Manus AI
+**Release baseline:** Worker-hardening release branch based on PR #8, merged commit `f316e1e`
 **Validation command:** `npm run verify`
 
 ## Authentication architecture
@@ -26,13 +26,13 @@ The repository uses Node’s built-in test runner. Its production test command e
 
 | Security coverage area | Tests | What this proves |
 | --- | ---: | --- |
-| Authentication, workspace runtime, and admin-key handling | 5 | Scrypt and opaque-token primitives work; protected runtime posture avoids secret exposure; admin access is gated by a minimum-strength operator key. |
+| Authentication, workspace runtime, and role-bound operator posture | 5 | Scrypt and opaque-token primitives work; protected runtime posture avoids secret exposure; the retired deployment-wide admin key is not surfaced, while the product authorizes `/admin` through verified workspace owner/admin roles. |
 | Evidence authorization and expiry | 16 | Evidence claims are signed, recipient-hash-bound, expiry-checked, revocable, report-scoped, and recipient-safe on denial. |
 | Manifest and fixture validation | 16 | Published input is structurally validated, unsafe or duplicate element IDs are rejected, approvals are mandatory, and malformed report fields cannot reach rendering. |
 | Hash-chained audit trail | 11 | Audit history detects tampering, protects recipient identity, remains verifiable across reopen/append operations, and records access outcomes. |
 | Reviewed overlay publication workflow | 57 | Exact-PDF binding, review approvals, element mapping, placement bounds, proposal parsing, link generation, and readback are enforced. |
 | PDF construction and safe delivery | 27 | PDF serialization escapes untrusted values; external URLs must be HTTPS; unsafe rectangles and JavaScript are refused; evidence rows remain out of final PDFs. |
-| Local worker end-to-end boundary | 1 | The self-hosted worker requires a validated manifest, reviewed proposal, signed publication, and yields only the approved PDF artifact. |
+| Private worker authorization and publication boundary | 1 | The worker rejects direct browser and unsigned requests, validates a server-issued tenant/scope/draft capability, prevents cross-tenant proposal access, records the server reviewer rather than trusting browser approval strings, rejects wrong-purpose publish attempts, validates PDF bytes, and yields only the digest-checked approved PDF artifact. |
 | **Total** | **133** | Complete shipped regression suite. |
 
 ## File-by-file test inventory
@@ -40,7 +40,7 @@ The repository uses Node’s built-in test runner. Its production test command e
 | Test file | Tests | Security and product coverage |
 | --- | ---: | --- |
 | `tools/evidence-pdf/test/auth-primitives.test.ts` | 2 | Scrypt derivation/verification and random token or privacy-hash behavior. |
-| `tools/evidence-pdf/test/application-runtime.test.ts` | 3 | Valid manifest discovery, secret-safe security posture, and admin key/session primitives. |
+| `tools/evidence-pdf/test/application-runtime.test.ts` | 3 | Valid manifest discovery, secret-safe security posture, and regression protection against exposing the retired deployment-wide admin key. |
 | `tools/evidence-pdf/test/audit.test.ts` | 11 | Hash chaining, tamper detection, concurrent appends, restart behavior, structured sink, and no raw recipient email in audit records. |
 | `tools/evidence-pdf/test/demo-fixture.test.ts` | 3 | Shipped fixture validity and production-ready evidence source structure. |
 | `tools/evidence-pdf/test/link-expiry.test.ts` | 4 | Time-bound claim expiry, control behavior, and denial semantics. |
@@ -53,7 +53,7 @@ The repository uses Node’s built-in test runner. Its production test command e
 | `tools/evidence-pdf/test/pdf.test.ts` | 18 | PDF escaping, link annotations, HTTPS requirement, zero-area refusal, loopback restriction, deterministic output, and xref integrity. |
 | `tools/evidence-pdf/test/report.test.ts` | 9 | Complete report links, on-page geometry, zero embedded evidence rows, no JavaScript, secure origin enforcement, and URL encoding. |
 | `tools/evidence-pdf/test/token.test.ts` | 12 | HMAC claim integrity, recipient privacy binding, wrong-secret/tamper refusal, revocation, report scope, malformed tokens, and recipient-safe errors. |
-| `docker/local/server.test.mjs` | 1 | End-to-end self-hosted worker publication and PDF download workflow. |
+| `docker/local/server.test.mjs` | 1 | End-to-end private-worker flow covering direct-browser rejection, missing authorization, invalid PDF rejection, tenant isolation, capability scope enforcement, server-bound review attribution, safe failures, publication, and PDF download. |
 
 ## Running the release gate
 
@@ -65,7 +65,7 @@ npm run build:web
 npm run verify
 ```
 
-The canonical `verify` command runs `typecheck`, then the 133-test suite, then the production frontend build. It should be the minimum pre-merge gate for any change that affects authorization, user identity, evidence claims, manifests, audit behavior, PDF rendering, or worker ingress.[3]
+The canonical `verify` command runs `typecheck`, then the 133-test suite, then the production frontend build. It should be the minimum pre-merge gate for any change that affects authorization, user identity, evidence claims, manifests, audit behavior, PDF rendering, worker ingress, or private operations access.[3]
 
 ## References
 

@@ -5,6 +5,8 @@
 **Assessment scope:** RipoDoc commit `a0a04dd`; code and configuration review only.  
 **Change rule:** The audit table below records findings and recommendations only. It does **not** change implementation for Phase 2.
 
+> **Historical baseline.** This document records the read-only assessment at commit `a0a04dd`. It intentionally preserves the code/configuration evidence that existed at that time, including now-retired direct-worker and shared-admin patterns. Current release guidance is maintained in [`../05-engineering/deployment-runbook.md`](../05-engineering/deployment-runbook.md), [`../05-engineering/self-hosted-operations-runbook.md`](../05-engineering/self-hosted-operations-runbook.md), and [`worker-hardening-threat-model.md`](worker-hardening-threat-model.md).
+
 ## Self-hosted deployment architecture
 
 RipoDoc ships a three-service Compose topology designed for MSP-controlled operation. PostgreSQL holds identity, tenant, session, rate-limit, one-time-code, recipient-proof, and report metadata. The Next.js web service exposes the authenticated workspace and recipient experience. The PDF authoring worker remains a separate process with a loopback-only host binding, so report authoring is not silently exposed as a public SaaS upload endpoint.[1]
