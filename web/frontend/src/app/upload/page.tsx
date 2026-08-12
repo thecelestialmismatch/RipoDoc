@@ -18,8 +18,13 @@ import {
 import { BrandLockup } from '@/components/BrandLockup.tsx';
 
 const MAX_PDF_BYTES = 50 * 1024 * 1024;
-const LOCAL_API = process.env.NEXT_PUBLIC_LOCAL_API ?? 'http://localhost:4000/api/local';
-const LOCAL_API_CONFIGURED = Boolean(process.env.NEXT_PUBLIC_LOCAL_API);
+const AUTHORING_API = '/api/authoring';
+
+const csrfToken = (): string => {
+  if (typeof document === 'undefined') return '';
+  const value = document.cookie.split('; ').find((entry) => entry.startsWith('ripodoc_csrf='))?.slice('ripodoc_csrf='.length);
+  return value ? decodeURIComponent(value) : '';
+};
 
 type UploadStatus = 'uploading' | 'awaiting-review' | 'reviewing' | 'ready-to-publish' | 'publishing' | 'success' | 'error';
 
@@ -34,7 +39,7 @@ interface UploadedFile {
   downloadUrl?: string;
 }
 
-interface LocalUploadReply { readonly draftId?: string; readonly proposalUrl?: string; readonly message?: string; }
+interface LocalUploadReply { readonly draftId?: string; readonly message?: string; }
 interface LocalReply { readonly message?: string; readonly downloadUrl?: string; }
 
 const errorMessage = (error: unknown): string => error instanceof Error ? error.message : 'An unexpected error occurred.';
@@ -51,10 +56,6 @@ async function responseData<T>(response: Response): Promise<T> {
   return data as T;
 }
 
-function needsConfiguredWorker() {
-  if (typeof window === 'undefined') return false;
-  return !LOCAL_API_CONFIGURED && !['localhost', '127.0.0.1'].includes(window.location.hostname);
-}
 
 export default function UploadPage() {
   const [isDragging, setIsDragging] = useState(false);
@@ -91,11 +92,6 @@ export default function UploadPage() {
       setFiles((current) => [...current, { file, id, status: 'error', progress: 100, message: 'Choose a validated RipoDoc manifest before uploading a PDF.' }]);
       return;
     }
-    if (needsConfiguredWorker()) {
-      setFiles((current) => [...current, { file, id, status: 'error', progress: 100, message: 'The public website does not host a document processor. Run RipoDoc locally or configure NEXT_PUBLIC_LOCAL_API for your self-hosted worker.' }]);
-      return;
-    }
-
     setFiles((current) => [...current, { file, id, status: 'uploading', progress: 0 }]);
     const formData = new FormData();
     formData.append('pdf', file);
@@ -108,18 +104,17 @@ export default function UploadPage() {
         progress = Math.min(progress + 9, 90);
         setFiles((current) => current.map((item) => item.id === id ? { ...item, progress } : item));
       }, 120);
-      const response = await fetch(`${LOCAL_API}/upload-pdf`, { method: 'POST', body: formData });
+      const response = await fetch(`${AUTHORING_API}/upload`, { method: 'POST', headers: { 'X-RipoDoc-Csrf': csrfToken() }, body: formData });
       const data = await responseData<LocalUploadReply>(response);
-      if (!data.draftId || !data.proposalUrl) throw new Error('The worker did not return a placement proposal.');
+      if (!data.draftId) throw new Error('The worker did not return a placement proposal.');
       const draftId = data.draftId;
-      const proposalUrl = data.proposalUrl;
       setFiles((current) => current.map((item) => item.id === id ? {
         ...item,
         status: 'awaiting-review',
         progress: 100,
         message: data.message ?? 'Overlay proposal generated. Review it before publication.',
         draftId,
-        proposalUrl: new URL(proposalUrl, LOCAL_API).toString(),
+        proposalUrl: `${AUTHORING_API}/proposal?draftId=${encodeURIComponent(draftId)}`,
       } : item));
     } catch (error: unknown) {
       const unavailable = error instanceof TypeError;
@@ -140,7 +135,7 @@ export default function UploadPage() {
       const body = new FormData();
       body.append('draftId', draftId);
       body.append('proposal', proposal);
-      const response = await fetch(`${LOCAL_API}/review-placement`, { method: 'POST', body });
+      const response = await fetch(`${AUTHORING_API}/review`, { method: 'POST', headers: { 'X-RipoDoc-Csrf': csrfToken() }, body });
       const data = await responseData<LocalReply>(response);
       setFiles((current) => current.map((item) => item.id === fileId ? { ...item, status: 'ready-to-publish', message: data.message ?? 'Reviewed placement proposal accepted.' } : item));
     } catch (error: unknown) {
@@ -151,14 +146,12 @@ export default function UploadPage() {
   const publishPdf = async (fileId: string, draftId: string) => {
     setFiles((current) => current.map((item) => item.id === fileId ? { ...item, status: 'publishing', message: 'Publishing clickable PDF…' } : item));
     try {
-      const response = await fetch(`${LOCAL_API}/publish-pdf`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ draftId, origin: window.location.origin, ttlDays: 14 }),
+      const response = await fetch(`${AUTHORING_API}/publish`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json', 'X-RipoDoc-Csrf': csrfToken() },
+        body: JSON.stringify({ draftId, ttlDays: 14, csrf: csrfToken() }),
       });
       const data = await responseData<LocalReply>(response);
-      if (!data.downloadUrl) throw new Error('The worker did not return a download URL.');
-      const downloadUrl = data.downloadUrl;
-      setFiles((current) => current.map((item) => item.id === fileId ? { ...item, status: 'success', message: data.message ?? 'Clickable PDF generated.', downloadUrl: new URL(downloadUrl, LOCAL_API).toString() } : item));
+      setFiles((current) => current.map((item) => item.id === fileId ? { ...item, status: 'success', message: data.message ?? 'Clickable PDF generated.', downloadUrl: `${AUTHORING_API}/artifact?draftId=${encodeURIComponent(draftId)}` } : item));
     } catch (error: unknown) {
       setFiles((current) => current.map((item) => item.id === fileId ? { ...item, status: 'error', message: errorMessage(error) } : item));
     }
@@ -183,7 +176,7 @@ export default function UploadPage() {
           {manifestError && <p className="mt-3 flex items-start gap-2 text-sm text-[#B42345]"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />{manifestError}</p>}
 
           <div onDragOver={(event) => { event.preventDefault(); setIsDragging(true); }} onDragLeave={() => setIsDragging(false)} onDrop={handleDrop} className={`mt-6 rounded-2xl border-2 border-dashed px-5 py-12 text-center transition duration-200 sm:px-10 ${isDragging ? 'scale-[1.01] border-[#12B9BE] bg-[#DDF9F7]' : 'border-slate-300 bg-[#F6F8FC] hover:border-[#1769E8]/50 hover:bg-[#EAF5FF]/50'}`}><span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#EAF5FF] to-[#DDF9F7] text-[#1769E8]"><Upload className={`h-7 w-7 transition ${isDragging ? 'scale-110' : ''}`} aria-hidden="true" /></span><h2 className="mt-5 text-xl font-bold tracking-[-0.03em] text-[#11162E]">{isDragging ? 'Drop the PDF to propose overlays' : 'Drop the matching PDF report here'}</h2><p className="mt-2 text-sm text-slate-600">The worker will generate a placement proposal for human review.</p><label className="mt-6 inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-xl bg-[#11162E] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0A3E9B] active:scale-[0.98]"><FileText className="h-4 w-4" aria-hidden="true" />Choose PDF<input type="file" accept=".pdf,application/pdf" multiple className="hidden" onChange={(event) => { Array.from(event.target.files ?? []).forEach((file) => { void addFile(file); }); event.target.value = ''; }} /></label><p className="mt-4 text-xs text-slate-500">PDF only · 50 MB maximum · processed by your configured local worker</p></div>
-          {needsConfiguredWorker() && <div className="mt-5 flex gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-left text-sm leading-6 text-amber-950"><Info className="mt-0.5 h-5 w-5 shrink-0 text-amber-700" aria-hidden="true" /><p><strong>Public demonstration mode:</strong> the hosted website does not receive report files. Run <code className="rounded bg-white px-1.5 py-0.5 text-xs">npm run dev:local-server</code> locally, or configure <code className="rounded bg-white px-1.5 py-0.5 text-xs">NEXT_PUBLIC_LOCAL_API</code> for your private worker.</p></div>}
+          <div className="mt-5 flex gap-3 rounded-2xl border border-cyan-200 bg-cyan-50 p-4 text-left text-sm leading-6 text-cyan-950"><ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-cyan-700" aria-hidden="true" /><p><strong>Private authoring boundary:</strong> PDF content is submitted only through your verified workspace session. The browser never receives a worker credential or a direct worker URL; the server issues a short-lived, tenant-bound authorization for every authoring action.</p></div>
         </section>
 
         {files.length > 0 && <section className="mt-7" aria-labelledby="processing-title"><div className="mb-3 flex flex-wrap items-center justify-between gap-3"><h2 id="processing-title" className="text-lg font-bold tracking-[-0.025em] text-[#11162E]">Authoring workflow</h2>{readyFiles > 0 && <span className="rounded-full bg-[#EAF5FF] px-2.5 py-1 text-xs font-semibold text-[#0A3E9B]">{readyFiles} ready to publish</span>}</div><div className="space-y-3">{files.map((file) => <FileRow key={file.id} file={file} onReview={uploadReviewedProposal} onPublish={publishPdf} onRemove={(id) => setFiles((current) => current.filter((item) => item.id !== id))} />)}</div></section>}

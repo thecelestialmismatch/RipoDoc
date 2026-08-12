@@ -1,67 +1,12 @@
 import { NextResponse } from 'next/server';
-import {
-  ADMIN_SESSION_COOKIE,
-  adminAccessConfigured,
-  adminSessionValue,
-  validAdminAccessKey,
-} from '@/lib/admin/session.ts';
 
 export const runtime = 'nodejs';
 
-const loginUrl = (request: Request, error?: string): URL => {
-  const url = new URL('/admin/login', request.url);
-  if (error) url.searchParams.set('error', error);
-  return url;
-};
+const retired = () => NextResponse.json(
+  { error: 'Shared administrator access has been retired. Sign in with a verified owner or admin workspace account.' },
+  { status: 410, headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' } },
+);
 
-export async function POST(request: Request): Promise<Response> {
-  const form = await request.formData();
-  if (form.get('_method') === 'delete') {
-    const response = NextResponse.redirect(new URL('/', request.url), { status: 303 });
-    response.cookies.set({
-      name: ADMIN_SESSION_COOKIE,
-      value: '',
-      httpOnly: true,
-      sameSite: 'strict',
-      secure: process.env.NODE_ENV === 'production',
-      path: '/admin',
-      maxAge: 0,
-    });
-    return response;
-  }
-
-  if (!adminAccessConfigured()) {
-    return NextResponse.redirect(loginUrl(request, 'not-configured'), { status: 303 });
-  }
-
-  const accessKey = form.get('accessKey');
-  if (!validAdminAccessKey(accessKey)) {
-    return NextResponse.redirect(loginUrl(request, 'invalid'), { status: 303 });
-  }
-
-  const response = NextResponse.redirect(new URL('/admin', request.url), { status: 303 });
-  response.cookies.set({
-    name: ADMIN_SESSION_COOKIE,
-    value: adminSessionValue() as string,
-    httpOnly: true,
-    sameSite: 'strict',
-    secure: process.env.NODE_ENV === 'production',
-    path: '/admin',
-    maxAge: 60 * 60 * 8,
-  });
-  return response;
-}
-
-export async function DELETE(request: Request): Promise<Response> {
-  const response = NextResponse.redirect(new URL('/', request.url), { status: 303 });
-  response.cookies.set({
-    name: ADMIN_SESSION_COOKIE,
-    value: '',
-    httpOnly: true,
-    sameSite: 'strict',
-    secure: process.env.NODE_ENV === 'production',
-    path: '/admin',
-    maxAge: 0,
-  });
-  return response;
-}
+/** Individual workspace sessions now authorize /admin. This route mints no cookies. */
+export async function POST(): Promise<Response> { return retired(); }
+export async function DELETE(): Promise<Response> { return retired(); }

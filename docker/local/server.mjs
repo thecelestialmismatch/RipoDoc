@@ -1,23 +1,19 @@
 /**
- * Local development server for the RipoDoc authoring studio.
+ * Private RipoDoc self-hosted authoring worker.
  *
- * Zero-dependency Node.js HTTP server that persists drafts and published
- * manifests as JSON files under /data. The Next.js frontend talks to this
- * server via API proxy routes (see src/app/api/local/).
- *
- * This is NOT a production backend. It exists so a solo founder can develop
- * the full authoring flow end-to-end without standing up the Go + PostgreSQL
- * stack. The Go API is the production target (see architecture.md).
+ * This service is intentionally not a public browser API. It accepts only a
+ * short-lived, single-use capability issued by the trusted Next.js server,
+ * stores every draft under a tenant namespace, and publishes only after a
+ * server-recorded review is bound to the exact source PDF and proposal.
  */
 
 import http from 'node:http';
-import { copyFile, mkdir, readFile, readdir, writeFile, unlink } from 'node:fs/promises';
+import { copyFile, mkdir, readFile, readdir, rm, stat, unlink, writeFile } from 'node:fs/promises';
 import { dirname, join, normalize, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { json } from 'node:stream/consumers';
 import { execFile as execFileCb } from 'node:child_process';
+import { createHash, createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import { promisify } from 'node:util';
-import { randomBytes } from 'node:crypto';
 import { IncomingForm } from 'formidable';
 
 const execFile = promisify(execFileCb);
@@ -30,285 +26,382 @@ const DRAFTS_DIR = join(DATA_DIR, 'drafts');
 const MANIFESTS_DIR = join(DATA_DIR, 'manifests');
 const UPLOADS_DIR = join(DATA_DIR, 'uploads');
 const PLACEMENTS_DIR = join(DATA_DIR, 'placements');
+const METADATA_DIR = join(DATA_DIR, 'metadata');
 
-const ALLOWED_ORIGIN = process.env.RIPODOC_ALLOWED_ORIGIN || 'http://localhost:3000';
-const corsHeaders = (origin) => ({
-  ...(origin === ALLOWED_ORIGIN ? { 'Access-Control-Allow-Origin': ALLOWED_ORIGIN, Vary: 'Origin' } : {}),
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-});
+const MAX_PDF_BYTES = 50 * 1024 * 1024;
+const MAX_REVIEW_BYTES = 5 * 1024 * 1024;
+const MAX_JSON_BYTES = 1024 * 1024;
+const MAX_ACTIVE_JOBS = Math.max(1, Math.min(Number(process.env.RIPODOC_WORKER_MAX_CONCURRENT_JOBS) || 2, 4));
+const MAX_ARTIFACT_AGE_MS = 72 * 60 * 60 * 1000;
+const CAPABILITY_MAX_AGE_SECONDS = 90;
+const AUTH_SECRET = process.env.RIPODOC_WORKER_AUTH_SECRET;
 
-const sendJson = (res, status, body, origin = undefined) => {
+if (!AUTH_SECRET || AUTH_SECRET.length < 32) {
+  throw new Error('RIPODOC_WORKER_AUTH_SECRET must be configured with at least 32 characters.');
+}
+
+let activeJobs = 0;
+const usedCapabilityIds = new Map();
+
+const allowedScopes = new Set(['upload', 'proposal-download', 'review', 'publish', 'artifact-download', 'draft-read', 'draft-update', 'draft-delete']);
+const authorRoles = new Set(['owner', 'admin', 'author']);
+
+const safeId = (id) => typeof id === 'string' && /^draft-[a-f0-9]{16}$/.test(id) ? id : '';
+const safeReportId = (id) => typeof id === 'string' && /^[a-zA-Z0-9_-]{1,128}$/.test(id) ? id : '';
+const safePath = (base, name, extension) => {
+  const path = join(base, `${name}${extension}`);
+  return normalize(path).startsWith(`${normalize(base)}${String.raw`/`}`) ? path : null;
+};
+
+const pathsFor = (draftId) => {
+  const id = safeId(draftId);
+  if (!id) return undefined;
+  return {
+    draft: safePath(DRAFTS_DIR, id, '.json'),
+    manifest: safePath(MANIFESTS_DIR, id, '.json'),
+    sourcePdf: safePath(UPLOADS_DIR, `${id}.source`, '.pdf'),
+    placement: safePath(PLACEMENTS_DIR, id, '.placements.json'),
+    artifact: safePath(UPLOADS_DIR, `${id}-clickable`, '.pdf'),
+    metadata: safePath(METADATA_DIR, id, '.json'),
+  };
+};
+
+const requestIdFor = (req) => {
+  const supplied = req.headers['x-ripodoc-request-id'];
+  return typeof supplied === 'string' && /^[A-Za-z0-9_-]{16,64}$/.test(supplied) ? supplied : randomBytes(12).toString('base64url');
+};
+
+const sendJson = (res, status, body, requestId) => {
   const data = body === null ? '' : JSON.stringify(body);
   res.writeHead(status, {
-    ...corsHeaders(origin),
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/json; charset=utf-8',
     'Content-Length': Buffer.byteLength(data),
+    'Cache-Control': 'no-store',
+    'X-Content-Type-Options': 'nosniff',
+    ...(requestId ? { 'X-RipoDoc-Request-Id': requestId } : {}),
   });
   res.end(data);
 };
 
-const safeId = (id) => {
-  if (!/^[a-zA-Z0-9_-]{1,128}$/.test(id)) return '';
-  return id;
+const sendFailure = (res, status, code, requestId) => sendJson(res, status, { error: code, ...(requestId ? { requestId } : {}) }, requestId);
+
+const log = (event, requestId, extra = {}) => {
+  // Deliberately no raw errors, secrets, PDFs, tokens, recipient data, or manifests.
+  console.log(JSON.stringify({ service: 'ripodoc-worker', event, requestId, at: new Date().toISOString(), ...extra }));
 };
 
-const safePath = (base, id) => {
-  const path = join(base, `${id}.json`);
-  if (!normalize(path).startsWith(normalize(base))) return null;
-  return path;
+const sha256 = (value) => createHash('sha256').update(value).digest('hex');
+const fileDigest = async (path) => sha256(await readFile(path));
+
+const stableJson = (value) => {
+  if (Array.isArray(value)) return `[${value.map(stableJson).join(',')}]`;
+  if (value && typeof value === 'object') {
+    return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${stableJson(value[key])}`).join(',')}}`;
+  }
+  return JSON.stringify(value);
 };
 
-const listFiles = async (dir) => {
+const digestObject = (value) => sha256(Buffer.from(stableJson(value), 'utf8'));
+
+const timingSafe = (left, right) => {
+  const a = Buffer.from(left);
+  const b = Buffer.from(right);
+  return a.length === b.length && timingSafeEqual(a, b);
+};
+
+const signCapability = (encoded) => createHmac('sha256', AUTH_SECRET).update(encoded).digest('base64url');
+
+const consumeCapability = (req, res, scope, draftId, requestId) => {
+  const authorization = req.headers.authorization;
+  if (typeof authorization !== 'string' || !authorization.startsWith('Bearer ')) {
+    sendFailure(res, 401, 'Authoring authorization is required.', requestId);
+    return undefined;
+  }
+  const raw = authorization.slice('Bearer '.length);
+  const [encoded, signature] = raw.split('.');
+  if (!encoded || !signature || !timingSafe(signCapability(encoded), signature)) {
+    sendFailure(res, 401, 'Authoring authorization is invalid.', requestId);
+    return undefined;
+  }
+  let capability;
   try {
-    return (await readdir(dir)).filter((f) => f.endsWith('.json'));
+    capability = JSON.parse(Buffer.from(encoded, 'base64url').toString('utf8'));
   } catch {
-    return [];
+    sendFailure(res, 401, 'Authoring authorization is invalid.', requestId);
+    return undefined;
+  }
+  const now = Math.floor(Date.now() / 1000);
+  const valid = capability && capability.aud === 'ripodoc-authoring-worker' && capability.v === 1 &&
+    typeof capability.sub === 'string' && typeof capability.tid === 'string' && typeof capability.jti === 'string' &&
+    typeof capability.role === 'string' && authorRoles.has(capability.role) && capability.scope === scope &&
+    allowedScopes.has(capability.scope) && Number.isInteger(capability.iat) && Number.isInteger(capability.exp) &&
+    capability.exp >= now && capability.iat <= now + 10 && capability.exp - capability.iat <= CAPABILITY_MAX_AGE_SECONDS &&
+    (!draftId || capability.draftId === draftId);
+  if (!valid) {
+    sendFailure(res, 403, 'Authoring authorization is not permitted for this action.', requestId);
+    return undefined;
+  }
+  for (const [jti, expires] of usedCapabilityIds.entries()) if (expires < now) usedCapabilityIds.delete(jti);
+  if (usedCapabilityIds.has(capability.jti)) {
+    sendFailure(res, 409, 'This authoring request has already been used.', requestId);
+    return undefined;
+  }
+  usedCapabilityIds.set(capability.jti, capability.exp);
+  return capability;
+};
+
+const readJsonBody = async (req, limit = MAX_JSON_BYTES) => {
+  const chunks = [];
+  let bytes = 0;
+  for await (const chunk of req) {
+    const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+    bytes += buffer.length;
+    if (bytes > limit) throw new Error('request-too-large');
+    chunks.push(buffer);
+  }
+  return JSON.parse(Buffer.concat(chunks).toString('utf8'));
+};
+
+const loadMetadata = async (draftId) => {
+  const paths = pathsFor(draftId);
+  if (!paths?.metadata) return undefined;
+  try {
+    const parsed = JSON.parse(await readFile(paths.metadata, 'utf8'));
+    return parsed && parsed.schemaVersion === 1 ? parsed : undefined;
+  } catch {
+    return undefined;
   }
 };
 
-const firstField = (fields, name) => {
-  const value = fields[name];
-  return Array.isArray(value) ? value[0] : value;
+const storeMetadata = async (draftId, metadata) => {
+  const paths = pathsFor(draftId);
+  if (!paths?.metadata) throw new Error('invalid-draft');
+  await writeFile(paths.metadata, `${JSON.stringify(metadata, null, 2)}\n`, 'utf8');
+};
+
+const belongsTo = (metadata, capability) => metadata && metadata.tenantId === capability.tid;
+
+const validPdf = async (path, maximum = MAX_PDF_BYTES) => {
+  const info = await stat(path);
+  if (info.size <= 8 || info.size > maximum) return false;
+  const bytes = await readFile(path);
+  return bytes.subarray(0, 5).toString('ascii') === '%PDF-' && bytes.subarray(Math.max(0, bytes.length - 4096)).includes(Buffer.from('%%EOF'));
+};
+
+const withJobSlot = async (requestId, operation) => {
+  if (activeJobs >= MAX_ACTIVE_JOBS) {
+    const error = new Error('worker-busy');
+    error.code = 'worker-busy';
+    throw error;
+  }
+  activeJobs += 1;
+  try {
+    return await operation();
+  } finally {
+    activeJobs -= 1;
+    log('job-finished', requestId, { activeJobs });
+  }
+};
+
+const removeDraftArtifacts = async (draftId) => {
+  const paths = pathsFor(draftId);
+  if (!paths) return;
+  await Promise.all(Object.values(paths).map((path) => path ? rm(path, { force: true }).catch(() => undefined) : undefined));
+};
+
+const cleanupExpiredArtifact = async (draftId, metadata) => {
+  if (!metadata?.artifactExpiresAt || Date.parse(metadata.artifactExpiresAt) > Date.now()) return false;
+  await removeDraftArtifacts(draftId);
+  return true;
+};
+
+const parseReviewedProposal = (reviewed, original, metadata, capability) => {
+  if (!reviewed || typeof reviewed !== 'object' || !Array.isArray(reviewed.placements) || reviewed.placements.length === 0) throw new Error('invalid-review');
+  if (reviewed.reportId !== metadata.reportId || reviewed.version !== metadata.version || reviewed.pdfSha256 !== metadata.sourcePdfSha256) throw new Error('review-mismatch');
+  const originalByElement = new Map(original.placements.map((placement) => [placement.elementId, placement]));
+  if (reviewed.placements.length !== originalByElement.size || reviewed.placements.some((placement) => !placement || typeof placement.elementId !== 'string' || !originalByElement.has(placement.elementId))) throw new Error('review-elements');
+  return {
+    ...reviewed,
+    placements: reviewed.placements.map((placement) => ({
+      ...placement,
+      approvedBy: `reviewer:${capability.sub}`,
+      approvedAt: new Date().toISOString(),
+    })),
+  };
 };
 
 const handler = async (req, res) => {
+  const requestId = requestIdFor(req);
   const origin = req.headers.origin;
-  if (origin && origin !== ALLOWED_ORIGIN) return sendJson(res, 403, { error: 'Origin not allowed' }, origin);
-  if (req.method === 'OPTIONS') {
-    res.writeHead(204, corsHeaders(origin));
-    res.end();
-    return;
-  }
+  if (origin) return sendFailure(res, 403, 'Browser requests are not accepted by the private worker.', requestId);
+  if (req.method === 'OPTIONS') return sendFailure(res, 405, 'Method not allowed.', requestId);
 
   const url = new URL(req.url ?? '/', 'http://localhost');
   const path = url.pathname.replace(/^\/api\/local/, '');
-  const segments = path.split('/').filter((s) => s.length > 0);
+  const segments = path.split('/').filter(Boolean);
 
   try {
-    if (segments.length === 1 && segments[0] === 'health') {
-      return sendJson(res, 200, { status: 'ok', version: '1.0.0' });
-    }
-
-    if (segments.length === 1 && segments[0] === 'drafts') {
-      if (req.method === 'GET') {
-        const files = await listFiles(DRAFTS_DIR);
-        const drafts = await Promise.all(
-          files.map(async (f) => {
-            try {
-              const raw = await readFile(join(DRAFTS_DIR, f), 'utf8');
-              return JSON.parse(raw);
-            } catch {
-              return null;
-            }
-          }),
-        );
-        return sendJson(res, 200, drafts.filter((d) => d !== null));
-      }
-      if (req.method === 'POST') {
-        const draft = await json(req);
-        if (!draft?.draftId || !safeId(draft.draftId)) {
-          return sendJson(res, 400, { error: 'Invalid or missing draftId' });
-        }
-        await mkdir(DRAFTS_DIR, { recursive: true });
-        const p = safePath(DRAFTS_DIR, draft.draftId);
-        if (!p) return sendJson(res, 400, { error: 'Invalid draft id' });
-        await writeFile(p, JSON.stringify(draft, null, 2), 'utf8');
-        return sendJson(res, 201, { ok: true, draftId: draft.draftId });
-      }
-      return sendJson(res, 405, { error: 'Method not allowed' });
-    }
-
-    if (segments.length === 2 && segments[0] === 'drafts') {
-      const id = safeId(segments[1]);
-      if (!id) return sendJson(res, 400, { error: 'Invalid draft id' });
-      const p = safePath(DRAFTS_DIR, id);
-      if (!p) return sendJson(res, 400, { error: 'Invalid draft id' });
-
-      if (req.method === 'GET') {
-        try {
-          const raw = await readFile(p, 'utf8');
-          return sendJson(res, 200, JSON.parse(raw));
-        } catch {
-          return sendJson(res, 404, { error: 'Draft not found' });
-        }
-      }
-      if (req.method === 'PUT') {
-        const draft = await json(req);
-        await writeFile(p, JSON.stringify(draft, null, 2), 'utf8');
-        return sendJson(res, 200, { ok: true });
-      }
-      if (req.method === 'DELETE') {
-        try {
-          await unlink(p);
-          return sendJson(res, 204, null);
-        } catch {
-          return sendJson(res, 404, { error: 'Draft not found' });
-        }
-      }
-      return sendJson(res, 405, { error: 'Method not allowed' });
-    }
-
-    if (segments.length === 1 && segments[0] === 'publish' && req.method === 'POST') {
-      const manifest = await json(req);
-      if (!manifest?.reportId || !safeId(manifest.reportId)) {
-        return sendJson(res, 400, { error: 'Invalid or missing reportId' });
-      }
-      await mkdir(MANIFESTS_DIR, { recursive: true });
-      const manifestPath = safePath(MANIFESTS_DIR, manifest.reportId);
-      if (!manifestPath) return sendJson(res, 400, { error: 'Invalid report id' });
-      await writeFile(manifestPath, JSON.stringify(manifest, null, 2), 'utf8');
-      return sendJson(res, 201, { ok: true, reportId: manifest.reportId });
+    if (segments.length === 1 && segments[0] === 'health' && req.method === 'GET') {
+      return sendJson(res, 200, { status: 'ok', service: 'ripodoc-private-worker' }, requestId);
     }
 
     if (segments.length === 1 && segments[0] === 'upload-pdf' && req.method === 'POST') {
+      const capability = consumeCapability(req, res, 'upload', undefined, requestId);
+      if (!capability) return;
       await mkdir(UPLOADS_DIR, { recursive: true });
-      const form = new IncomingForm({ uploadDir: UPLOADS_DIR, keepExtensions: true, maxFileSize: 50 * 1024 * 1024 });
-      const [fields, files] = await new Promise((resolve, reject) => {
-        form.parse(req, (err, fields, files) => err ? reject(err) : resolve([fields, files]));
-      });
+      const form = new IncomingForm({ uploadDir: UPLOADS_DIR, keepExtensions: false, maxFiles: 1, maxFileSize: MAX_PDF_BYTES, allowEmptyFiles: false });
+      const [fields, files] = await new Promise((resolveForm, rejectForm) => form.parse(req, (error, parsedFields, parsedFiles) => error ? rejectForm(error) : resolveForm([parsedFields, parsedFiles])));
       const pdfFile = files.pdf?.[0];
-      const manifestText = firstField(fields, 'manifest');
-      if (!pdfFile) return sendJson(res, 400, { error: 'No PDF file uploaded' });
-      if (typeof manifestText !== 'string') return sendJson(res, 400, { error: 'A validated report manifest is required for PDF overlay proposals' });
-
+      const manifestText = Array.isArray(fields.manifest) ? fields.manifest[0] : fields.manifest;
+      if (!pdfFile || typeof manifestText !== 'string' || Buffer.byteLength(manifestText, 'utf8') > MAX_JSON_BYTES) return sendFailure(res, 400, 'A valid PDF and report manifest are required.', requestId);
       let manifest;
       try {
         manifest = JSON.parse(manifestText);
       } catch {
-        return sendJson(res, 400, { error: 'The report manifest must be valid JSON' });
+        return sendFailure(res, 400, 'A valid PDF and report manifest are required.', requestId);
       }
-      if (!manifest?.reportId || !safeId(manifest.reportId)) {
-        return sendJson(res, 400, { error: 'The report manifest has an invalid reportId' });
+      if (!safeReportId(manifest?.reportId)) return sendFailure(res, 400, 'A valid PDF and report manifest are required.', requestId);
+      if (!(await validPdf(pdfFile.filepath))) {
+        await unlink(pdfFile.filepath).catch(() => undefined);
+        return sendFailure(res, 400, 'The uploaded file is not an accepted PDF.', requestId);
       }
 
       const draftId = `draft-${randomBytes(8).toString('hex')}`;
-      const sourcePdfPath = join(UPLOADS_DIR, `${draftId}.source.pdf`);
-      const manifestPath = join(DRAFTS_DIR, `${draftId}.json`);
-      const placementsPath = join(PLACEMENTS_DIR, `${draftId}.placements.json`);
-      await copyFile(pdfFile.filepath, sourcePdfPath);
-      await writeFile(manifestPath, JSON.stringify(manifest, null, 2), 'utf8');
+      const paths = pathsFor(draftId);
+      await Promise.all([mkdir(DRAFTS_DIR, { recursive: true }), mkdir(MANIFESTS_DIR, { recursive: true }), mkdir(PLACEMENTS_DIR, { recursive: true }), mkdir(METADATA_DIR, { recursive: true })]);
+      await copyFile(pdfFile.filepath, paths.sourcePdf);
+      await unlink(pdfFile.filepath).catch(() => undefined);
+      await writeFile(paths.draft, JSON.stringify(manifest, null, 2), 'utf8');
+      await writeFile(paths.manifest, JSON.stringify(manifest, null, 2), 'utf8');
+      const sourcePdfSha256 = await fileDigest(paths.sourcePdf);
+      const manifestSha256 = digestObject(manifest);
+      const metadata = { schemaVersion: 1, draftId, tenantId: capability.tid, creatorId: capability.sub, reportId: manifest.reportId, version: manifest.version, sourcePdfSha256, manifestSha256, status: 'proposed', createdAt: new Date().toISOString() };
+      await storeMetadata(draftId, metadata);
 
       try {
-        await execFile(
-          'node',
-          ['--experimental-strip-types', OVERLAY_CLI, '--pdf', sourcePdfPath, '--manifest', manifestPath, '--propose', placementsPath],
-          { cwd: REPOSITORY_ROOT },
-        );
-        await readFile(placementsPath, 'utf8');
-        return sendJson(res, 200, {
-          draftId,
-          proposalUrl: `/api/local/download-placement/${draftId}`,
-          message: 'Overlay proposal generated. Download it, review every zone, add approver details, and upload the reviewed proposal before publishing.',
-        });
+        await withJobSlot(requestId, async () => execFile('node', ['--experimental-strip-types', OVERLAY_CLI, '--pdf', paths.sourcePdf, '--manifest', paths.manifest, '--propose', paths.placement], { cwd: REPOSITORY_ROOT, timeout: 30_000, maxBuffer: 1024 * 1024 }));
+        const proposal = JSON.parse(await readFile(paths.placement, 'utf8'));
+        metadata.proposalSha256 = digestObject(proposal);
+        await storeMetadata(draftId, metadata);
+        log('proposal-created', requestId, { draftId });
+        return sendJson(res, 200, { draftId, message: 'Overlay proposal generated. An authorized reviewer must approve it before publication.' }, requestId);
       } catch (error) {
-        const details = error instanceof Error ? error.message : String(error);
-        console.error(`Overlay CLI error: ${details}`);
-        return sendJson(res, 500, { error: 'Failed to generate an overlay proposal', details });
+        await removeDraftArtifacts(draftId);
+        log('proposal-failed', requestId, { reason: error?.code === 'worker-busy' ? 'busy' : 'processing' });
+        return sendFailure(res, error?.code === 'worker-busy' ? 429 : 500, error?.code === 'worker-busy' ? 'The private worker is busy. Retry shortly.' : 'The private worker could not generate a proposal.', requestId);
       }
     }
 
     if (segments.length === 1 && segments[0] === 'review-placement' && req.method === 'POST') {
-      const form = new IncomingForm({ maxFileSize: 5 * 1024 * 1024 });
-      const [fields, files] = await new Promise((resolve, reject) => {
-        form.parse(req, (err, fields, files) => err ? reject(err) : resolve([fields, files]));
-      });
-      const draftId = firstField(fields, 'draftId');
+      const headerDraftId = safeId(req.headers['x-ripodoc-draft-id']);
+      const capability = consumeCapability(req, res, 'review', headerDraftId, requestId);
+      if (!headerDraftId || !capability) return;
+      const form = new IncomingForm({ maxFiles: 1, maxFileSize: MAX_REVIEW_BYTES, allowEmptyFiles: false });
+      const [fields, files] = await new Promise((resolveForm, rejectForm) => form.parse(req, (error, parsedFields, parsedFiles) => error ? rejectForm(error) : resolveForm([parsedFields, parsedFiles])));
+      const draftId = Array.isArray(fields.draftId) ? fields.draftId[0] : fields.draftId;
+      const id = safeId(draftId);
+      if (id !== headerDraftId) return sendFailure(res, 403, 'Authoring authorization is not permitted for this action.', requestId);
+      const metadata = await loadMetadata(id);
+      const paths = pathsFor(id);
       const proposalFile = files.proposal?.[0];
-      if (typeof draftId !== 'string' || !safeId(draftId) || !proposalFile) {
-        return sendJson(res, 400, { error: 'A valid draftId and reviewed placement file are required' });
-      }
+      if (!metadata || !paths || !proposalFile || !belongsTo(metadata, capability) || metadata.status !== 'proposed') return sendFailure(res, 404, 'The requested authoring draft is unavailable.', requestId);
       try {
-        const reviewed = JSON.parse(await readFile(proposalFile.filepath, 'utf8'));
-        if (!Array.isArray(reviewed.placements) || reviewed.placements.length === 0) {
-          return sendJson(res, 400, { error: 'The reviewed placement file must include at least one placement' });
-        }
-        if (reviewed.placements.some((placement) => typeof placement.approvedBy !== 'string' || typeof placement.approvedAt !== 'string')) {
-          return sendJson(res, 400, { error: 'Every placement must include approvedBy and approvedAt before publication' });
-        }
-        await writeFile(join(PLACEMENTS_DIR, `${draftId}.placements.json`), `${JSON.stringify(reviewed, null, 2)}\n`, 'utf8');
-        return sendJson(res, 200, { draftId, message: 'Reviewed placement proposal accepted and ready to publish.' });
-      } catch (error) {
-        const details = error instanceof Error ? error.message : String(error);
-        return sendJson(res, 400, { error: 'Could not validate the reviewed placement file', details });
+        const [original, reviewed] = await Promise.all([readFile(paths.placement, 'utf8').then(JSON.parse), readFile(proposalFile.filepath, 'utf8').then(JSON.parse)]);
+        const serverReviewed = parseReviewedProposal(reviewed, original, metadata, capability);
+        const reviewedProposalSha256 = digestObject(serverReviewed);
+        await writeFile(paths.placement, `${JSON.stringify(serverReviewed, null, 2)}\n`, 'utf8');
+        await storeMetadata(id, { ...metadata, status: 'reviewed', reviewedProposalSha256, reviewerId: capability.sub, reviewedAt: new Date().toISOString() });
+        log('proposal-reviewed', requestId, { draftId: id });
+        return sendJson(res, 200, { draftId: id, message: 'Reviewed placement proposal is recorded and ready for publication.' }, requestId);
+      } catch {
+        return sendFailure(res, 400, 'The reviewed placement proposal could not be validated.', requestId);
+      } finally {
+        await unlink(proposalFile.filepath).catch(() => undefined);
       }
     }
 
     if (segments.length === 1 && segments[0] === 'publish-pdf' && req.method === 'POST') {
-      const { draftId, origin, ttlDays } = await json(req);
-      if (typeof draftId !== 'string' || !safeId(draftId) || typeof origin !== 'string' || !ttlDays) {
-        return sendJson(res, 400, { error: 'A valid draftId, origin, and expiry are required for publishing' });
-      }
-      const manifestPath = join(DRAFTS_DIR, `${draftId}.json`);
-      const sourcePdfPath = join(UPLOADS_DIR, `${draftId}.source.pdf`);
-      const placementsPath = join(PLACEMENTS_DIR, `${draftId}.placements.json`);
-      const outPdfPath = join(UPLOADS_DIR, `${draftId}-clickable.pdf`);
-
+      const headerDraftId = safeId(req.headers['x-ripodoc-draft-id']);
+      const capability = consumeCapability(req, res, 'publish', headerDraftId, requestId);
+      if (!headerDraftId || !capability) return;
+      const payload = await readJsonBody(req);
+      const draftId = safeId(payload?.draftId);
+      if (draftId !== headerDraftId) return sendFailure(res, 403, 'Authoring authorization is not permitted for this action.', requestId);
+      const metadata = await loadMetadata(draftId);
+      const paths = pathsFor(draftId);
+      if (!metadata || !paths || !belongsTo(metadata, capability) || metadata.status !== 'reviewed') return sendFailure(res, 404, 'The requested authoring draft is unavailable.', requestId);
+      const ttlDays = [1, 7, 14, 30].includes(Number(payload.ttlDays)) ? Number(payload.ttlDays) : 14;
+      let origin;
       try {
-        await execFile(
-          'node',
-          ['--experimental-strip-types', OVERLAY_CLI, '--pdf', sourcePdfPath, '--manifest', manifestPath, '--placements', placementsPath, '--out', outPdfPath, '--origin', origin, '--ttl-days', String(ttlDays), '--allow-loopback-http', 'true'],
-          { cwd: REPOSITORY_ROOT },
-        );
-        return sendJson(res, 200, { downloadUrl: `/api/local/download-pdf/${draftId}-clickable.pdf`, message: 'Clickable PDF generated from reviewed placements.' });
+        origin = new URL(String(payload.origin));
+      } catch {
+        return sendFailure(res, 400, 'The configured report origin is invalid.', requestId);
+      }
+      const loopback = ['localhost', '127.0.0.1', '::1'].includes(origin.hostname);
+      if (origin.protocol !== 'https:' && !(origin.protocol === 'http:' && loopback)) return sendFailure(res, 400, 'The configured report origin is invalid.', requestId);
+      try {
+        const [sourcePdfSha256, manifest, reviewed] = await Promise.all([fileDigest(paths.sourcePdf), readFile(paths.manifest, 'utf8').then(JSON.parse), readFile(paths.placement, 'utf8').then(JSON.parse)]);
+        if (sourcePdfSha256 !== metadata.sourcePdfSha256 || digestObject(manifest) !== metadata.manifestSha256 || digestObject(reviewed) !== metadata.reviewedProposalSha256 || reviewed.reportId !== metadata.reportId || reviewed.version !== metadata.version || reviewed.pdfSha256 !== metadata.sourcePdfSha256) return sendFailure(res, 409, 'The reviewed authoring inputs no longer match the approved draft.', requestId);
+        await withJobSlot(requestId, async () => execFile('node', ['--experimental-strip-types', OVERLAY_CLI, '--pdf', paths.sourcePdf, '--manifest', paths.manifest, '--placements', paths.placement, '--out', paths.artifact, '--origin', origin.origin, '--ttl-days', String(ttlDays), ...(loopback ? ['--allow-loopback-http', 'true'] : [])], { cwd: REPOSITORY_ROOT, timeout: 30_000, maxBuffer: 1024 * 1024 }));
+        if (!(await validPdf(paths.artifact))) throw new Error('invalid-artifact');
+        const artifactExpiresAt = new Date(Date.now() + MAX_ARTIFACT_AGE_MS).toISOString();
+        await storeMetadata(draftId, { ...metadata, status: 'published', publishedBy: capability.sub, publishedAt: new Date().toISOString(), artifactExpiresAt, artifactSha256: await fileDigest(paths.artifact) });
+        log('pdf-published', requestId, { draftId });
+        return sendJson(res, 200, { draftId, message: 'Clickable PDF generated from an authenticated reviewed proposal.' }, requestId);
       } catch (error) {
-        const details = error instanceof Error ? error.message : String(error);
-        console.error(`Overlay CLI error: ${details}`);
-        return sendJson(res, 500, { error: 'Failed to publish PDF from reviewed placements', details });
+        log('publish-failed', requestId, { reason: error?.code === 'worker-busy' ? 'busy' : 'processing' });
+        return sendFailure(res, error?.code === 'worker-busy' ? 429 : 500, error?.code === 'worker-busy' ? 'The private worker is busy. Retry shortly.' : 'The private worker could not publish this PDF.', requestId);
       }
     }
 
     if (segments.length === 2 && segments[0] === 'download-placement' && req.method === 'GET') {
       const draftId = safeId(segments[1]);
-      if (!draftId) return sendJson(res, 400, { error: 'Invalid draft id' });
+      const capability = consumeCapability(req, res, 'proposal-download', draftId, requestId);
+      if (!draftId || !capability) return;
+      const metadata = await loadMetadata(draftId);
+      const paths = pathsFor(draftId);
+      if (!metadata || !paths || !belongsTo(metadata, capability) || !['proposed', 'reviewed', 'published'].includes(metadata.status)) return sendFailure(res, 404, 'The requested authoring artifact is unavailable.', requestId);
       try {
-        const content = await readFile(join(PLACEMENTS_DIR, `${draftId}.placements.json`));
-        res.writeHead(200, {
-          'Content-Type': 'application/json',
-          'Content-Disposition': `attachment; filename="${draftId}.placements.json"`,
-          'Content-Length': content.length,
-          ...corsHeaders(origin),
-        });
+        const content = await readFile(paths.placement);
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Content-Disposition': `attachment; filename="${draftId}.placements.json"`, 'Content-Length': content.length, 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'X-RipoDoc-Request-Id': requestId });
         res.end(content);
+        log('proposal-downloaded', requestId, { draftId });
       } catch {
-        return sendJson(res, 404, { error: 'Placement proposal not found' }, origin);
+        sendFailure(res, 404, 'The requested authoring artifact is unavailable.', requestId);
       }
       return;
     }
 
     if (segments.length === 2 && segments[0] === 'download-pdf' && req.method === 'GET') {
       const filename = segments[1];
-      if (!/^draft-[a-f0-9]{16}-clickable\.pdf$/.test(filename)) return sendJson(res, 400, { error: 'Invalid file id' }, origin);
-      const filePath = join(UPLOADS_DIR, filename);
+      const draftId = safeId(filename.replace(/-clickable\.pdf$/, ''));
+      const capability = consumeCapability(req, res, 'artifact-download', draftId, requestId);
+      if (!draftId || !capability || filename !== `${draftId}-clickable.pdf`) return;
+      const metadata = await loadMetadata(draftId);
+      const paths = pathsFor(draftId);
+      if (!metadata || !paths || !belongsTo(metadata, capability) || metadata.status !== 'published' || await cleanupExpiredArtifact(draftId, metadata)) return sendFailure(res, 404, 'The requested authoring artifact is unavailable.', requestId);
       try {
-        const fileContent = await readFile(filePath);
-        res.writeHead(200, {
-          'Content-Type': 'application/pdf',
-          'Content-Disposition': `attachment; filename="${filename}"`, 
-          'Content-Length': fileContent.length,
-          ...corsHeaders(origin),
-        });
-        res.end(fileContent);
+        const content = await readFile(paths.artifact);
+        if (metadata.artifactSha256 !== sha256(content)) return sendFailure(res, 409, 'The requested authoring artifact is unavailable.', requestId);
+        res.writeHead(200, { 'Content-Type': 'application/pdf', 'Content-Disposition': `attachment; filename="${filename}"`, 'Content-Length': content.length, 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'X-RipoDoc-Request-Id': requestId });
+        res.end(content);
+        log('artifact-downloaded', requestId, { draftId });
       } catch {
-        return sendJson(res, 404, { error: 'File not found' }, origin);
+        sendFailure(res, 404, 'The requested authoring artifact is unavailable.', requestId);
       }
       return;
     }
 
-    return sendJson(res, 404, { error: 'Not found' });
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    return sendJson(res, 500, { error: message });
+    return sendFailure(res, 404, 'Authoring endpoint not found.', requestId);
+  } catch (error) {
+    log('request-failed', requestId, { reason: error?.message === 'request-too-large' ? 'request-too-large' : 'unexpected' });
+    return sendFailure(res, error?.message === 'request-too-large' ? 413 : 500, error?.message === 'request-too-large' ? 'The authoring request is too large.' : 'The private worker could not complete this request.', requestId);
   }
 };
 
-await mkdir(DRAFTS_DIR, { recursive: true });
-await mkdir(MANIFESTS_DIR, { recursive: true });
-await mkdir(UPLOADS_DIR, { recursive: true });
-await mkdir(PLACEMENTS_DIR, { recursive: true });
+await Promise.all([DRAFTS_DIR, MANIFESTS_DIR, UPLOADS_DIR, PLACEMENTS_DIR, METADATA_DIR].map((directory) => mkdir(directory, { recursive: true })));
 
 const server = http.createServer(handler);
 server.listen(PORT, process.env.RIPODOC_BIND_HOST || '127.0.0.1', () => {
-  console.log(`[ripodoc-local] Dev server listening on port ${PORT}`);
-  console.log(`[ripodoc-local] Data dir: ${DATA_DIR}`);
+  log('started', 'startup', { port: PORT, maxActiveJobs: MAX_ACTIVE_JOBS });
 });
