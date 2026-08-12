@@ -1,90 +1,71 @@
-# RipoDoc deployment runbook
+# RipoDoc Deployment Runbook
 
-This document separates what RipoDoc ships today from the longer-term API and managed-worker architecture. The distinction is intentional: the public product experience can deploy to Vercel, while MSP report files should be processed only by an explicitly configured, trusted worker.
+**Current deployment model:** Next.js web application plus a separately deployed, private PDF authoring worker.
+**Primary operations procedure:** [`self-hosted-operations-runbook.md`](self-hosted-operations-runbook.md).
+**Worker security design:** [`../05-security/worker-hardening-threat-model.md`](../05-security/worker-hardening-threat-model.md).
 
-## Current release topology
+> This document is the concise release path. The companion operations runbook contains first deployment, backup/restore rehearsal, secret rotation, rollback, incident response, and decommissioning procedures.
 
-| Component | Current deployment model | Operational note |
-| --- | --- | --- |
-| Public product application | Next.js application on Vercel | Serves the marketing site, interactive demo, evidence pages, customer dashboard, security posture, and administrator sign-in route. |
-| Evidence-manifest store | Filesystem under `content/reports` | Suitable for the shipped demo and self-hosted setup. A database/object-store implementation can preserve the same module API later. |
-| PDF generator and overlay engine | Local Node.js CLI | Generates or overlays link annotations in a controlled local environment. |
-| Local authoring worker | Docker service on port 4000 | Receives a report only from an operator browser configured to use it. It is not part of the public Vercel deployment. |
-| Audit verifier | Local Node.js CLI | Verifies an append-only hash chain when a durable `RIPODOC_AUDIT_LOG` path is available. |
+## Current topology
 
-## Vercel release procedure
+| Service | Public exposure | Authorization boundary | Current state |
+| --- | --- | --- | --- |
+| Next.js web application | HTTPS reverse proxy or Vercel | Workspace session, CSRF guard, tenant-scoped data helpers, recipient mailbox proof | Shipped |
+| Private PDF authoring worker | Internal Compose network and optional loopback host port only | Short-lived, single-use, purpose- and tenant-bound HMAC capability issued by the trusted web service | Shipped |
+| PostgreSQL | Internal Compose network only | Database authentication plus application tenant queries; durable users, sessions, tokens, rate limits, and report metadata | Shipped |
+| Go/River managed architecture | Not deployed in this repository | Planned managed-service architecture only | Planned, not a present security claim |
 
-1. Run the complete release suite from the repository root.
+The browser never receives the worker URL or its authorization secret. The web application calls the worker through server-only `RIPODOC_LOCAL_WORKER_URL` and `RIPODOC_WORKER_AUTH_SECRET`; direct browser, unsigned, replayed, wrong-purpose, and cross-tenant worker requests are rejected.
+
+## Public Vercel release
+
+1. Run the complete release gate from the repository root.
 
    ```bash
    npm run verify
+   npm run lint
+   npm audit --omit=dev
    ```
 
-2. Push a reviewed change to `main`. The connected Vercel project deploys the public application from that branch.
+2. Push a reviewed merge to `main`. The connected Vercel project deploys the public web application.
 
-3. Configure server-only environment values in the Vercel project. Do not commit any secret or include it in a `NEXT_PUBLIC_` variable.
+3. Configure server-only Vercel values before enabling workspace account actions. At minimum, configure `RIPODOC_DATABASE_URL`, `RIPODOC_AUTH_SECRET`, `RIPODOC_EVIDENCE_SECRET`, `RIPODOC_APP_ORIGIN`, Resend, and Turnstile. The hosted application intentionally fails closed for account actions when these durable prerequisites are absent.
 
-   | Variable | Required for | Release requirement |
-   | --- | --- | --- |
-   | `RIPODOC_EVIDENCE_SECRET` | Recipient-bound evidence links | At least 32 characters; set before generating links that point to the deployed origin. |
-   | `RIPODOC_ADMIN_ACCESS_KEY` | Private `/admin` workspace | At least 16 characters; set before enabling administrator sign-in. |
-   | `RIPODOC_REVOKED_JTIS` | Token revocation | Optional comma-separated token identifiers. |
-   | `RIPODOC_ALLOW_EXPORT` | Evidence CSV export | Optional. Set to `false` to disable export. |
+4. Keep `RIPODOC_LOCAL_WORKER_URL` and `RIPODOC_WORKER_AUTH_SECRET` server-only. A public Vercel deployment should not proxy customer PDFs to an untrusted, internet-facing worker.
 
-4. Confirm the public deployment routes render and link correctly: `/`, `/dashboard`, `/security`, and `/upload`.
+5. Verify the public routes, the no-store `/api/health` response, unauthenticated redirects for `/dashboard` and `/admin`, safe `/security` posture, and no broken public navigation. Perform authenticated/authoring smoke tests only in a properly configured environment with no customer data used as a test fixture.
 
-5. Confirm that `/admin` redirects an unauthenticated request to `/admin/login`. The private route must not be added to public navigation.
+## Self-hosted release
 
-6. Confirm that the `/security` page reports only safe runtime state. It must not display evidence secrets, recipient identities, raw token identifiers, or audit-log records.
-
-## Self-hosted authoring worker
-
-The `/upload` route is deliberately an operator workflow, not a public file-ingestion endpoint. An operator provides a validated RipoDoc manifest and matching PDF, reviews every generated click-zone proposal, adds `approvedBy` and `approvedAt` values to each selected zone, and only then requests publication. The deployed public website explains this requirement rather than silently proxying a client report through a marketing environment.
-
-Start the local worker with Docker. It requires the same signing secret used by the evidence-serving RipoDoc application, because the worker creates the recipient-bound evidence links in the output PDF.
+The Compose bundle starts PostgreSQL, the web service, and the private worker. It exposes the web service to the configured host port, keeps PostgreSQL internal, and binds the worker host port to loopback. Web and worker run as non-root, use read-only root filesystems with temporary `tmpfs` mounts, drop Linux capabilities, and report health checks.
 
 ```bash
-export RIPODOC_EVIDENCE_SECRET="$(openssl rand -base64 32)"
-npm run docker:run
+# Required variables are documented in README.md and the operations runbook.
+docker compose -f docker-compose.selfhost.yml config
+docker compose -f docker-compose.selfhost.yml up --build -d
+docker compose -f docker-compose.selfhost.yml ps
 ```
 
-The worker listens on `http://localhost:4000/api/local`. Start the frontend separately:
+A healthy deployment must meet the following release gates.
 
-```bash
-npm --prefix web/frontend run dev
-```
+| Gate | Evidence |
+| --- | --- |
+| Source correctness | `npm run verify` passes strict type checking, all regression tests, and the production build. |
+| Dependency posture | `npm audit --omit=dev` has no known production vulnerabilities. |
+| Compose rendering | `docker compose ... config` resolves required values and shows no public PostgreSQL port or public worker port. |
+| Health | Web `/api/health` and host-local worker `/api/local/health` return only safe status data. |
+| Browser boundary | `/upload` talks to same-origin `/api/authoring/*`; it has no browser-visible worker URL or credential. |
+| Operator boundary | `/admin` requires an individually attributable, verified workspace `owner` or `admin` session and renders tenant-scoped, privacy-safe data only. |
+| Worker boundary | Direct browser, missing/forged/replayed/wrong-purpose capability, and cross-tenant artifact requests fail without exposing artifact data. |
+| Recovery readiness | Current database backup, restore-rehearsal record, image/commit rollback target, and secret-rotation procedure are available. |
 
-For a worker hosted on trusted infrastructure, set the browser-visible endpoint during the frontend build:
+## Configuration ownership
 
-```bash
-export NEXT_PUBLIC_LOCAL_API="https://worker.internal.example/api/local"
-```
+RipoDoc supplies application-level controls, but the MSP operating the deployment remains responsible for TLS, HSTS policy, encrypted volumes and backups, network segmentation, host/container patching, reverse-proxy rules, database availability, monitoring, alerting, retention, incident response, and any required compliance certification. Do not make certification, encryption-at-rest, managed queue, or high-availability claims solely from this repository unless the deployment evidence supports them.
 
-Only point this variable at a worker that is operated by the MSP or explicitly approved for that client-report data. Validate its access controls, transport security, storage policy, and retention model before enabling it for production reports.
+## References
 
-## Verification and release gates
-
-| Gate | Command or check | Expected result |
-| --- | --- | --- |
-| Lint | `npm run lint` | No lint errors or warnings. |
-| Strict types | `npm run typecheck` | Web and tool TypeScript projects compile without errors. |
-| Trust-boundary tests | `npm test` | All Node test suites pass. The current suite covers PDF generation, overlay safety, tokens, audit verification, manifest discovery, runtime posture, administrator-key validation, and the local worker’s manifest/review/publish/download flow. |
-| Production build | `npm run build:web` | The Next.js production build completes. |
-| Unified release check | `npm run verify` | Typecheck, test, and production build all pass. |
-| Public smoke test | Browser review | Public routes render; the marketing demo opens real scoped sample evidence. |
-| Private-route smoke test | Browser review | `/admin` requires a valid signed session. |
-| Authoring smoke test | Local worker review | A PDF receives proposed overlays, publishes, and downloads from the configured worker. |
-
-## Audit-log verification
-
-When a durable audit-log path is available, verify the chain after deployment or operational review:
-
-```bash
-npm run audit:verify -- --path /secure/audit/evidence-access.jsonl
-```
-
-The correct security claim is **tamper-evident**, not tamper-proof: deletion, reordering, or modification of a record breaks the chain from that point onward and is detectable during verification.
-
-## Future managed architecture
-
-The repository also contains a Go API scaffold, migrations, and a future-oriented architecture plan. A later managed deployment may add tenant-aware storage, durable job execution, database-backed auditing, and a managed PDF worker. Those additions must preserve the current trust properties: explicit recipient binding, expiry, revocation, schema-validated manifests, scoped evidence delivery, and verifiable audit history.
+- [`README.md`](../../README.md)
+- [`self-hosted-operations-runbook.md`](self-hosted-operations-runbook.md)
+- [`../05-security/worker-hardening-threat-model.md`](../05-security/worker-hardening-threat-model.md)
+- [`../../docker-compose.selfhost.yml`](../../docker-compose.selfhost.yml)

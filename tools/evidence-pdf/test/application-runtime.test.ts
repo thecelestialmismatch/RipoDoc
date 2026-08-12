@@ -11,7 +11,6 @@ process.env.RIPODOC_CONTENT_ROOT = reportsRoot;
 
 const { listPublishedManifests, saveManifest } = await import('../../../web/frontend/src/lib/evidence/store.ts');
 const { getSecurityPosture } = await import('../../../web/frontend/src/lib/evidence/security-status.ts');
-const { adminAccessConfigured, adminAccessKey, adminSessionValue, validAdminAccessKey, validAdminSessionValue } = await import('../../../web/frontend/src/lib/admin/session.ts');
 
 after(async () => rm(tempRoot, { recursive: true, force: true }));
 
@@ -76,24 +75,14 @@ test('security posture exposes safe configuration indicators rather than sensiti
   assert.equal(JSON.stringify(posture).includes('revoked-1'), false);
 });
 
-test('administrator access keys must meet the configured minimum and reject non-matching values', () => {
+test('retired deployment-wide administrator key is absent from safe runtime posture', async () => {
   const original = process.env.RIPODOC_ADMIN_ACCESS_KEY;
   try {
-    process.env.RIPODOC_ADMIN_ACCESS_KEY = 'too-short';
-    assert.equal(adminAccessConfigured(), false);
-    assert.equal(adminAccessKey(), undefined);
-    assert.equal(validAdminAccessKey('too-short'), false);
-
-    process.env.RIPODOC_ADMIN_ACCESS_KEY = 'private-admin-key-2026';
-    assert.equal(adminAccessConfigured(), true);
-    assert.equal(adminAccessKey(), 'private-admin-key-2026');
-    assert.equal(validAdminAccessKey('private-admin-key-2026'), true);
-    assert.equal(validAdminAccessKey('private-admin-key-2027'), false);
-    assert.equal(validAdminAccessKey({ key: 'private-admin-key-2026' }), false);
-    const session = adminSessionValue();
-    assert.notEqual(session, 'private-admin-key-2026');
-    assert.equal(validAdminSessionValue(session), true);
-    assert.equal(validAdminSessionValue('not-a-session'), false);
+    process.env.RIPODOC_ADMIN_ACCESS_KEY = 'retired-admin-key-must-not-leak';
+    const posture = await getSecurityPosture();
+    const serialized = JSON.stringify(posture);
+    assert.equal(serialized.includes('retired-admin-key-must-not-leak'), false);
+    assert.equal('adminAccessKey' in posture, false);
   } finally {
     if (original === undefined) delete process.env.RIPODOC_ADMIN_ACCESS_KEY;
     else process.env.RIPODOC_ADMIN_ACCESS_KEY = original;
