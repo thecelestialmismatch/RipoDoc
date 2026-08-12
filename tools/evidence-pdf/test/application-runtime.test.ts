@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { after, test } from 'node:test';
@@ -73,6 +73,22 @@ test('security posture exposes safe configuration indicators rather than sensiti
   });
   assert.equal('secret' in posture, false);
   assert.equal(JSON.stringify(posture).includes('revoked-1'), false);
+});
+
+test('downloadable self-hosted route documents server-only worker configuration and the reviewed source bundle', async () => {
+  const source = await readFile(new URL('../../../web/frontend/src/app/download/page.tsx', import.meta.url), 'utf8');
+  assert.match(source, /RIPODOC_WORKER_AUTH_SECRET/);
+  assert.match(source, /docker-compose\.selfhost\.yml/);
+  assert.match(source, /archive\/refs\/heads\/main\.zip/);
+});
+
+test('dashboard command center remains backed by a verified tenant-scoped server query', async () => {
+  const dashboard = await readFile(new URL('../../../web/frontend/src/app/dashboard/page.tsx', import.meta.url), 'utf8');
+  const commandCenter = await readFile(new URL('../../../web/frontend/src/components/dashboard/WorkspaceCommandCenter.tsx', import.meta.url), 'utf8');
+  assert.match(dashboard, /currentSessionUser/);
+  assert.match(dashboard, /listTenantReports\(user\.tenantId\)/);
+  assert.match(commandCenter, /api\/reports\//);
+  assert.match(commandCenter, /href="\/download"/);
 });
 
 test('retired deployment-wide administrator key is absent from safe runtime posture', async () => {
