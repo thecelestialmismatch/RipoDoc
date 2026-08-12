@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+      * { margin: 0; padding: 0; }
+      .slide-container {
+        width: 1280px;
+        min-height: 720px;
+        box-sizing: border-box;
+        background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+        color: #f8fafc;
+        font-family: 'Inter', -apple-system, sans-serif;
+        position: relative;
+        overflow: hidden;
+      }
+      .gradient-bg {
+        position: absolute;
+        top: -20%;
+        right: -10%;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(34, 211, 238, 0.15) 0%, transparent 70%);
+        border-radius: 50%;
+      }
+      .content {
+        display: flex;
+        height: 720px;
+        align-items: center;
+        padding: 0 100px;
+      }
+      .text-side {
+        flex: 1;
+        z-index: 1;
+      }
+      .icon-side {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1;
+      }
+      .brand-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(34, 211, 238, 0.1);
+        border: 1px solid rgba(34, 211, 238, 0.2);
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #22d3ee;
+        margin-bottom: 24px;
+      }
+      h1 {
+        font-size: 64px;
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 24px;
+        background: linear-gradient(to right, #fff, #94a3b8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      p.subtitle {
+        font-size: 24px;
+        color: #94a3b8;
+        line-height: 1.5;
+        max-width: 500px;
+      }
+      .footer {
+        position: absolute;
+        bottom: 40px;
+        left: 100px;
+        font-size: 14px;
+        color: #64748b;
+      }
+      .shield-graphic {
+        font-size: 240px;
+        color: #22d3ee;
+        filter: drop-shadow(0 0 30px rgba(34, 211, 238, 0.3));
+      }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="gradient-bg"></div>
+        <div class="content">
+            <div class="text-side">
+                <div class="brand-badge">
+                    <i class="fas fa-shield-check"></i> Hardened Release
+                </div>
+                <h1>RipoDoc PR #9:<br>Security Overhaul</h1>
+                <p class="subtitle">Worker hardening, role-bound operations, and comprehensive verification results for the next-level MSP platform.</p>
+            </div>
+            <div class="icon-side">
+                <i class="fas fa-shield-halved shield-graphic"></i>
+            </div>
+        </div>
+        <div class="footer">
+            12 August 2026 &nbsp;|&nbsp; Prepared by Manus AI
+        </div>
+    </div>
+</body>
+</html>

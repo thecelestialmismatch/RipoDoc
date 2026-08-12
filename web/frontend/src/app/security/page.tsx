@@ -105,6 +105,40 @@ export default async function SecurityPage() {
           })}
         </section>
 
+        <section className="mt-10 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm" aria-labelledby="pr9-heading">
+          <div className="border-b border-slate-200 bg-slate-950 px-6 py-5 text-white sm:px-8">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">PR #9 hardened release</p>
+                <h2 id="pr9-heading" className="mt-1 text-xl font-semibold">A stronger boundary for self-hosted MSP deployments</h2>
+              </div>
+              <span className="inline-flex w-fit items-center gap-2 rounded-full border border-emerald-300/25 bg-emerald-300/10 px-3 py-1 text-xs font-semibold text-emerald-200">
+                <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
+                Upgrade guidance available
+              </span>
+            </div>
+          </div>
+          <div className="grid gap-5 p-6 sm:grid-cols-3 sm:p-8">
+            <article>
+              <p className="text-sm font-semibold text-slate-950">Private authoring worker</p>
+              <p className="mt-2 text-sm leading-6 text-slate-600">Browser requests stay behind the application API. The worker accepts only short-lived, single-use, tenant-bound server capabilities.</p>
+            </article>
+            <article>
+              <p className="text-sm font-semibold text-slate-950">Role-bound operations</p>
+              <p className="mt-2 text-sm leading-6 text-slate-600">The retired shared administrator key is replaced by verified individual owner and administrator workspace roles.</p>
+            </article>
+            <article>
+              <p className="text-sm font-semibold text-slate-950">Hardened container defaults</p>
+              <p className="mt-2 text-sm leading-6 text-slate-600">The delivered self-hosted configuration applies non-root execution, read-only application roots, health checks, and bounded worker resources.</p>
+            </article>
+          </div>
+          <div className="border-t border-slate-100 bg-slate-50 px-6 py-4 sm:px-8">
+            <Link href="https://github.com/thecelestialmismatch/RipoDoc/tree/main/docs/05-security" className="inline-flex items-center gap-2 text-sm font-semibold text-blue-700 hover:text-blue-800">
+              Review the self-hosted security advisory and migration materials <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          </div>
+        </section>
+
         <section className="mt-10 grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
           <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
             <div className="flex flex-col gap-3 border-b border-slate-100 pb-5 sm:flex-row sm:items-start sm:justify-between">
