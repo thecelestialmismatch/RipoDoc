@@ -7,7 +7,7 @@
 ## Slide 1: RipoDoc PR #9: Security Overhaul
 
 ### Speaker Script
-"Good morning, team, and welcome to the executive briefing for RipoDoc PR #9. Today, we are presenting a complete, production-verified security overhaul of our MSP reporting platform. Over the past cycle, we set out to achieve an L99 standard of completeness—boiling the ocean to ensure every trust boundary, worker container, authentication route, and compliance requirement is permanently solved. This release transitions RipoDoc from a promising MVP into a hardened, enterprise-grade reporting intelligence platform ready for immediate deployment."
+"Good morning, team, and welcome to the executive briefing for RipoDoc PR #9. Today, we are presenting a production-verified security-hardening release for the MSP reporting platform. This cycle concentrated on independently verifiable trust boundaries: worker isolation, identity and tenant scope, container least privilege, automated regression checks, and release evidence. The result is a materially hardened reporting platform that is ready for a controlled self-hosted deployment once the operator completes the documented environment, TLS, backup, and final-image scan prerequisites."
 
 ### Speaker Notes
 - **Tone**: Confident, authoritative, technical.
@@ -43,7 +43,7 @@
 ## Slide 4: Role-Bound Operations
 
 ### Speaker Script
-"Next, we addressed administrative access. Historically, management consoles often rely on deployment-wide shared keys—a significant audit risk. We have fully retired the legacy `RIPODOC_ADMIN_ACCESS_KEY` environment variable. The private operator console at `/admin` now enforces verified individual workspace sessions with strict `owner` and `admin` role checks. Furthermore, all administrative views are strictly tenant-scoped, ensuring that an operator can only view data within their organization while leaving sensitive cross-tenant raw details unexposed. Every administrative action is tied directly to an attributable user ID in our hash-chained audit log."
+"Next, we addressed administrative access. Historically, management consoles often rely on deployment-wide shared keys—a significant audit risk. We have fully retired the legacy `RIPODOC_ADMIN_ACCESS_KEY` environment variable. The private operator console at `/admin` now enforces verified individual workspace sessions with strict `owner` and `admin` role checks. Administrative views are tenant-scoped, so an operator can only view the organization’s own summary data while cross-tenant raw details remain unexposed. Security-relevant access events are recorded through the implemented audit-log boundary, with the scope and retention of those records governed by the self-hosted operator’s configuration."
 
 ### Speaker Notes
 - **Tone**: Compliance-forward and decisive.
@@ -131,5 +131,5 @@
 
 ### Speaker Notes
 - **Tone**: Inspiring and conclusive.
-- **Key Message**: RipoDoc is ready to ship and ready for enterprise MSP adoption.
+- **Key Message**: RipoDoc is ready for a controlled MSP deployment once the operator completes the documented production prerequisites.
 - **Visual Reference**: Final centered conclusion slide with success icon and release badge.
