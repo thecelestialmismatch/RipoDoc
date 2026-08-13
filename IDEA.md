@@ -1,5 +1,7 @@
 # IDEA.md — RipoDoc
 
+> **Historical strategy record — not current product, technical, legal, security, pricing, or commercial documentation.** This file preserves early hypotheses and research provenance. For the current architecture and launch posture, use [`docs/05-engineering/architecture.md`](docs/05-engineering/architecture.md), [`README.md`](README.md), and [`docs/00-strategy/launch-legal-and-legacy-inventory.md`](docs/00-strategy/launch-legal-and-legacy-inventory.md). The Go, WorkOS, Stripe, AWS, and pricing references below are superseded concepts, not shipped capabilities or commitments.
+>
 > **Secure Reporting Delivery & Evidence Layer for Managed Service Providers**
 
 Last updated: 2026-07-26

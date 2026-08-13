@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { assertSameOriginAndCsrf, currentSessionUser } from '@/lib/auth/server.ts';
 import { authoringConfigured, canAuthorReports, opaqueWorkerError, workerRequest } from '@/lib/authoring/worker.ts';
+import { healthcareModeBEnabled, modeBPrivateAuthoringAllowed } from '@/lib/launch/healthcare-webhooks.ts';
 
 const noStore = (response: NextResponse): NextResponse => {
   response.headers.set('Cache-Control', 'no-store');
@@ -12,6 +13,7 @@ const failure = (status: number, error: string, requestId?: string): NextRespons
 const requireAuthor = async (): Promise<{ user: NonNullable<Awaited<ReturnType<typeof currentSessionUser>>> } | NextResponse> => {
   const user = await currentSessionUser();
   if (!user?.emailVerifiedAt || user.disabledAt) return failure(401, 'A verified workspace session is required.');
+  if (healthcareModeBEnabled() && !modeBPrivateAuthoringAllowed()) return failure(403, 'Healthcare Mode B does not permit public authoring in this deployment.');
   if (!authoringConfigured()) return failure(503, 'Private authoring is not configured for this deployment.');
   if (!canAuthorReports(user)) return failure(403, 'This workspace role cannot use private authoring.');
   return { user };

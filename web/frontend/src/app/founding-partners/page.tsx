@@ -6,6 +6,7 @@ import { captchaSiteKey } from '@/lib/auth/captcha.ts';
 import { authConfigured } from '@/lib/auth/primitives.ts';
 import { leadIntakeConfigured } from '@/lib/founder/lead-crypto.ts';
 import { Turnstile } from '@/components/auth/Turnstile.tsx';
+import { healthcareModeBEnabled } from '@/lib/launch/healthcare-webhooks.ts';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,7 +21,8 @@ const state = (value: string | readonly string[] | undefined): string | undefine
 export default async function FoundingPartnersPage({ searchParams }: Props) {
   const csrf = await ensureCsrfToken();
   const status = state((await searchParams).status);
-  const intakeReady = authConfigured() && leadIntakeConfigured();
+  const modeB = healthcareModeBEnabled();
+  const intakeReady = !modeB && authConfigured() && leadIntakeConfigured();
 
   return (
     <main className="bg-white text-[#11162E]">
@@ -75,7 +77,7 @@ export default async function FoundingPartnersPage({ searchParams }: Props) {
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
             {status === 'received' ? <p className="rounded-xl border border-[#12B9BE]/25 bg-[#DDF9F7] p-4 text-sm leading-6 text-[#075D61]" role="status">Thanks. If the request is suitable for the founding-partner program, we will follow up with the next diagnostic step.</p> : null}
             {status === 'unavailable' ? <p className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950" role="status">Secure founding-partner intake is not yet available in this deployment. You can still inspect the evidence experience or use the self-hosted operator path.</p> : null}
-            {intakeReady ? <PartnerForm csrf={csrf} /> : <div className="space-y-4"><p className="text-lg font-bold">The secure intake path is being prepared.</p><p className="text-sm leading-6 text-slate-600">RipoDoc will not collect prospect information until durable identity, anti-automation, encrypted contact storage, and audit persistence pass the production readiness gate.</p><div className="flex flex-wrap gap-3"><Link href="/#demo" className="inline-flex min-h-11 items-center rounded-xl bg-[#11162E] px-4 py-2.5 text-sm font-semibold text-white">See the proof experience</Link><Link href="/download" className="inline-flex min-h-11 items-center rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold text-[#11162E]">Review self-hosting</Link></div></div>}
+            {intakeReady ? <PartnerForm csrf={csrf} /> : <div className="space-y-4"><p className="text-lg font-bold">{modeB ? 'Healthcare Mode B keeps public diagnostic intake closed.' : 'The secure intake path is being prepared.'}</p><p className="text-sm leading-6 text-slate-600">{modeB ? 'Do not submit PHI/ePHI, report data, or client information through this public site. Review the restricted healthcare evaluation boundary and use approved self-hosted processes only after the required contractual and security gates are complete.' : 'RipoDoc will not collect prospect information until durable identity, anti-automation, encrypted contact storage, and audit persistence pass the production readiness gate.'}</p><div className="flex flex-wrap gap-3"><Link href={modeB ? '/legal/healthcare-mode-b' : '/#demo'} className="inline-flex min-h-11 items-center rounded-xl bg-[#11162E] px-4 py-2.5 text-sm font-semibold text-white">{modeB ? 'Review Healthcare Mode B' : 'See the proof experience'}</Link><Link href="/download" className="inline-flex min-h-11 items-center rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold text-[#11162E]">Review self-hosting</Link></div></div>}
           </div>
         </div>
       </section>
