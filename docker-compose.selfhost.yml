@@ -49,6 +49,8 @@ services:
       NEXT_PUBLIC_RIPODOC_TURNSTILE_SITE_KEY: ${NEXT_PUBLIC_RIPODOC_TURNSTILE_SITE_KEY:?Set Cloudflare Turnstile site key}
       RIPODOC_LOCAL_WORKER_URL: http://worker:4000/api/local
       RIPODOC_WORKER_AUTH_SECRET: ${RIPODOC_WORKER_AUTH_SECRET:?Set a 32+ character private worker authorization secret}
+      RIPODOC_AUDIT_BACKEND: postgres
+      RIPODOC_LEAD_ENCRYPTION_KEY: ${RIPODOC_LEAD_ENCRYPTION_KEY:?Set a base64url-encoded 32-byte lead-contact encryption key}
       RIPODOC_CONTENT_ROOT: /app/content/reports
     read_only: true
     tmpfs:

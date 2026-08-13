@@ -29,13 +29,15 @@ chmod 700 .
 umask 077
 ```
 
-Create `.env` with distinct cryptographically random values. `RIPODOC_AUTH_SECRET`, `RIPODOC_EVIDENCE_SECRET`, and `RIPODOC_WORKER_AUTH_SECRET` must all be different. The worker secret is not an evidence-signing secret and must never appear in a browser-visible `NEXT_PUBLIC_*` variable.
+Create `.env` with distinct cryptographically random values. `RIPODOC_AUTH_SECRET`, `RIPODOC_EVIDENCE_SECRET`, and `RIPODOC_WORKER_AUTH_SECRET` must all be different. Generate `RIPODOC_LEAD_ENCRYPTION_KEY` as a separate base64url-encoded 32-byte key; it encrypts the founding-partner contact address at rest and must never be reused for sessions, evidence, or worker capabilities. The worker secret is not an evidence-signing secret and must never appear in a browser-visible `NEXT_PUBLIC_*` variable.
 
 ```dotenv
 POSTGRES_PASSWORD=<long-random-database-password>
 RIPODOC_AUTH_SECRET=<distinct-32-or-more-character-random-secret>
 RIPODOC_EVIDENCE_SECRET=<distinct-32-or-more-character-random-secret>
 RIPODOC_WORKER_AUTH_SECRET=<distinct-32-or-more-character-random-secret>
+# Generate with: openssl rand -base64 32 | tr '+/' '-_' | tr -d '='
+RIPODOC_LEAD_ENCRYPTION_KEY=<distinct-base64url-encoded-32-byte-key>
 RIPODOC_APP_ORIGIN=https://reports.example-msp.com
 RIPODOC_RESEND_API_KEY=re_<provider-key>
 RIPODOC_EMAIL_FROM=RipoDoc <reports@example-msp.com>
@@ -67,7 +69,8 @@ The expected topology has no published PostgreSQL port, a web port on `${RIPODOC
 | Identity | Signup, inbox verification, login, logout | Generic responses, verified-email gate, private session, and working logout. |
 | Operations role | Sign in as a verified `owner` or `admin` | `/admin` renders only tenant-scoped, privacy-safe operational data. |
 | Authoring boundary | Use a verified tenant operator through `/upload` | Browser talks only to `/api/authoring`; unsigned/direct worker requests are rejected. |
-| Audit chain | `npm run audit:verify -- --path <durable-log-path>` where configured | Hash chain verifies, or configuration is explicitly reported as stdout-only. |
+| Durable audit chain | `RIPODOC_AUDIT_BACKEND=postgres` is present in the Compose web service; run `npm run preflight:production` from the reviewed source with the production environment. | Preflight confirms database reachability and the durable audit schema. For a self-hosted file-chain deployment, run `npm run audit:verify -- --path <durable-log-path>`. |
+| Founding-partner intake | Open `/founding-partners` only after production preflight is ready. | Form is protected by same-origin CSRF, CAPTCHA, rate limits, encrypted contact storage, and generic responses. |
 
 ## 2. Routine operations and observability
 
@@ -111,6 +114,8 @@ docker compose -f docker-compose.selfhost.yml images
 npm run verify
 npm run lint
 npm audit --omit=dev
+# With the reviewed production environment loaded, verify durable dependencies.
+npm run preflight:production
 
 # Apply a reviewed release.
 git pull --ff-only
@@ -126,6 +131,7 @@ If the release fails, return to the previously recorded commit or immutable imag
 | `RIPODOC_WORKER_AUTH_SECRET` | Rotate web and worker together during a controlled restart. Existing capabilities expire within 90 seconds. | Verified authoring works after restart; old capabilities fail. |
 | `RIPODOC_EVIDENCE_SECRET` | Plan a controlled migration/reissue strategy because existing evidence tokens are signed with this secret. Do not rotate blindly. | Existing client evidence-link impact is understood and documented before rotation. |
 | `RIPODOC_AUTH_SECRET` | Coordinate with session and one-time-token invalidation expectations; rotate with a user session reauthentication plan. | New login works; old sessions/tokens behave according to the documented invalidation plan. |
+| `RIPODOC_LEAD_ENCRYPTION_KEY` | Plan a controlled record re-encryption migration before changing the key. Do not rotate by replacing the value alone, because existing encrypted contact records must remain decryptable during the transition. | An approved key-version migration has completed and authorized contact retrieval remains available. |
 | Database password | Rotate in the secret store and Compose configuration, restart dependent services, and verify connection health. | Web/database health and migration state pass. |
 | Suspected account compromise | Disable/revoke affected sessions in PostgreSQL through an approved incident procedure; preserve audit evidence. | Account cannot resume access without a fresh, verified authentication flow. |
 | Worker or host compromise | Isolate the host, preserve relevant encrypted volumes/logs, rotate worker/auth/evidence secrets as appropriate, and reissue affected reports/links after impact analysis. | New clean host passes the full initial verification procedure. |

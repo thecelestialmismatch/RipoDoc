@@ -20,6 +20,7 @@ RipoDoc preserves the client reporting workflow MSPs already use while adding a 
 | Route | Audience | Purpose |
 | --- | --- | --- |
 | `/` | Prospects and MSP teams | Outcome-led product page with an interactive sample report backed by real fixture data. |
+| `/founding-partners` | Qualified MSP prospects | A paid-design-partner report-diagnostic path that collects only minimal workflow categories through a CSRF-protected, CAPTCHA-gated, rate-limited, encrypted-contact intake when production readiness is green. |
 | `/upload` | Verified self-hosted operators | Propose overlays and create a downloadable clickable PDF through the same-origin authoring gateway and a private RipoDoc worker. |
 | `/api/health` | Deployment monitoring | No-store operational health response with safe configuration indicators only; never returns tenants, reports, recipients, sessions, or secrets. |
 | `/dashboard` | Verified MSP workspace users | Review only reports owned by the authenticated tenant; report manifests require tenant-scoped session authorization. |
@@ -63,9 +64,13 @@ export POSTGRES_PASSWORD="$(openssl rand -base64 32)"
 export RIPODOC_AUTH_SECRET="$(openssl rand -base64 32)"
 export RIPODOC_EVIDENCE_SECRET="$(openssl rand -base64 32)"
 export RIPODOC_WORKER_AUTH_SECRET="$(openssl rand -base64 32)"
+export RIPODOC_LEAD_ENCRYPTION_KEY="$(openssl rand -base64 32 | tr '+/' '-_' | tr -d '=')"
 # Set RIPODOC_APP_ORIGIN, RIPODOC_RESEND_API_KEY, RIPODOC_EMAIL_FROM,
 # RIPODOC_TURNSTILE_SECRET, and NEXT_PUBLIC_RIPODOC_TURNSTILE_SITE_KEY.
 docker compose -f docker-compose.selfhost.yml up --build
+
+# With the reviewed production environment loaded, prove durable readiness.
+npm run preflight:production
 ```
 
 The browser-facing app listens on `${RIPODOC_PORT:-3000}`. PostgreSQL remains internal to the compose network, while the PDF worker binds its host port to `127.0.0.1` and accepts only short-lived server-issued authoring capabilities. The browser never receives a worker credential or direct worker URL. The bundle runs the web and worker containers as non-root with read-only root filesystems, temporary `tmpfs` mounts, dropped Linux capabilities, health checks, and conservative CPU/memory limits. Deploy the web service behind an HTTPS reverse proxy using the canonical origin configured in `RIPODOC_APP_ORIGIN`.
@@ -109,7 +114,9 @@ Store all values below in the relevant server environment. Do not expose `RIPODO
 | `RIPODOC_EMAIL_FROM` | Yes for workspace authentication | Verified sender address for security notices. |
 | `RIPODOC_TURNSTILE_SECRET` | Yes in production | Server-only Cloudflare Turnstile secret used by every authentication action. |
 | `NEXT_PUBLIC_RIPODOC_TURNSTILE_SITE_KEY` | Yes in production | Public Cloudflare Turnstile site key for the authentication forms. |
-| `RIPODOC_AUDIT_LOG` | Recommended on durable infrastructure | File path for a persisted, locally verifiable hash-chained audit log. Without it, events are emitted as structured stdout. |
+| `RIPODOC_AUDIT_BACKEND` | Required for hosted deployment | Set to `postgres` to persist the hosted evidence-access hash chain transactionally in PostgreSQL. Compose sets it automatically. |
+| `RIPODOC_AUDIT_LOG` | Recommended for file-based self-hosting | File path for a persisted, locally verifiable hash-chained audit log. Without it, events are emitted as structured stdout unless the PostgreSQL backend is selected. |
+| `RIPODOC_LEAD_ENCRYPTION_KEY` | Required for founding-partner intake | Dedicated base64url-encoded 32-byte server-only AES-256-GCM key used to encrypt prospect contact email at rest. It is not interchangeable with the authentication, evidence, or worker secret. |
 | `RIPODOC_REVOKED_JTIS` | Optional | Comma-separated claim identifiers that must no longer authorize evidence access. |
 | `RIPODOC_ALLOW_EXPORT` | Optional | Set to `false` to disable evidence CSV export. The default is enabled. |
 | `RIPODOC_CONTENT_ROOT` | Optional | Filesystem root for published report manifests in a self-hosted runtime. Defaults to `content/reports` under the active working directory. |
@@ -134,6 +141,8 @@ The workspace identity service is deliberately implemented as a small, server-si
 | Secure reset and proof codes | Codes are cryptographically random, HMAC-hashed before storage, single-use through an atomic transaction, delivered outside URLs, and expire after 30 minutes. | [`service.ts`](web/frontend/src/lib/auth/service.ts), [`recipient-proof.ts`](web/frontend/src/lib/evidence/recipient-proof.ts) |
 | Session and CSRF controls | Opaque session secrets are stored only as keyed hashes; session cookies use `HttpOnly`, strict same-site handling, and production-only `Secure`; state-changing actions require same-origin plus double-submit CSRF validation. | [`server.ts`](web/frontend/src/lib/auth/server.ts), [`middleware.ts`](web/frontend/src/middleware.ts) |
 
+The YC assessment, verified competitive boundaries, claim register, and the paid-design-partner discovery protocol are maintained in [`docs/01-research/yc-readiness-and-venture-thesis.md`](docs/01-research/yc-readiness-and-venture-thesis.md), [`docs/01-research/competitive-positioning-and-claim-register.md`](docs/01-research/competitive-positioning-and-claim-register.md), and [`docs/01-research/msp-discovery-and-design-partner-protocol.md`](docs/01-research/msp-discovery-and-design-partner-protocol.md). The founder-evidence event and privacy specification is maintained in [`docs/02-product/founder-evidence-dashboard-specification.md`](docs/02-product/founder-evidence-dashboard-specification.md).
+
 A deeper test and control inventory is maintained in [`docs/05-security/authentication-and-test-coverage.md`](docs/05-security/authentication-and-test-coverage.md). The historical read-only 20-control assessment is maintained in [`docs/05-security/self-hosted-deployment-and-read-only-audit.md`](docs/05-security/self-hosted-deployment-and-read-only-audit.md). The current private-worker threat model is maintained in [`docs/05-security/worker-hardening-threat-model.md`](docs/05-security/worker-hardening-threat-model.md), and the complete self-hosted operational procedure is maintained in [`docs/05-engineering/self-hosted-operations-runbook.md`](docs/05-engineering/self-hosted-operations-runbook.md). PR #9 supply-chain evidence, reproducible final-image scanning instructions, and CycloneDX SBOM files are maintained in [`docs/05-security/container-sbom-and-vulnerability-scan.md`](docs/05-security/container-sbom-and-vulnerability-scan.md); customer-facing self-hosted upgrade instructions are maintained in [`docs/05-security/pr9-self-hosted-security-advisory-and-migration-guide.md`](docs/05-security/pr9-self-hosted-security-advisory-and-migration-guide.md).
 
 > RipoDoc fails closed for hosted account actions until PostgreSQL, Resend, the canonical app origin, an authentication secret, and the production Turnstile configuration are present. It never substitutes ephemeral Vercel filesystem state or silent email failure for a durable identity deployment.
@@ -150,7 +159,7 @@ The `/security` page provides operator-safe indicators for this posture. It neve
 
 ## Verification
 
-The repository uses the built-in Node.js test runner for evidence and application-runtime boundaries. The current regression suite completes **135 tests** with no failures, including an end-to-end local worker test that verifies the manifest requirement, review gate, signed publication, and PDF download, plus dashboard/download route-contract coverage, followed by clean linting, type checking, and a production build. See [`docs/05-security/authentication-and-test-coverage.md`](docs/05-security/authentication-and-test-coverage.md) for the full file-by-file coverage map.
+The repository uses the built-in Node.js test runner for evidence and application-runtime boundaries. The current regression suite completes **139 tests** with no failures, including an end-to-end local worker test that verifies the manifest requirement, review gate, signed publication, and PDF download; tenant-scoped dashboard/download contracts; and hardened founding-partner, durable-audit, encrypted-contact, and production-preflight contracts, followed by clean linting, type checking, and a production build. See [`docs/05-security/authentication-and-test-coverage.md`](docs/05-security/authentication-and-test-coverage.md) for the full file-by-file coverage map.
 
 ```bash
 npm test              # evidence, audit, runtime-posture, and admin-key tests
@@ -168,7 +177,8 @@ The document processor is intentionally not bundled into the public Vercel appli
 | Release gate | Required result |
 | --- | --- |
 | Automated checks | `npm run verify` exits successfully. |
-| Public route review | `/`, `/upload`, `/dashboard`, `/security`, and the safe `/api/health` deployment probe render without broken navigation. |
+| Public route review | `/`, `/founding-partners`, `/download`, `/dashboard`, `/security`, and the safe `/api/health` deployment probe render without broken navigation. |
+| Durable production preflight | `npm run preflight:production` reports `ready` only after PostgreSQL connectivity/migrations and private-worker health pass. |
 | Private operations review | `/admin` redirects unauthenticated visitors to `/login`; verified `owner` and `admin` users see only their tenant-scoped operational summary. |
 | Worker review | A verified tenant session completes upload, review, and publication through `/api/authoring`; direct browser, unsigned, replayed, wrong-purpose, and cross-tenant worker requests fail without disclosing artifacts. |
 | Environment review | Server-only variables are present in the deployment environment and never committed. |

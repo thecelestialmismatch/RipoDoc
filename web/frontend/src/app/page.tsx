@@ -39,8 +39,8 @@ const outcomes = [
 const workflow = [
   {
     step: '01',
-    title: 'Bring the report you already send',
-    body: 'Upload a PDF or render a report from a structured manifest. RipoDoc does not force a replacement reporting stack.',
+    title: 'Start with approved source data',
+    body: 'Bring a structured CSV, REST response, or reviewed mapping from the systems that already power your report. RipoDoc does not pretend an arbitrary chart contains rows it never had.',
     icon: Upload,
   },
   {
@@ -90,11 +90,11 @@ export default async function Home() {
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
-                  href="/upload"
+                  href="/founding-partners"
                   className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-gradient-to-r from-[#1769E8] to-[#12B9BE] px-5 py-3 text-sm font-semibold text-white shadow-[0_16px_30px_-16px_rgba(23,105,232,0.8)] transition duration-200 hover:brightness-105 active:scale-[0.98]"
                 >
-                  <Upload className="h-4 w-4" aria-hidden="true" />
-                  Create a report
+                  <UsersRound className="h-4 w-4" aria-hidden="true" />
+                  Apply as a founding partner
                   <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </Link>
                 <Link
@@ -199,7 +199,7 @@ export default async function Home() {
             <h2 className="mt-5 text-4xl font-bold tracking-[-0.045em] sm:text-5xl">The report is just the beginning.</h2>
             <p className="mt-5 max-w-lg text-base leading-7 text-slate-300">Open the demo to see a report figure resolve to the evidence grid that supports it. The same interaction is available from a generated or overlaid RipoDoc PDF.</p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/dashboard" className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-[#11162E] transition hover:bg-[#DDF9F7]"><UsersRound className="h-4 w-4" aria-hidden="true" />Open client workspace</Link>
+              <Link href="/founding-partners" className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-[#11162E] transition hover:bg-[#DDF9F7]"><UsersRound className="h-4 w-4" aria-hidden="true" />Apply as a founding partner</Link>
               <Link href="/security" className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/20 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"><ShieldCheck className="h-4 w-4" aria-hidden="true" />Inspect security controls</Link>
             </div>
           </div>
@@ -218,9 +218,9 @@ export default async function Home() {
         <div className="mx-auto max-w-3xl px-6 text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#087E84]">Ready to send a report that stands up to questions?</p>
           <h2 className="mt-4 text-4xl font-bold tracking-[-0.045em] text-[#11162E] sm:text-5xl">Start with the report you already have.</h2>
-          <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-slate-600">Upload a PDF, review the proposed overlays, and publish evidence-aware reporting for your managed services practice.</p>
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-slate-600">Start with approved source data, make the review decision explicit, and deliver the client-facing PDF with tightly controlled supporting evidence.</p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link href="/upload" className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-[#11162E] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0A3E9B]"><Upload className="h-4 w-4" aria-hidden="true" />Create a report</Link>
+            <Link href="/founding-partners" className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-[#11162E] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0A3E9B]"><UsersRound className="h-4 w-4" aria-hidden="true" />Request a report diagnostic</Link>
             <Link href="/download" className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-[#11162E] transition hover:border-[#1769E8]">Download & self-host<ArrowRight className="h-4 w-4" aria-hidden="true" /></Link>
           </div>
         </div>
