@@ -69,7 +69,7 @@ test('security posture exposes safe configuration indicators rather than sensiti
   assert.deepEqual(posture.auditLog, {
     mode: 'stdout',
     configured: false,
-    message: 'Access events are emitted as structured stdout logs. Set RIPODOC_AUDIT_LOG on a persistent runtime to enable a locally verifiable append-only chain.',
+    message: 'Access events are emitted as structured stdout logs. Configure PostgreSQL audit storage for hosted deployments or RIPODOC_AUDIT_LOG on a persistent self-hosted runtime.',
   });
   assert.equal('secret' in posture, false);
   assert.equal(JSON.stringify(posture).includes('revoked-1'), false);
@@ -102,5 +102,58 @@ test('retired deployment-wide administrator key is absent from safe runtime post
   } finally {
     if (original === undefined) delete process.env.RIPODOC_ADMIN_ACCESS_KEY;
     else process.env.RIPODOC_ADMIN_ACCESS_KEY = original;
+  }
+});
+
+test('founding-partner conversion path is server-protected and avoids arbitrary prospect-report content', async () => {
+  const page = await readFile(new URL('../../../web/frontend/src/app/founding-partners/page.tsx', import.meta.url), 'utf8');
+  const route = await readFile(new URL('../../../web/frontend/src/app/api/founding-partners/route.ts', import.meta.url), 'utf8');
+  const service = await readFile(new URL('../../../web/frontend/src/lib/founder/leads.ts', import.meta.url), 'utf8');
+  assert.match(page, /Turnstile/);
+  assert.match(page, /name="csrf"/);
+  assert.doesNotMatch(page, /name="message"/);
+  assert.match(route, /assertSameOriginAndCsrf/);
+  assert.match(route, /verifyCaptcha/);
+  assert.match(route, /leadIntakeConfigured/);
+  assert.match(service, /encryptLeadEmail/);
+  assert.match(service, /founding-partner:ip/);
+  assert.match(service, /ON CONFLICT \(email_hash\)/);
+});
+
+test('durable hosted audit and founder-evidence migration preserve a scoped operational data model', async () => {
+  const migration = await readFile(new URL('../../../migrations/009_create_durable_evidence_and_growth_records.sql', import.meta.url), 'utf8');
+  const sink = await readFile(new URL('../../../web/frontend/src/lib/evidence/audit-postgres.ts', import.meta.url), 'utf8');
+  assert.match(migration, /evidence_access_audit_head/);
+  assert.match(migration, /evidence_access_audit_records/);
+  assert.match(migration, /founding_partner_leads/);
+  assert.match(migration, /contact_email_ciphertext/);
+  assert.match(migration, /founding_partner_events/);
+  assert.match(sink, /FOR UPDATE/);
+  assert.match(sink, /chainRecord/);
+  assert.doesNotMatch(migration, /report_manifest_content/);
+});
+
+test('production preflight makes durable hosted dependencies explicit without serializing environment values', async () => {
+  const preflight = await readFile(new URL('../../../tools/production-preflight.ts', import.meta.url), 'utf8');
+  const health = await readFile(new URL('../../../web/frontend/src/app/api/health/route.ts', import.meta.url), 'utf8');
+  assert.match(preflight, /evidence_access_audit_records/);
+  assert.match(preflight, /private worker reachability/);
+  assert.match(preflight, /RIPODOC_AUDIT_BACKEND/);
+  assert.match(health, /hostedReadiness/);
+  assert.doesNotMatch(preflight, /process\.env\.[A-Z_]+\s*[,}]/);
+});
+
+test('founding-partner contact encryption authenticates encrypted email at rest with a dedicated key', async () => {
+  const original = process.env.RIPODOC_LEAD_ENCRYPTION_KEY;
+  try {
+    process.env.RIPODOC_LEAD_ENCRYPTION_KEY = Buffer.alloc(32, 7).toString('base64url');
+    const { decryptLeadEmail, encryptLeadEmail, leadIntakeConfigured } = await import('../../../web/frontend/src/lib/founder/lead-crypto.ts');
+    const encrypted = encryptLeadEmail('owner@example.test');
+    assert.equal(leadIntakeConfigured(), true);
+    assert.notEqual(encrypted.ciphertext, 'owner@example.test');
+    assert.equal(decryptLeadEmail(encrypted), 'owner@example.test');
+  } finally {
+    if (original === undefined) delete process.env.RIPODOC_LEAD_ENCRYPTION_KEY;
+    else process.env.RIPODOC_LEAD_ENCRYPTION_KEY = original;
   }
 });

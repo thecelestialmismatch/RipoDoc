@@ -1,19 +1,18 @@
 /**
  * Access audit trail.
  *
- * "This is what was published, this is who opened it, this is when" is the
- * claim RipoDoc sells. It only holds if every access is recorded before the
- * data is rendered — so `recordAccess` is awaited on the request path, not
- * fired and forgotten.
+ * “Every access is logged” only holds if the access event is persisted before
+ * the evidence rows render. `recordAccess` is therefore awaited on the request
+ * path. The runtime supports three explicit modes:
  *
- * Two sinks ship. Structured stdout is always on, because every hosting
- * platform forwards it to a log store. When `RIPODOC_AUDIT_LOG` names a file,
- * a hash-chained append-only log is written as well (`audit-log.ts`) — that is
- * the copy an MSP can hand to an assessor, because altering it is detectable.
- * A Postgres sink replaces either without touching call sites.
+ * - stdout: development / unconfigured fallback only;
+ * - file: self-hosted locally verifiable JSONL chain;
+ * - postgres: durable hosted chain, transactional and serialized by a locked
+ *   head row. PostgreSQL is written before structured stdout.
  */
 
 import { createFileAuditSink, teeAuditSinks } from './audit-log.ts';
+import { createPostgresAuditSink, postgresAuditConfigured } from './audit-postgres.ts';
 
 export type AuditOutcome = 'granted' | 'denied';
 
@@ -47,17 +46,21 @@ const activeSink = (): AuditSink => {
   if (override) return override;
   if (!configured) {
     const path = process.env.RIPODOC_AUDIT_LOG;
-    configured = path ? teeAuditSinks(createFileAuditSink(path), stdoutSink) : stdoutSink;
+    configured = postgresAuditConfigured()
+      ? teeAuditSinks(createPostgresAuditSink(), stdoutSink)
+      : path
+        ? teeAuditSinks(createFileAuditSink(path), stdoutSink)
+        : stdoutSink;
   }
   return configured;
 };
 
-/** Swap the sink (tests, or a durable store in production). */
+/** Swap the sink for tests or a deliberately supplied durable store. */
 export const setAuditSink = (next: AuditSink): void => {
   override = next;
 };
 
-/** Drop an override and re-read the environment on the next write. */
+/** Drop an override and re-read deployment configuration on the next write. */
 export const resetAuditSink = (): void => {
   override = undefined;
   configured = undefined;
