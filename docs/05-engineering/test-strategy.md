@@ -68,7 +68,8 @@ Before any agent reaches production:
 ## 5. Planned expansion
 
 - PostgreSQL RLS integration tests (tenant isolation under load)
-- Stripe webhook contract tests (signature verification, idempotency)
-- WorkOS auth flow tests (SSO redirect, session expiry)
+- Future webhook provider contract tests after a provider-specific signature, retry, payload, and data-classification review; webhook delivery remains disabled by default.
+- Workspace authentication integration tests for scrypt verification, opaque sessions, email activation, CAPTCHA, rate limits, password reset, CSRF, and tenant-scoped authorization.
+- Healthcare Mode B deployment tests that prove public intake, public authoring, webhook delivery, and PHI/ePHI-bearing payloads stay blocked.
 - Load test: PDF generation throughput for a 500-ticket report
 - Pen test (independent) before public launch — see `master-plan.md` §9 Month 5 gate

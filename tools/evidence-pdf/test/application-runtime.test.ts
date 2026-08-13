@@ -157,3 +157,68 @@ test('founding-partner contact encryption authenticates encrypted email at rest 
     else process.env.RIPODOC_LEAD_ENCRYPTION_KEY = original;
   }
 });
+
+test('legal hub exposes all required pre-launch policy-status routes and keeps unsupported contract language out of the public model', async () => {
+  const legal = await readFile(new URL('../../../web/frontend/src/lib/launch/legal.ts', import.meta.url), 'utf8');
+  const hub = await readFile(new URL('../../../web/frontend/src/app/legal/page.tsx', import.meta.url), 'utf8');
+  const footer = await readFile(new URL('../../../web/frontend/src/components/Footer.tsx', import.meta.url), 'utf8');
+  for (const route of ['/legal/privacy', '/legal/cookies', '/legal/terms', '/legal/refunds', '/legal/sla', '/legal/dpa', '/legal/healthcare-mode-b']) {
+    assert.match(legal, new RegExp(route.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    assert.match(footer, new RegExp(route.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  }
+  assert.match(hub, /Pre-launch legal status/);
+  assert.match(legal, /not a final contract/);
+  assert.doesNotMatch(legal, /HIPAA compliant/i);
+  assert.doesNotMatch(legal, /HIPAA certified/i);
+});
+
+test('Healthcare Mode B defaults to restrictive public behavior and blocks founding-partner intake and public authoring', async () => {
+  const foundingRoute = await readFile(new URL('../../../web/frontend/src/app/api/founding-partners/route.ts', import.meta.url), 'utf8');
+  const authoringRoute = await readFile(new URL('../../../web/frontend/src/app/api/authoring/[action]/route.ts', import.meta.url), 'utf8');
+  const healthcarePage = await readFile(new URL('../../../web/frontend/src/app/legal/[document]/page.tsx', import.meta.url), 'utf8');
+  const legal = await readFile(new URL('../../../web/frontend/src/lib/launch/legal.ts', import.meta.url), 'utf8');
+  assert.match(foundingRoute, /healthcareModeBEnabled\(\)/);
+  assert.match(authoringRoute, /modeBPrivateAuthoringAllowed\(\)/);
+  assert.match(authoringRoute, /does not permit public authoring/);
+  assert.match(legal, /not a HIPAA certification/);
+  assert.match(healthcarePage, /No PHI\/ePHI/);
+});
+
+test('outbound webhook destinations require exact allowlisted HTTPS hosts and exclude local or credentialed URLs', async () => {
+  const { approvedWebhookDestination, parseWebhookAllowedHosts, webhooksEnabled } = await import('../../../web/frontend/src/lib/launch/healthcare-webhooks.ts');
+  const allowed = parseWebhookAllowedHosts('hooks.example.test, events.example.test');
+  assert.equal(approvedWebhookDestination('https://hooks.example.test/receive', allowed)?.hostname, 'hooks.example.test');
+  assert.equal(approvedWebhookDestination('https://sub.hooks.example.test/receive', allowed), undefined);
+  assert.equal(approvedWebhookDestination('http://hooks.example.test/receive', allowed), undefined);
+  assert.equal(approvedWebhookDestination('https://hooks.example.test:8443/receive', allowed), undefined);
+  assert.equal(approvedWebhookDestination('https://user:pass@hooks.example.test/receive', allowed), undefined);
+  assert.equal(approvedWebhookDestination('https://127.0.0.1/receive', new Set(['127.0.0.1'])), undefined);
+  const oldMode = process.env.RIPODOC_HEALTHCARE_MODE;
+  const oldEnabled = process.env.RIPODOC_WEBHOOKS_ENABLED;
+  const oldHosts = process.env.RIPODOC_WEBHOOK_ALLOWED_HOSTS;
+  try {
+    process.env.RIPODOC_HEALTHCARE_MODE = 'mode-b';
+    process.env.RIPODOC_WEBHOOKS_ENABLED = 'true';
+    process.env.RIPODOC_WEBHOOK_ALLOWED_HOSTS = 'hooks.example.test';
+    assert.equal(webhooksEnabled(), false);
+  } finally {
+    if (oldMode === undefined) delete process.env.RIPODOC_HEALTHCARE_MODE; else process.env.RIPODOC_HEALTHCARE_MODE = oldMode;
+    if (oldEnabled === undefined) delete process.env.RIPODOC_WEBHOOKS_ENABLED; else process.env.RIPODOC_WEBHOOKS_ENABLED = oldEnabled;
+    if (oldHosts === undefined) delete process.env.RIPODOC_WEBHOOK_ALLOWED_HOSTS; else process.env.RIPODOC_WEBHOOK_ALLOWED_HOSTS = oldHosts;
+  }
+});
+
+test('future inbound webhook verification enforces timestamp skew and constant-time HMAC signature shape', async () => {
+  const { createHmac } = await import('node:crypto');
+  const { verifyInboundWebhook, webhookPayloadTooLarge } = await import('../../../web/frontend/src/lib/launch/healthcare-webhooks.ts');
+  const secret = 's'.repeat(32);
+  const body = '{"event":"safe"}';
+  const timestamp = '1700000000';
+  const signature = `sha256=${createHmac('sha256', secret).update(`${timestamp}.${body}`).digest('hex')}`;
+  assert.equal(verifyInboundWebhook({ rawBody: body, timestamp, signature, secret, now: 1700000000 }), true);
+  assert.equal(verifyInboundWebhook({ rawBody: body, timestamp, signature, secret, now: 1700000401 }), false);
+  assert.equal(verifyInboundWebhook({ rawBody: body, timestamp, signature: 'sha256=bad', secret, now: 1700000000 }), false);
+  assert.equal(webhookPayloadTooLarge('65536'), false);
+  assert.equal(webhookPayloadTooLarge('65537'), true);
+  assert.equal(webhookPayloadTooLarge(null), true);
+});

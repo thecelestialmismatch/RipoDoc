@@ -4,6 +4,7 @@ import { verifyCaptcha } from '@/lib/auth/captcha.ts';
 import { assertSameOriginAndCsrf, clientIp } from '@/lib/auth/server.ts';
 import { leadIntakeConfigured } from '@/lib/founder/lead-crypto.ts';
 import { submitFoundingPartnerLead } from '@/lib/founder/leads.ts';
+import { healthcareModeBEnabled } from '@/lib/launch/healthcare-webhooks.ts';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -19,7 +20,7 @@ export async function POST(request: Request): Promise<Response> {
   if (!form) return destination(request, 'invalid');
   const csrf = form.get('csrf');
   if (!(await assertSameOriginAndCsrf(request, csrf))) return destination(request, 'invalid');
-  if (!authConfigured() || !leadIntakeConfigured()) return destination(request, 'unavailable');
+  if (healthcareModeBEnabled() || !authConfigured() || !leadIntakeConfigured()) return destination(request, 'unavailable');
 
   const ip = clientIp(request);
   if (!(await verifyCaptcha(form.get('captcha'), ip))) return destination(request, 'received');
