@@ -1,15 +1,15 @@
 # RipoDoc API Contracts (v0.1)
 
-> The API surface for the planned Go backend, written before the backend so the
-> frontend, the worker and the evidence pages all agree on one contract.
-> Status: **Planned.** The evidence-token flow is implemented in
-> `web/frontend/src/lib/evidence/token.ts`; the HTTP endpoints below are the
-> contract the Go `cmd/api` service will implement.
+> This document records product API concepts and the shipped evidence/authoring
+> boundary. Status: **Partially implemented.** The current application uses
+> Next.js server routes, opaque workspace sessions, same-origin CSRF checks, and
+> a private capability-authenticated Node worker. Endpoint concepts not present
+> in the current route tree are proposals, not public API commitments.
 
 ## Conventions
 
-- Base URL: `https://api.ripodoc.com/v1`
-- Auth: `Authorization: Bearer <session>` (WorkOS-issued), except `/e/*` which carries the signed evidence token in the path.
+- Current application routes: same-origin Next.js routes under `/api/*`; no public versioned API is offered.
+- Auth: opaque `HttpOnly` workspace session plus same-origin HMAC CSRF for state changes. `/e/*` uses a signed evidence token and recipient proof boundary where configured.
 - Tenant scope: every request is scoped by the authenticated user's tenant; the server never trusts client-supplied tenant ids.
 - Errors: `{"error": {"code": "...", "message": "..."}}` — messages are recipient-safe (never distinguish a forged signature from an unknown report).
 - All write endpoints are idempotent where marked.
@@ -125,9 +125,9 @@ Revocation: `DELETE /share-links/:jti`.
 
 ---
 
-## Manual flow equivalent (implemented today)
+## Manual and private-worker flow (implemented today)
 
-Until `cmd/api` ships, the same pipeline runs on the CLI:
+The overlay CLI provides an operator-controlled flow. Verified workspace users can also use the private authoring gateway when the server-side worker preflight passes. The browser never receives a direct worker URL or worker credential:
 
 ```bash
 # 1. Propose placements (auto-detect zones)
