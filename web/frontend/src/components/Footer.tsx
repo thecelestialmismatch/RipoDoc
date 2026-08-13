@@ -12,18 +12,26 @@ const productLinks = [
 
 const resourceLinks = [
   { href: 'https://github.com/thecelestialmismatch/RipoDoc', label: 'GitHub repository' },
-  { href: 'https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/00-strategy/master-plan.md', label: 'Master plan' },
   { href: 'https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/01-research/yc-readiness-and-venture-thesis.md', label: 'YC-readiness research' },
-  { href: 'https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/02-product/prd.md', label: 'Product requirements' },
-  { href: 'https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/02-product/interaction-spec.md', label: 'Interaction specification' },
-  { href: 'https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/05-security/pr11-self-hosted-security-advisory-and-migration-guide.md', label: 'PR #11 migration guide' },
+  { href: 'https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/05-security/pr11-self-hosted-security-advisory-and-migration-guide.md', label: 'Self-host migration guide' },
+] as const;
+
+const legalLinks = [
+  { href: '/legal', label: 'Legal information hub' },
+  { href: '/legal/privacy', label: 'Privacy information' },
+  { href: '/legal/cookies', label: 'Cookie information' },
+  { href: '/legal/terms', label: 'Terms status' },
+  { href: '/legal/refunds', label: 'Refunds status' },
+  { href: '/legal/sla', label: 'SLA status' },
+  { href: '/legal/dpa', label: 'DPA status' },
+  { href: '/legal/healthcare-mode-b', label: 'Healthcare Mode B' },
 ] as const;
 
 export function Footer() {
   return (
     <footer className="border-t border-slate-200 bg-[#F6F8FC]">
       <div className="mx-auto max-w-7xl px-6 py-12">
-        <div className="grid gap-10 md:grid-cols-[1.3fr_0.65fr_0.8fr]">
+        <div className="grid gap-10 md:grid-cols-2 xl:grid-cols-[1.35fr_0.62fr_0.72fr_0.72fr]">
           <div>
             <BrandLockup showDescriptor />
             <p className="mt-5 max-w-md text-sm leading-6 text-slate-600">
@@ -38,22 +46,21 @@ export function Footer() {
           <div>
             <h2 className="text-sm font-semibold text-[#11162E]">Product</h2>
             <ul className="mt-4 space-y-3 text-sm text-slate-600">
-              {productLinks.map((link) => (
-                <li key={link.href}><Link href={link.href} className="transition hover:text-[#1769E8]">{link.label}</Link></li>
-              ))}
+              {productLinks.map((link) => <li key={link.href}><Link href={link.href} className="transition hover:text-[#1769E8]">{link.label}</Link></li>)}
             </ul>
           </div>
 
           <div>
             <h2 className="text-sm font-semibold text-[#11162E]">Resources</h2>
             <ul className="mt-4 space-y-3 text-sm text-slate-600">
-              {resourceLinks.map((link) => (
-                <li key={link.href}>
-                  <a href={link.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 transition hover:text-[#1769E8]">
-                    {link.label}<ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-                  </a>
-                </li>
-              ))}
+              {resourceLinks.map((link) => <li key={link.href}><a href={link.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 transition hover:text-[#1769E8]">{link.label}<ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" /></a></li>)}
+            </ul>
+          </div>
+
+          <div>
+            <h2 className="text-sm font-semibold text-[#11162E]">Legal status</h2>
+            <ul className="mt-4 space-y-3 text-sm text-slate-600">
+              {legalLinks.map((link) => <li key={link.href}><Link href={link.href} className="transition hover:text-[#1769E8]">{link.label}</Link></li>)}
             </ul>
           </div>
         </div>

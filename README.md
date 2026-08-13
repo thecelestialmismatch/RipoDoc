@@ -26,6 +26,7 @@ RipoDoc preserves the client reporting workflow MSPs already use while adding a 
 | `/dashboard` | Verified MSP workspace users | Review only reports owned by the authenticated tenant; report manifests require tenant-scoped session authorization. |
 | `/signup`, `/login`, `/verify-email`, `/forgot-password`, `/reset-password` | MSP workspace users | Complete account lifecycle with email activation, one-time codes, private sessions, rate limits, and CAPTCHA protection. |
 | `/security` | Operators and security reviewers | Inspect safe, live operational posture without exposing secrets, recipient identities, or audit records. |
+| `/legal` and `/legal/*` | Prospects, operators, and counsel | Transparent pre-launch legal, privacy, cookie, commercial, DPA, and healthcare-boundary status. These pages are not final contracts until the documented owner/counsel gate is complete. |
 | `/e/[token]/[elementId]` | Intended report recipient | Open the evidence authorized by a signed link. |
 | `/admin` | Private operators only | Protected report and recipient operations workspace. It is intentionally excluded from public navigation. |
 
@@ -123,6 +124,10 @@ Store all values below in the relevant server environment. Do not expose `RIPODO
 | `RIPODOC_LOCAL_WORKER_URL` | Yes for private authoring | Server-only URL for the private worker. Compose sets this to `http://worker:4000/api/local`; local development may use `http://127.0.0.1:4000/api/local`. |
 | `RIPODOC_WORKER_AUTH_SECRET` | Yes for private authoring | A separate 32-character-or-longer server-only HMAC secret shared only by the web service and worker to issue and verify single-use, 90-second authoring capabilities. |
 | `RIPODOC_WORKER_MAX_CONCURRENT_JOBS` | Optional | Private worker concurrency cap. Defaults to `2` and is constrained to a maximum of `4`. |
+| `RIPODOC_HEALTHCARE_MODE` | Optional | Set only to `mode-b` for the restricted healthcare evaluation posture. It blocks public founding-partner intake and public authoring unless the explicit private authoring gate below is set. It is not a HIPAA compliance mode. |
+| `RIPODOC_MODE_B_ALLOW_PRIVATE_AUTHORING` | Optional self-hosted Mode B gate | Set only to `true` after the operator has completed the applicable self-hosted, security, contractual, and data-classification review. It never enables public intake or webhooks. |
+| `RIPODOC_WEBHOOK_ALLOWED_HOSTS` | Optional, future outbound integrations | Comma-separated exact HTTPS destination hostnames. Arbitrary URLs, local/private hosts, credentials, and non-standard ports are refused. No webhook provider is enabled by this release. |
+| `RIPODOC_WEBHOOKS_ENABLED` | Optional, future outbound integrations | Defaults to disabled. It remains disabled whenever Healthcare Mode B is enabled. |
 
 ## Security model
 
@@ -157,9 +162,15 @@ npm run audit:verify -- --path /secure/audit/evidence-access.jsonl
 
 The `/security` page provides operator-safe indicators for this posture. It never displays signing secrets, token identifiers, recipient identities, or audit-log contents.
 
+## Legal and Healthcare Mode B
+
+RipoDoc has a public [`/legal`](/legal) hub and a versioned [counsel-review launch policy packet](docs/06-legal/counsel-review-launch-policy-packet.md). The public pages distinguish verified technical facts from binding legal terms that require the accountable business owner and qualified counsel to supply and approve the legal entity, jurisdiction, commercial policy, service levels, retention schedule, and subprocessor configuration. They do not publish fabricated Terms, Privacy Policy, Cookie Policy, Refund/Cancellation Policy, SLA, or DPA.
+
+**Healthcare Mode B** is a restricted evaluation and self-hosted posture, not HIPAA certification, a BAA, or a representation that the public service processes PHI/ePHI. It blocks public founding-partner intake and public authoring by default; it disables webhook delivery; and it prohibits PHI/ePHI in public demo, email, analytics, public hosted processing, and webhook payloads. A future PHI/ePHI deployment requires a documented risk analysis, appropriate contractual/BAA review, verified infrastructure and subprocessors, access/audit and retention controls, incident process, and security/counsel approval.
+
 ## Verification
 
-The repository uses the built-in Node.js test runner for evidence and application-runtime boundaries. The current regression suite completes **139 tests** with no failures, including an end-to-end local worker test that verifies the manifest requirement, review gate, signed publication, and PDF download; tenant-scoped dashboard/download contracts; and hardened founding-partner, durable-audit, encrypted-contact, and production-preflight contracts, followed by clean linting, type checking, and a production build. See [`docs/05-security/authentication-and-test-coverage.md`](docs/05-security/authentication-and-test-coverage.md) for the full file-by-file coverage map.
+The repository uses the built-in Node.js test runner for evidence and application-runtime boundaries. The current regression suite completes **143 tests** with no failures, including an end-to-end local worker test that verifies the manifest requirement, review gate, signed publication, and PDF download; tenant-scoped dashboard/download contracts; and hardened founding-partner, durable-audit, encrypted-contact, and production-preflight contracts, followed by clean linting, type checking, and a production build. See [`docs/05-security/authentication-and-test-coverage.md`](docs/05-security/authentication-and-test-coverage.md) for the full file-by-file coverage map.
 
 ```bash
 npm test              # evidence, audit, runtime-posture, and admin-key tests
@@ -177,7 +188,7 @@ The document processor is intentionally not bundled into the public Vercel appli
 | Release gate | Required result |
 | --- | --- |
 | Automated checks | `npm run verify` exits successfully. |
-| Public route review | `/`, `/founding-partners`, `/download`, `/dashboard`, `/security`, and the safe `/api/health` deployment probe render without broken navigation. |
+| Public route review | `/`, `/founding-partners`, `/download`, `/dashboard`, `/security`, `/legal`, every legal status route, and the safe `/api/health` deployment probe render without broken navigation. |
 | Durable production preflight | `npm run preflight:production` reports `ready` only after PostgreSQL connectivity/migrations and private-worker health pass. |
 | Private operations review | `/admin` redirects unauthenticated visitors to `/login`; verified `owner` and `admin` users see only their tenant-scoped operational summary. |
 | Worker review | A verified tenant session completes upload, review, and publication through `/api/authoring`; direct browser, unsigned, replayed, wrong-purpose, and cross-tenant worker requests fail without disclosing artifacts. |

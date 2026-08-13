@@ -365,27 +365,27 @@ The reader's experience remains **100% deterministic**. When a client clicks a c
 | Layer | Technology | Version | Rationale |
 | :--- | :--- | :--- | :--- |
 | Frontend | Next.js / React / TypeScript / Tailwind | 16.2.12 / 19.2.4 / 5.9 / 4.1 | SSR report reader, App Router, Server Components |
-| Backend | Go + chi + pgx + sqlc | 1.24+ / v5.2.1 / v5.7.4 / latest | Concurrency, single binary, security, type-safe SQL |
-| Database | PostgreSQL (RLS) | 18.4 | Tenant isolation, JSONB, maturity |
-| Background jobs | River | v0.16.2 | PostgreSQL-backed, transactional, no extra infra |
+| Backend | Next.js server routes + Node.js TypeScript | Next.js 16 / Node 22 | Same-origin application gateway, typed server modules, and auditable deployment boundary |
+| Database | PostgreSQL via `pg` | PostgreSQL-compatible | Parameterized queries, transactions, tenant-scoped workspace access, identity, rate limits, and durable audit option |
+| Background jobs | Private capability-authenticated Node worker | Node 22 | Short-lived, tenant-bound, single-use worker capabilities; no public browser worker route |
 | PDF engine | **Hand-rolled, dependency-free TypeScript** (already shipped) | — | Link annotations + byte-preservation are the trust boundary; must be auditable without a vendor library |
 | OCR (planned) | AWS Textract | v2 API | Tables, forms, handwriting; KMS-encrypted processing |
-| Auth | WorkOS / AuthKit | latest | SSO/SAML-ready, enterprise-grade |
-| Billing | Stripe | v82 Go SDK | Subscriptions, webhooks |
-| Infrastructure | AWS ECS Fargate / RDS / S3 / KMS / CloudTrail / WAF | — | Containerised, encrypted, logged |
-| CI/CD | GitHub Actions + Trivy + CodeQL + Gitleaks + Dependabot | — | Build, test, scan, deploy |
-| IaC | OpenTofu | latest | Infrastructure as code |
-| Observability | OpenTelemetry + Sentry + PostHog | — | Tracing, errors, product analytics |
+| Auth | Custom scrypt passwords + opaque PostgreSQL sessions | Node 22 | Email verification, HMAC CSRF, rate limiting, one-time hashed codes, and fail-closed configuration |
+| Billing | Not implemented | — | No public price, checkout, subscription, or payment claim |
+| Infrastructure | Vercel public application + self-hosted Compose/private worker | — | Public web surface remains separate from private document processing |
+| CI/CD | GitHub pull requests, Node release gate, dependency audit, container SBOM/scan procedure | — | Build, test, scan, and deploy evidence |
+| IaC | Not implemented | — | Do not claim infrastructure-as-code coverage that is not in the repository |
+| Observability | Safe health probe, structured stdout and hash-chained audit options | — | Configuration status without exposing secrets or customer data |
 
 ### 7.2 Key architectural decisions
 
 | Decision | Choice | Rationale |
 | :--- | :--- | :--- |
-| Monolith vs microservices | **Modular monolith** (Go API + isolated worker) | Solo founder. No distributed complexity. |
-| PDF engine | Hand-rolled TS, not Go/pdfcpu | The shipped `tools/evidence-pdf` is byte-verified, dependency-free, and the security tests pin it. Port to Go later only if performance demands. |
-| Multi-tenancy | Shared DB + PostgreSQL RLS | Simplest secure model. |
-| Job queue | River (PostgreSQL) | No separate queue infrastructure. Transactional guarantees. |
-| AI | AWS Bedrock / Azure OpenAI | DPA, no-training terms, regional processing. No customer chat in v1. |
+| Application shape | **Next.js application + isolated private worker** | The public website and server gateway remain separate from document processing. |
+| PDF engine | Hand-rolled TypeScript overlay/writer | The shipped `tools/evidence-pdf` is byte-verified and its trust boundary is covered by regression tests. |
+| Multi-tenancy | Tenant-scoped PostgreSQL queries + role-bound sessions | Current workspace paths scope report access to the verified session tenant. |
+| Worker capability | Short-lived HMAC capability | One action, tenant, user, and optional draft; replay and browser-direct requests are refused. |
+| AI | Not implemented in the production processing path | Do not send customer report data to a model or claim no-training/regional terms without an approved provider and contract. |
 
 ### 7.3 What is shipped today vs. planned
 
@@ -397,12 +397,12 @@ The reader's experience remains **100% deterministic**. When a client clicks a c
 | Token engine (HMAC-SHA256, expiry, revocation, version pinning) | ✅ Shipped |
 | Next.js evidence pages (token-gated, searchable, sortable, CSV export) | ✅ Shipped |
 | Demo manifest (412 tickets + SLA + assets, both fixture copies) | ✅ Shipped — every count KPI enumerates its rows |
-| Go API (`cmd/api`) | ⏳ Planned |
-| Worker service (`cmd/worker`) | ⏳ Planned |
-| PostgreSQL RLS + migrations | ⏳ Planned |
-| Authoring UI (upload → review → publish) | ⏳ Planned |
-| Customer portal + auth | ⏳ Planned |
-| Billing (Stripe) | ⏳ Planned |
+| Next.js server-side application gateway | ✅ Shipped — same-origin, CSRF-checked and tenant-scoped protected routes |
+| Private capability-authenticated worker | ✅ Shipped — separate Node worker boundary, container hardening, and operations runbook |
+| PostgreSQL identity/workspace migrations | ✅ Shipped — production configuration remains a required deployment gate |
+| Authoring flow (upload → review → publish) | ✅ Shipped behind verified workspace and private-worker controls |
+| Customer workspace and auth | ✅ Shipped — email verification and fail-closed hosted configuration |
+| Billing | ❌ Not implemented — no checkout, price, subscription, or payment promise |
 | AI agents | ⏳ Planned (assist-only) |
 | AWS infrastructure + CI/CD | ⏳ Planned |
 
@@ -423,7 +423,7 @@ The reader's experience remains **100% deterministic**. When a client clicks a c
 | Layer | Control |
 | :--- | :--- |
 | Network | AWS WAF, VPC private subnets, no public DB access, TLS 1.2+ |
-| Auth | WorkOS (SAML/OIDC), httpOnly secure SameSite=Strict sessions |
+| Auth | Custom scrypt passwords, opaque sessions, email verification, HMAC CSRF, rate limits, and `HttpOnly`/`SameSite=Strict` production cookies |
 | Authorization | RBAC + tenant-scoped queries + PostgreSQL RLS |
 | Storage | S3 SSE-KMS, bucket policies, no public access |
 | Uploads | Malware scan, sandboxed PDF processing, reject unsupported types, never execute embedded PDF JS |
