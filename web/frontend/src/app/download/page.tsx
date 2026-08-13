@@ -73,6 +73,7 @@ export POSTGRES_PASSWORD="$(openssl rand -base64 32)"
 export RIPODOC_AUTH_SECRET="$(openssl rand -base64 32)"
 export RIPODOC_EVIDENCE_SECRET="$(openssl rand -base64 32)"
 export RIPODOC_WORKER_AUTH_SECRET="$(openssl rand -base64 32)"
+export RIPODOC_LEAD_ENCRYPTION_KEY="$(openssl rand -base64 32 | tr '+/' '-_' | tr -d '=')"
 
 docker compose -f docker-compose.selfhost.yml up --build`}</code></pre>
             <p className="mt-4 text-xs leading-5 text-slate-400">Before opening the service to users, configure the required PostgreSQL, canonical-origin, Resend, and Turnstile values, then follow the full release-gate procedure below.</p>
@@ -81,7 +82,16 @@ docker compose -f docker-compose.selfhost.yml up --build`}</code></pre>
       </section>
 
       <main className="mx-auto max-w-7xl px-5 py-12 sm:px-6 lg:py-16">
-        <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8" aria-labelledby="deployment-mode-heading">
+          <div className="max-w-3xl"><p className="text-xs font-bold uppercase tracking-[0.14em] text-cyan-700">Choose the right operating model</p><h2 id="deployment-mode-heading" className="mt-2 text-2xl font-bold tracking-tight text-slate-950">The recipient experience, your workspace, and the private worker are separate on purpose.</h2><p className="mt-3 text-sm leading-6 text-slate-600">RipoDoc keeps a normal PDF in the client’s hands while its evidence and authoring controls remain in a verified application boundary. Pick the path that matches your responsibility for infrastructure and client data.</p></div>
+          <div className="mt-7 grid gap-4 lg:grid-cols-3">
+            <article className="rounded-xl border border-slate-200 p-5"><p className="text-sm font-bold text-slate-950">Explore the proof experience</p><p className="mt-2 text-sm leading-6 text-slate-600">For an MSP evaluating the client interaction before a production deployment. Use the public sample; do not upload client data.</p><Link href="/#demo" className="mt-4 inline-flex text-sm font-semibold text-blue-700 hover:text-blue-800">Open the demo <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" /></Link></article>
+            <article className="rounded-xl border border-slate-200 p-5"><p className="text-sm font-bold text-slate-950">Hosted workspace</p><p className="mt-2 text-sm leading-6 text-slate-600">For a supported RipoDoc deployment once the durable identity, CAPTCHA, email, PostgreSQL audit chain, and private-worker release gate are green.</p><Link href="/founding-partners" className="mt-4 inline-flex text-sm font-semibold text-blue-700 hover:text-blue-800">Request a report diagnostic <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" /></Link></article>
+            <article className="rounded-xl border border-slate-200 p-5"><p className="text-sm font-bold text-slate-950">Self-hosted full stack</p><p className="mt-2 text-sm leading-6 text-slate-600">For an MSP that owns the PostgreSQL, email, reverse proxy, audit retention, and worker network boundary under its own change control.</p><a href="#quick-start" className="mt-4 inline-flex text-sm font-semibold text-blue-700 hover:text-blue-800">Review the operator path <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" /></a></article>
+          </div>
+        </section>
+
+        <section id="quick-start" className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
           {installSteps.map((step) => {
             const Icon = step.icon;
             return (
@@ -107,6 +117,7 @@ docker compose -f docker-compose.selfhost.yml up --build`}</code></pre>
                 'Non-root, read-only, resource-bounded Compose defaults',
                 'CycloneDX SBOM generation and final-image vulnerability scan procedure',
                 'Hash-chain audit verification and backup/restore runbook',
+                'Authenticated production preflight for database schema and private-worker reachability',
                 'Customer workspace, operator controls, and recipient proof gate',
               ].map((item) => (
                 <li key={item} className="flex gap-3 text-sm leading-6 text-slate-700">
@@ -120,7 +131,7 @@ docker compose -f docker-compose.selfhost.yml up --build`}</code></pre>
             <ShieldCheck className="h-6 w-6 text-cyan-300" aria-hidden="true" />
             <p className="mt-5 text-xs font-bold uppercase tracking-[0.14em] text-cyan-300">Start with the operator packet</p>
             <h2 className="mt-2 text-2xl font-bold">Do the secure cutover once.</h2>
-            <p className="mt-3 text-sm leading-6 text-slate-300">The PR #11 migration guide is written for the person on call: preflight, secrets, Compose rendering, final-image scanning, verification, rollback, and the evidence packet your customers may request.</p>
+            <p className="mt-3 text-sm leading-6 text-slate-300">The operator packet is written for the person on call: secrets, Compose rendering, durable audit configuration, final-image scanning, authenticated production preflight, verification, rollback, and the evidence packet your customers may request.</p><div className="mt-5 rounded-xl bg-white/5 p-4 font-mono text-xs leading-6 text-slate-200"><span className="text-slate-400"># Run after migrations and service configuration</span><br />npm run preflight:production</div>
             <a
               href="https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/05-security/pr11-self-hosted-security-advisory-and-migration-guide.md"
               target="_blank"
@@ -138,8 +149,8 @@ docker compose -f docker-compose.selfhost.yml up --build`}</code></pre>
             <h2 className="mt-2 text-xl font-bold text-slate-950">Open the tenant workspace and see every approved client report.</h2>
             <p className="mt-2 text-sm text-slate-600">The command center makes report discovery, evidence readiness, and secure manifest retrieval fast without relaxing tenant boundaries.</p>
           </div>
-          <Link href="/dashboard" className="mt-5 inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-800 sm:mt-0">
-            Open client workspace <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          <Link href="/founding-partners" className="mt-5 inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-800 sm:mt-0">
+            Request a report diagnostic <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </section>
       </main>

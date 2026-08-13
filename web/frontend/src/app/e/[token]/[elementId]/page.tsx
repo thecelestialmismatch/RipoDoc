@@ -16,6 +16,7 @@ import { loadManifest } from '@/lib/evidence/store.ts';
 import { failureMessage, hashRecipient, verifyEvidenceToken } from '@/lib/evidence/token.ts';
 import { findElement } from '@/lib/evidence/types.ts';
 import { hasRecipientProof } from '@/lib/evidence/recipient-proof.ts';
+import { recordFounderEvent } from '@/lib/founder/events.ts';
 
 export const dynamic = 'force-dynamic';
 
@@ -98,6 +99,10 @@ export default async function EvidencePage({ params }: PageProps) {
     elementId: element.id,
     jti: claims.jti,
     recipientHash: claims.recipientHash,
+  });
+  await recordFounderEvent({
+    eventType: 'evidence_opened',
+    metadata: { result: 'granted', element_type_band: element.kind },
   });
 
   const { evidence } = element;

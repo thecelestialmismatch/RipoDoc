@@ -105,6 +105,18 @@ export default async function SecurityPage() {
           })}
         </section>
 
+        <section className="mt-10 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8" aria-labelledby="hosted-readiness-heading">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#087E84]">Hosted production readiness</p><h2 id="hosted-readiness-heading" className="mt-1 text-xl font-semibold text-slate-950">A deployment should earn the right to collect customer data.</h2><p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">These flags report configuration state only. The release gate still requires authenticated checks, database schema verification, and private-worker reachability through <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs">npm run preflight:production</code>.</p></div><StatusPill ok={posture.hostedReadiness.authenticationConfigured && posture.hostedReadiness.durableAuditConfigured && posture.hostedReadiness.privateWorkerConfigured} label={posture.hostedReadiness.authenticationConfigured && posture.hostedReadiness.durableAuditConfigured && posture.hostedReadiness.privateWorkerConfigured ? 'Hosted boundary configured' : 'Hosted boundary incomplete'} /></div>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {[
+              ['Durable identity', posture.hostedReadiness.authenticationConfigured, 'Database, auth, origin, email, and production CAPTCHA configuration are present.'],
+              ['Durable evidence audit', posture.hostedReadiness.durableAuditConfigured, 'A PostgreSQL or persistent file hash-chain sink is selected.'],
+              ['Private authoring worker', posture.hostedReadiness.privateWorkerConfigured, 'The server-side worker URL and capability secret are configured.'],
+              ['Founding-partner intake', posture.hostedReadiness.foundingPartnerIntakeConfigured, 'Encrypted contact storage has a dedicated server-only key.'],
+            ].map(([title, ok, body]) => <article key={String(title)} className="rounded-xl border border-slate-200 bg-slate-50 p-4"><StatusPill ok={Boolean(ok)} label={Boolean(ok) ? 'Configured' : 'Not configured'} /><h3 className="mt-3 text-sm font-semibold text-slate-950">{title}</h3><p className="mt-1 text-xs leading-5 text-slate-600">{body}</p></article>)}
+          </div>
+        </section>
+
         <section className="mt-10 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm" aria-labelledby="pr9-heading">
           <div className="border-b border-slate-200 bg-slate-950 px-6 py-5 text-white sm:px-8">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -161,7 +173,7 @@ export default async function SecurityPage() {
               <div className="rounded-xl bg-slate-50 p-4">
                 <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Persistence mode</p>
                 <p className="mt-2 text-base font-semibold text-slate-950">
-                  {posture.auditLog.mode === 'file' ? 'Hash-chained file log' : 'Structured stdout'}
+                  {posture.auditLog.mode === 'file' ? 'Hash-chained file log' : posture.auditLog.mode === 'postgres' ? 'PostgreSQL hash chain' : 'Structured stdout'}
                 </p>
               </div>
               <div className="rounded-xl bg-slate-50 p-4">
@@ -171,7 +183,9 @@ export default async function SecurityPage() {
                     ? `${posture.auditLog.verification.records} record${posture.auditLog.verification.records === 1 ? '' : 's'} verified`
                     : auditIssue
                       ? `Failed at record ${posture.auditLog.verification.failedAt}`
-                      : 'No readable file log in this runtime'}
+                      : posture.auditLog.mode === 'postgres'
+                        ? 'Run authenticated production preflight'
+                        : 'No readable file log in this runtime'}
                 </p>
               </div>
             </div>
@@ -190,8 +204,8 @@ export default async function SecurityPage() {
             <ol className="mt-4 space-y-3 text-sm leading-6 text-slate-700">
               <li><span className="mr-2 font-semibold text-blue-700">01.</span>Set a 32+ character <code className="rounded bg-white px-1.5 py-0.5 text-xs">RIPODOC_EVIDENCE_SECRET</code>.</li>
               <li><span className="mr-2 font-semibold text-blue-700">02.</span>Send links only to the intended recipient and configure a suitable expiry.</li>
-              <li><span className="mr-2 font-semibold text-blue-700">03.</span>Persist stdout logs or configure <code className="rounded bg-white px-1.5 py-0.5 text-xs">RIPODOC_AUDIT_LOG</code> on durable infrastructure.</li>
-              <li><span className="mr-2 font-semibold text-blue-700">04.</span>Run the audit verifier as part of operational review.</li>
+              <li><span className="mr-2 font-semibold text-blue-700">03.</span>For hosted operation, set <code className="rounded bg-white px-1.5 py-0.5 text-xs">RIPODOC_AUDIT_BACKEND=postgres</code> and apply the durable-audit migration. For self-hosting, persist a reviewed file chain.</li>
+              <li><span className="mr-2 font-semibold text-blue-700">04.</span>Run <code className="rounded bg-white px-1.5 py-0.5 text-xs">npm run preflight:production</code> before opening hosted account actions.</li>
             </ol>
             <Link href="/dashboard" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-blue-700 hover:text-blue-800">
               Open customer workspace <ArrowRight className="h-4 w-4" aria-hidden="true" />

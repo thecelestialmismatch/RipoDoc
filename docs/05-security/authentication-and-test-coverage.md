@@ -22,25 +22,25 @@ The implementation closes the five high-priority authentication controls in the 
 
 ## Automated verification results
 
-The repository uses Node’s built-in test runner. Its production test command executes all 15 first-party test files, including a real local-worker integration test. The latest run completed **135 tests**, with **135 passed**, **0 failed**, **0 skipped**, and **0 todo**. The complete release gate adds strict TypeScript checking and the Next.js production build through `npm run verify`.[3]
+The repository uses Node’s built-in test runner. Its production test command executes all 15 first-party test files, including a real local-worker integration test. The latest run completed **139 tests**, with **139 passed**, **0 failed**, **0 skipped**, and **0 todo**. The complete release gate adds strict TypeScript checking and the Next.js production build through `npm run verify`.[3]
 
 | Security coverage area | Tests | What this proves |
 | --- | ---: | --- |
-| Authentication, workspace runtime, protected dashboard/download workflow, and role-bound operator posture | 7 | Scrypt and opaque-token primitives work; protected runtime posture avoids secret exposure; the retired deployment-wide admin key is not surfaced; the dashboard remains backed by a verified tenant query; and the download route documents server-only worker configuration. |
+| Authentication, workspace runtime, protected dashboard/download workflow, role-bound operator posture, and founding-partner production contracts | 11 | Scrypt and opaque-token primitives work; protected runtime posture avoids secret exposure; the retired deployment-wide admin key is not surfaced; the dashboard remains backed by a verified tenant query; and the download route documents server-only worker configuration. New contracts prove same-origin/CAPTCHA-gated founding-partner intake, encrypted contact storage, durable audit migration content, and explicit production-preflight dependencies. |
 | Evidence authorization and expiry | 16 | Evidence claims are signed, recipient-hash-bound, expiry-checked, revocable, report-scoped, and recipient-safe on denial. |
 | Manifest and fixture validation | 16 | Published input is structurally validated, unsafe or duplicate element IDs are rejected, approvals are mandatory, and malformed report fields cannot reach rendering. |
 | Hash-chained audit trail | 11 | Audit history detects tampering, protects recipient identity, remains verifiable across reopen/append operations, and records access outcomes. |
 | Reviewed overlay publication workflow | 57 | Exact-PDF binding, review approvals, element mapping, placement bounds, proposal parsing, link generation, and readback are enforced. |
 | PDF construction and safe delivery | 27 | PDF serialization escapes untrusted values; external URLs must be HTTPS; unsafe rectangles and JavaScript are refused; evidence rows remain out of final PDFs. |
 | Private worker authorization and publication boundary | 1 | The worker rejects direct browser and unsigned requests, validates a server-issued tenant/scope/draft capability, prevents cross-tenant proposal access, records the server reviewer rather than trusting browser approval strings, rejects wrong-purpose publish attempts, validates PDF bytes, and yields only the digest-checked approved PDF artifact. |
-| **Total** | **135** | Complete shipped regression suite. |
+| **Total** | **139** | Complete shipped regression suite. |
 
 ## File-by-file test inventory
 
 | Test file | Tests | Security and product coverage |
 | --- | ---: | --- |
 | `tools/evidence-pdf/test/auth-primitives.test.ts` | 2 | Scrypt derivation/verification and random token or privacy-hash behavior. |
-| `tools/evidence-pdf/test/application-runtime.test.ts` | 5 | Valid manifest discovery, secret-safe security posture, regression protection against exposing the retired deployment-wide admin key, server-only self-hosted download guidance, and dashboard tenant-query contract coverage. |
+| `tools/evidence-pdf/test/application-runtime.test.ts` | 9 | Valid manifest discovery, secret-safe security posture, regression protection against exposing the retired deployment-wide admin key, server-only self-hosted download guidance, dashboard tenant-query contract coverage, protected founding-partner intake contract, durable audit/founder-evidence schema contract, production-preflight contract, and authenticated encrypted-contact round trip. |
 | `tools/evidence-pdf/test/audit.test.ts` | 11 | Hash chaining, tamper detection, concurrent appends, restart behavior, structured sink, and no raw recipient email in audit records. |
 | `tools/evidence-pdf/test/demo-fixture.test.ts` | 3 | Shipped fixture validity and production-ready evidence source structure. |
 | `tools/evidence-pdf/test/link-expiry.test.ts` | 4 | Time-bound claim expiry, control behavior, and denial semantics. |
@@ -65,7 +65,7 @@ npm run build:web
 npm run verify
 ```
 
-The canonical `verify` command runs `typecheck`, then the 135-test suite, then the production frontend build. It should be the minimum pre-merge gate for any change that affects authorization, user identity, evidence claims, manifests, audit behavior, PDF rendering, worker ingress, private operations access, or the protected dashboard/download workflow.[3]
+The canonical `verify` command runs `typecheck`, then the 139-test suite, then the production frontend build. It should be the minimum pre-merge gate for any change that affects authorization, user identity, evidence claims, manifests, audit behavior, PDF rendering, worker ingress, private operations access, or the protected dashboard/download workflow.[3]
 
 ## References
 

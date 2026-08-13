@@ -3,6 +3,7 @@ import type { PoolClient } from 'pg';
 import { sendPasswordResetEmail, sendVerificationEmail } from './email.ts';
 import { query, transaction } from './database.ts';
 import { delayToFloor, genericAuthMessage, hashPassword, isEmail, normalizeEmail, privacyHash, randomToken, tokenHash, validatePassword, verifyPassword } from './primitives.ts';
+import { recordFounderEvent } from '../founder/events.ts';
 
 export type AuthRole = 'owner' | 'admin' | 'author' | 'viewer';
 
@@ -138,7 +139,10 @@ const consumeCode = async (purpose: 'verify-email' | 'reset-password', code: str
 
 export const verifyEmailCode = async (code: string, ip: string): Promise<boolean> => {
   const user = await consumeCode('verify-email', code);
-  if (user) await transaction((client) => audit(client, { userId: user.id, tenantId: user.tenantId, event: 'email-verification', outcome: 'granted', ipHash: privacyHash(ip) }));
+  if (user) {
+    await transaction((client) => audit(client, { userId: user.id, tenantId: user.tenantId, event: 'email-verification', outcome: 'granted', ipHash: privacyHash(ip) }));
+    await recordFounderEvent({ tenantId: user.tenantId, eventType: 'workspace_verified', metadata: { activation_source: 'email' } });
+  }
   return Boolean(user);
 };
 
