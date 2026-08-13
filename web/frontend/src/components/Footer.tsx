@@ -4,7 +4,7 @@ import { BrandLockup } from '@/components/BrandLockup.tsx';
 
 const productLinks = [
   { href: '/#demo', label: 'Interactive demo' },
-  { href: '/upload', label: 'Create report' },
+  { href: '/founding-partners', label: 'Founding report partners' },
   { href: '/dashboard', label: 'Client workspace' },
   { href: '/download', label: 'Download & self-host' },
   { href: '/security', label: 'Security controls' },
@@ -13,6 +13,7 @@ const productLinks = [
 const resourceLinks = [
   { href: 'https://github.com/thecelestialmismatch/RipoDoc', label: 'GitHub repository' },
   { href: 'https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/00-strategy/master-plan.md', label: 'Master plan' },
+  { href: 'https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/01-research/yc-readiness-and-venture-thesis.md', label: 'YC-readiness research' },
   { href: 'https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/02-product/prd.md', label: 'Product requirements' },
   { href: 'https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/02-product/interaction-spec.md', label: 'Interaction specification' },
   { href: 'https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/05-security/pr11-self-hosted-security-advisory-and-migration-guide.md', label: 'PR #11 migration guide' },
@@ -30,7 +31,7 @@ export function Footer() {
             </p>
             <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-teal-200 bg-white px-3 py-1.5 text-xs font-semibold text-[#087E84]">
               <span className="h-1.5 w-1.5 rounded-full bg-[#12B9BE]" aria-hidden="true" />
-              Evidence workflow ready for deployment
+              Evidence workflow with explicit release gates
             </div>
           </div>
 

@@ -17,6 +17,7 @@ export async function GET(): Promise<NextResponse> {
     auth: authConfigured() ? 'configured' : 'not-configured',
     evidenceSigning: posture.evidenceSecretConfigured ? 'configured' : 'not-configured',
     auditPersistence: posture.auditLog.mode,
+    hostedReadiness: posture.hostedReadiness,
   };
 
   return NextResponse.json(body, {
