@@ -1,26 +1,30 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #11162e;
-  --ink-muted: #46526a;
-  --primary: #1769e8;
-  --primary-deep: #0a3e9b;
-  --teal: #12b9be;
-  --teal-pale: #ddf9f7;
-  --sky: #eaf5ff;
-  --mist: #f6f8fc;
+  --background: #f5f7fb;
+  --foreground: #0b1226;
+  --ink-muted: #526078;
+  --ink-soft: #7c8ba3;
+  --primary: #2f62e8;
+  --primary-deep: #17378d;
+  --teal: #25d0bf;
+  --teal-deep: #007e83;
+  --teal-pale: #dcfbf5;
+  --sky: #e7f0ff;
+  --mist: #eef2f8;
   --surface: #ffffff;
-  --surface-2: #f6f8fc;
-  --border: #dce4f0;
+  --surface-2: #f7f9fd;
+  --border: #dbe3f0;
   --success: #078c68;
-  --warning: #bb6a00;
-  --danger: #cf3655;
-  --radius: 16px;
-  --shadow-sm: 0 1px 2px 0 rgb(17 22 46 / 0.05);
-  --shadow-md: 0 10px 25px -18px rgb(17 22 46 / 0.3), 0 2px 8px -4px rgb(17 22 46 / 0.08);
-  --shadow-lg: 0 24px 48px -24px rgb(17 22 46 / 0.28), 0 8px 20px -12px rgb(23 105 232 / 0.2);
-  --shadow-xl: 0 32px 72px -32px rgb(17 22 46 / 0.42), 0 16px 32px -20px rgb(18 185 190 / 0.25);
+  --warning: #b95f00;
+  --danger: #c93052;
+  --navy: #081126;
+  --navy-2: #101e40;
+  --radius: 18px;
+  --shadow-sm: 0 1px 2px 0 rgb(11 18 38 / 0.05);
+  --shadow-md: 0 14px 32px -24px rgb(11 18 38 / 0.30), 0 3px 12px -8px rgb(23 55 141 / 0.12);
+  --shadow-lg: 0 26px 66px -34px rgb(7 19 45 / 0.46), 0 12px 28px -18px rgb(47 98 232 / 0.22);
+  --shadow-xl: 0 40px 96px -42px rgb(7 19 45 / 0.62), 0 18px 40px -24px rgb(37 208 191 / 0.22);
 }
 
 @theme inline {
@@ -42,9 +46,7 @@
   --font-mono: var(--font-geist-mono);
 }
 
-* {
-  scroll-behavior: smooth;
-}
+* { scroll-behavior: smooth; }
 
 body {
   background: var(--background);
@@ -54,74 +56,68 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-::selection {
-  background: rgb(18 185 190 / 0.22);
-  color: #11162e;
-}
+::selection { background: rgb(37 208 191 / 0.28); color: #081126; }
 
-:focus-visible {
-  outline: 3px solid rgb(23 105 232 / 0.42);
-  outline-offset: 3px;
-}
+:focus-visible { outline: 3px solid rgb(47 98 232 / 0.52); outline-offset: 3px; }
 
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #b8c7dc;
-  border: 3px solid transparent;
-  border-radius: 999px;
-  background-clip: padding-box;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #869ab8;
-  border: 3px solid transparent;
-  background-clip: padding-box;
-}
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #b7c5db; border: 3px solid transparent; border-radius: 999px; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background: #8699b8; border: 3px solid transparent; background-clip: padding-box; }
 
 .brand-gradient-text {
-  background: linear-gradient(100deg, #1769e8 0%, #0b83db 43%, #12b9be 100%);
+  background: linear-gradient(104deg, #5a8bff 0%, #2f62e8 42%, #25d0bf 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-.ripodoc-grid {
-  background-image: linear-gradient(rgb(23 105 232 / 0.06) 1px, transparent 1px), linear-gradient(90deg, rgb(23 105 232 / 0.06) 1px, transparent 1px);
-  background-size: 36px 36px;
-}
-
-.ripodoc-hero {
+.proof-canvas {
   background:
-    radial-gradient(circle at 78% 22%, rgb(18 185 190 / 0.22), transparent 29%),
-    radial-gradient(circle at 64% 72%, rgb(23 105 232 / 0.17), transparent 33%),
-    linear-gradient(124deg, #ffffff 0%, #f8fcff 47%, #e9fbfb 100%);
+    linear-gradient(90deg, rgb(117 153 236 / 0.11) 1px, transparent 1px),
+    linear-gradient(rgb(117 153 236 / 0.11) 1px, transparent 1px),
+    radial-gradient(circle at 69% 16%, rgb(37 208 191 / 0.20), transparent 26%),
+    radial-gradient(circle at 13% 87%, rgb(72 119 255 / 0.17), transparent 27%),
+    #081126;
+  background-size: 44px 44px, 44px 44px, auto, auto, auto;
 }
 
-.subtle-panel {
-  box-shadow: var(--shadow-md);
+.proof-scanline {
+  background: linear-gradient(90deg, transparent 0%, rgb(37 208 191 / 0.16) 24%, rgb(126 161 255 / 0.34) 49%, rgb(37 208 191 / 0.16) 74%, transparent 100%);
 }
+
+.document-cut {
+  clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 0 100%);
+}
+
+.evidence-rail::before {
+  background: linear-gradient(180deg, #25d0bf 0%, #2f62e8 52%, rgb(47 98 232 / 0) 100%);
+  content: "";
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 2px;
+}
+
+.eyebrow-rule::before {
+  background: #25d0bf;
+  content: "";
+  display: inline-block;
+  height: 8px;
+  margin-right: 9px;
+  width: 8px;
+}
+
+.interaction-shadow { box-shadow: var(--shadow-xl); }
 
 .lift-on-hover {
-  transition: transform 180ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 180ms cubic-bezier(0.23, 1, 0.32, 1), border-color 180ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition: transform 180ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 180ms cubic-bezier(0.23, 1, 0.32, 1), border-color 180ms cubic-bezier(0.23, 1, 0.32, 1), background-color 180ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.lift-on-hover:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
-}
+.lift-on-hover:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;

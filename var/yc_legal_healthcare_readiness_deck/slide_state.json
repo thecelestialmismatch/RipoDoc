@@ -1,0 +1,133 @@
+{
+  "project_info": {
+    "title": "RipoDoc: Venture Readiness, Legal Launch & Healthcare Mode B",
+    "created": 1786707856.569,
+    "last_updated": 1786708001.372,
+    "total_slides": 11
+  },
+  "slides": [
+    {
+      "id": "cover",
+      "state": "edited",
+      "pageNum": 1
+    },
+    {
+      "id": "verdict",
+      "state": "edited",
+      "pageNum": 2
+    },
+    {
+      "id": "wedge",
+      "state": "edited",
+      "pageNum": 3
+    },
+    {
+      "id": "proof_gate",
+      "state": "edited",
+      "pageNum": 4
+    },
+    {
+      "id": "moat",
+      "state": "edited",
+      "pageNum": 5
+    },
+    {
+      "id": "legal_hub",
+      "state": "edited",
+      "pageNum": 6
+    },
+    {
+      "id": "counsel_gate",
+      "state": "edited",
+      "pageNum": 7
+    },
+    {
+      "id": "mode_b",
+      "state": "edited",
+      "pageNum": 8
+    },
+    {
+      "id": "webhook",
+      "state": "edited",
+      "pageNum": 9
+    },
+    {
+      "id": "roadmap",
+      "state": "edited",
+      "pageNum": 10
+    },
+    {
+      "id": "close",
+      "state": "edited",
+      "pageNum": 11
+    }
+  ],
+  "outline": [
+    {
+      "id": "cover",
+      "title": "RipoDoc: Venture Readiness, Legal Launch & Healthcare Mode B",
+      "summary": "Executive briefing on the evidence-backed YC thesis, launch legal controls, and restricted healthcare architecture.",
+      "image_plan": "Use a suitable image if needed"
+    },
+    {
+      "id": "verdict",
+      "title": "The honest verdict: strong product, unproven company",
+      "summary": "State the conditional YC verdict and distinguish verified execution from missing commercial evidence.",
+      "image_plan": "Use a suitable image if needed"
+    },
+    {
+      "id": "wedge",
+      "title": "The wedge is controlled evidence delivery",
+      "summary": "Explain RipoDoc's MSP reporting workflow and why it is more credible than a generic AI reporting claim.",
+      "image_plan": "Use a suitable image if needed"
+    },
+    {
+      "id": "proof_gate",
+      "title": "Five paid partners are the proof gate",
+      "summary": "Present the paid-partner, activation, outcome, retention, budget, and repetition gates needed to improve YC readiness.",
+      "image_plan": "Use a suitable image if needed"
+    },
+    {
+      "id": "moat",
+      "title": "Technical depth is real; business defensibility is not proven",
+      "summary": "Show the PDF, evidence-token, audit, workspace, and private-worker boundaries, plus the work needed to create a durable moat.",
+      "image_plan": "Use a suitable image if needed"
+    },
+    {
+      "id": "legal_hub",
+      "title": "The legal hub is transparent by design",
+      "summary": "Show the public legal status routes and how verified facts are separated from incomplete binding commitments.",
+      "image_plan": "Use a suitable image if needed"
+    },
+    {
+      "id": "counsel_gate",
+      "title": "Seven decision domains block contractual launch",
+      "summary": "Summarize the exact owner/counsel decision groups required for final legal approval.",
+      "image_plan": "Use a suitable image if needed"
+    },
+    {
+      "id": "mode_b",
+      "title": "Healthcare Mode B is a guardrail, not a compliance claim",
+      "summary": "Explain the restricted self-hosted evaluation architecture and explicit PHI/ePHI prohibitions.",
+      "image_plan": "Use a suitable image if needed"
+    },
+    {
+      "id": "webhook",
+      "title": "Webhook controls start disabled and precise",
+      "summary": "Explain exact-host allowlisting, payload minimization, HMAC/timestamp verification, and Mode B disablement.",
+      "image_plan": "Use a suitable image if needed"
+    },
+    {
+      "id": "roadmap",
+      "title": "The next 90 days convert code into evidence",
+      "summary": "Show the concrete commercial, legal, and operational sequence needed to become YC- and launch-ready.",
+      "image_plan": "Use a suitable image if needed"
+    },
+    {
+      "id": "close",
+      "title": "Build proof, then make the claim",
+      "summary": "Closing message emphasizing truthful positioning, paid cycles, counsel approval, and controlled healthcare expansion.",
+      "image_plan": "Use a suitable image if needed"
+    }
+  ]
+}

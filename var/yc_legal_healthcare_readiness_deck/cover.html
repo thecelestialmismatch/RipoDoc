@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    * { box-sizing: border-box; margin: 0; }
+    body { margin: 0; }
+    .slide-container { width: 1280px; min-height: 720px; background: #071226; color: #f8fafc; font-family: Arial, Helvetica, sans-serif; overflow: hidden; }
+    .frame { min-height: 720px; display: flex; align-items: stretch; }
+    .left { width: 70%; padding: 82px 0 0 94px; position: relative; }
+    .right { width: 30%; display: flex; flex-direction: column; justify-content: center; gap: 22px; padding-right: 70px; }
+    .mark { width: 66px; height: 66px; object-fit: contain; margin-bottom: 46px; }
+    .eyebrow { color: #28c6c8; font-size: 14px; letter-spacing: 2.5px; font-weight: 700; text-transform: uppercase; margin-bottom: 22px; }
+    h1 { font-size: 55px; line-height: 1.05; max-width: 715px; letter-spacing: -1.8px; }
+    h1 span { color: #4d8cff; }
+    .subtitle { color: #cbd5e1; font-size: 22px; line-height: 1.45; max-width: 660px; margin-top: 28px; }
+    .meta { color: #8da2c6; font-size: 14px; margin-top: 62px; letter-spacing: .5px; }
+    .rule { width: 550px; height: 2px; background: linear-gradient(90deg, #1769e8, #28c6c8, transparent); margin-top: 31px; }
+    .node { border: 1px solid rgba(77,140,255,.6); background: rgba(19,42,86,.52); min-height: 130px; padding: 19px; display: flex; flex-direction: column; justify-content: space-between; }
+    .node-num { color: #28c6c8; font-size: 14px; font-weight: 700; letter-spacing: 1px; }
+    .node-title { font-size: 20px; font-weight: 700; line-height: 1.12; }
+    .node-line { width: 38px; height: 3px; background: #1769e8; }
+    .grid-line { position: absolute; left: 0; bottom: 96px; width: 100%; height: 1px; background: rgba(148,163,184,.18); }
+    .grid-vertical { position: absolute; top: 0; right: 0; width: 1px; min-height: 720px; background: rgba(148,163,184,.15); }
+  </style>
+</head>
+<body>
+  <div class="slide-container">
+    <div class="frame">
+      <section class="left">
+        <img class="mark" src="/home/ubuntu/RipoDoc/web/frontend/public/ripodoc-mark.png" alt="RipoDoc mark" />
+        <div class="eyebrow">Executive readiness briefing</div>
+        <h1>RipoDoc<br><span>Venture readiness,</span><br>legal launch &amp; Healthcare Mode B</h1>
+        <p class="subtitle">A factual view of the product thesis, commercial proof required, launch-control status, and restricted healthcare architecture.</p>
+        <div class="rule"></div>
+        <p class="meta">Evidence basis: repository records and primary sources · 14 AUG 2026 · PRE-REVENUE / VALIDATION</p>
+        <div class="grid-line"></div><div class="grid-vertical"></div>
+      </section>
+      <aside class="right">
+        <div class="node"><div class="node-num">01 / YC</div><div class="node-title">Strong product insight.<br>Commercial proof pending.</div><div class="node-line"></div></div>
+        <div class="node"><div class="node-num">02 / LEGAL</div><div class="node-title">Transparent status pages.<br>Binding facts pending.</div><div class="node-line"></div></div>
+        <div class="node"><div class="node-num">03 / HEALTHCARE</div><div class="node-title">Restricted Mode B.<br>No compliance claim.</div><div class="node-line"></div></div>
+      </aside>
+    </div>
+  </div>
+</body>
+</html>

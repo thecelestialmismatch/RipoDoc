@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body { margin: 0; }
+  .slide-container { width: 1280px; min-height: 720px; background: #0a1730; color: #f8fafc; font-family: Arial, Helvetica, sans-serif; }
+  .content { min-height: 720px; margin: 0 82px; padding-top: 56px; }
+  .eyebrow { color: #28c6c8; font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+  .title { font-size: 42px; line-height: 1.1; letter-spacing: -1px; margin-top: 16px; }
+  .title span { color: #4d8cff; }
+  .proof-line { display: flex; align-items: baseline; gap: 22px; border-top: 3px solid #1769e8; margin-top: 35px; padding-top: 18px; }
+  .proof-number { color: #28c6c8; font-size: 54px; font-weight: 700; letter-spacing: -2px; line-height: 1; }
+  .proof-copy { font-size: 22px; font-weight: 700; line-height: 1.2; max-width: 720px; }
+  .proof-copy small { display: block; color: #b9c8dc; font-size: 14px; font-weight: 400; line-height: 1.4; margin-top: 8px; }
+  .gates { display: flex; margin-top: 42px; }
+  .gate { width: 182px; min-height: 225px; border-top: 2px solid #4d8cff; padding-top: 15px; }
+  .gate.teal { border-top-color: #28c6c8; }
+  .connector { width: 27px; height: 2px; background: #1769e8; margin-top: 45px; }
+  .step { color: #8197b8; font-size: 12px; font-weight: 700; letter-spacing: 1.4px; }
+  .gate h2 { font-size: 20px; line-height: 1.12; margin-top: 16px; max-width: 160px; }
+  .gate p { color: #c6d4e8; font-size: 14px; line-height: 1.4; margin-top: 12px; max-width: 164px; }
+  .metric { color: #28c6c8; font-size: 13px; font-weight: 700; line-height: 1.3; margin-top: 15px; max-width: 170px; }
+  .footer { border-top: 1px solid rgba(148,163,184,.26); display: flex; justify-content: space-between; margin-top: 34px; padding-top: 17px; color: #8ea1bf; font-size: 12px; }
+  .footer strong { color: #fbbf24; letter-spacing: .4px; }
+</style>
+</head>
+<body>
+<div class="slide-container">
+  <div class="content">
+    <div class="eyebrow">YC readiness / operating evidence</div>
+    <h1 class="title">Five paid partners are <span>the proof gate.</span></h1>
+    <div class="proof-line">
+      <div class="proof-number">5</div>
+      <div class="proof-copy">MSPs paying before broad custom build.<small>Success is repeated customer behavior: three consecutive report cycles, a measurable outcome, and an explicit continuation decision—not a polished demo.</small></div>
+    </div>
+    <div class="gates">
+      <section class="gate"><div class="step">01 / COMMIT</div><h2>Paid commitment</h2><p>A partner pays a meaningful amount before broad custom work begins.</p><div class="metric">Artifact: signed scope + payment state</div></section>
+      <div class="connector"></div>
+      <section class="gate"><div class="step">02 / ACTIVATE</div><h2>First approved report</h2><p>Deliver a time-bound, evidence-backed report to an intended recipient.</p><div class="metric">Artifact: account → approval → delivery events</div></section>
+      <div class="connector"></div>
+      <section class="gate teal"><div class="step">03 / OUTCOME</div><h2>Measure the delta</h2><p>Compare report-preparation time before and after the controlled-evidence workflow.</p><div class="metric">Target: ≥70% preparation-time reduction</div></section>
+      <div class="connector"></div>
+      <section class="gate"><div class="step">04 / RETAIN</div><h2>Complete three cycles</h2><p>The same MSP continues through recurring client-report cycles and asks to stay.</p><div class="metric">Artifact: cadence + paid continuation</div></section>
+      <div class="connector"></div>
+      <section class="gate"><div class="step">05 / FUND</div><h2>Name the budget</h2><p>Identify what RipoDoc replaces or why it earns additive spend.</p><div class="metric">Artifact: price probe + tool inventory</div></section>
+      <div class="connector"></div>
+      <section class="gate teal"><div class="step">06 / REPEAT</div><h2>See shared demand</h2><p>Wait for three or more paying MSPs to request the same integration or workflow.</p><div class="metric">Decision: build the first connector</div></section>
+    </div>
+    <div class="footer"><span>These are required evidence gates, not current traction claims.</span><strong>STATUS: CUSTOMER PROOF PENDING</strong><span>Source: RipoDoc YC-Readiness and Venture Thesis</span></div>
+  </div>
+</div>
+</body>
+</html>
