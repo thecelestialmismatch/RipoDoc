@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<style>
+*{box-sizing:border-box;margin:0}body{margin:0}.slide-container{width:1280px;min-height:720px;background:#0a1730;color:#f8fafc;font-family:Arial,Helvetica,sans-serif}.content{min-height:720px;margin:0 82px;padding-top:55px}.eyebrow{color:#28c6c8;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase}.title{font-size:42px;line-height:1.08;letter-spacing:-1px;margin-top:15px}.title span{color:#4d8cff}.sub{font-size:17px;line-height:1.42;color:#c5d2e4;margin-top:16px;max-width:810px}.pipeline{display:flex;align-items:flex-start;margin-top:47px}.step{width:188px;min-height:224px;border-top:3px solid #1769e8;padding-top:16px}.step.blocked{border-top-color:#fbbf24}.step.teal{border-top-color:#28c6c8}.connector{width:29px;height:2px;background:#1769e8;margin-top:54px;position:relative}.connector:after{content:'›';color:#4d8cff;font-size:29px;position:absolute;right:-1px;top:-20px}.index{color:#8197b8;font-size:12px;font-weight:700;letter-spacing:1.3px}.step h2{font-size:20px;line-height:1.13;margin-top:16px;max-width:168px}.step p{color:#b8c8de;font-size:14px;line-height:1.4;margin-top:12px;max-width:171px}.flag{font-size:13px;font-weight:700;letter-spacing:.8px;margin-top:19px}.flag.amber{color:#fbbf24}.flag.teal{color:#28c6c8}.override{display:flex;align-items:center;border-top:2px solid #fbbf24;border-bottom:1px solid rgba(148,163,184,.25);margin-top:34px;min-height:72px}.override-label{width:238px;color:#fbbf24;font-size:14px;font-weight:700;letter-spacing:1.3px}.override-copy{color:#dbe7f6;font-size:16px;line-height:1.38;max-width:780px}.bottom{display:flex;justify-content:space-between;margin-top:23px;color:#8497b7;font-size:12px}.bottom b{color:#28c6c8}
+</style>
+</head>
+<body>
+<div class="slide-container"><div class="content">
+<div class="eyebrow">Integration boundary / server-side policy primitive</div>
+<h1 class="title">Webhook controls start <span>disabled and precise.</span></h1>
+<p class="sub">The product does not expose an arbitrary callback mechanism. Future provider integrations must pass a narrow destination, payload, signature, and replay-control policy before delivery exists.</p>
+<div class="pipeline">
+<section class="step blocked"><div class="index">01 / DEFAULT</div><h2>Delivery is off.</h2><p>Webhook delivery requires an explicit enablement variable and a non-empty allowlist.</p><div class="flag amber">DEFAULT: DISABLED</div></section>
+<div class="connector"></div>
+<section class="step teal"><div class="index">02 / DESTINATION</div><h2>Allow exact HTTPS hosts only.</h2><p>The destination host must match a configured allowlist exactly. No wildcard or arbitrary callback.</p><div class="flag teal">ALLOWLIST: EXACT HOST</div></section>
+<div class="connector"></div>
+<section class="step blocked"><div class="index">03 / REJECT</div><h2>Refuse unsafe URLs.</h2><p>Non-HTTPS URLs, credentials, ports, loopback, local, and private-network hosts are denied.</p><div class="flag amber">SSRF SURFACE: REDUCED</div></section>
+<div class="connector"></div>
+<section class="step teal"><div class="index">04 / MINIMIZE</div><h2>Emit only safe events.</h2><p>Only ID, type, timestamp, and optional correlation ID are valid in the provider-neutral event shape.</p><div class="flag teal">NO REPORT OR RECIPIENT DATA</div></section>
+<div class="connector"></div>
+<section class="step"><div class="index">05 / VERIFY</div><h2>Validate inbound requests.</h2><p>Future inbound integrations need a 32+ character HMAC secret, timestamp skew limit, and constant-time signature check.</p><div class="flag teal">REPLAY WINDOW: BOUNDED</div></section>
+</div>
+<div class="override"><div class="override-label">MODE B OVERRIDE</div><div class="override-copy">When Healthcare Mode B is enabled, webhook delivery remains disabled regardless of configuration. No healthcare provider webhook or connector is enabled by this release.</div></div>
+<div class="bottom"><span><b>VERIFIED:</b> exact-host policy, event schema, and verifier primitive</span><span><b>NOT CLAIMED:</b> active provider integration or healthcare payload approval</span><span>Source: healthcare-webhooks.ts</span></div>
+</div></div>
+</body>
+</html>

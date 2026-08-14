@@ -1,224 +1,189 @@
 # RipoDoc
 
-> **Secure, interactive client reports for managed service providers.**
+> **Controlled evidence delivery for MSP client reports.**
 >
-> Send a normal PDF where a reader can click an approved figure and inspect the precise evidence behind it. Delivery is recipient-bound, time-bound, revocable, and auditable.
+> Keep the PDF your client already trusts. Let a selected reported figure open the **approved evidence** behind it—scoped to the intended reader, limited in time, revocable, and audit-aware.
 
-RipoDoc preserves the client reporting workflow MSPs already use while adding a defensible evidence layer. It supports two complementary paths: render a report from a validated manifest, or overlay link annotations onto an existing PDF without redrawing its pages.
+[![Node.js 22.6+](https://img.shields.io/badge/Node.js-%E2%89%A522.6-339933?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-16.3-000000?style=flat-square&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Self-hostable](https://img.shields.io/badge/Deployment-self--hostable-007E83?style=flat-square)](https://www.ripodoc.com/download)
 
-| Capability | What RipoDoc provides |
+**Website:** [ripodoc.com](https://www.ripodoc.com) · **Method:** [how it works](https://www.ripodoc.com/how-it-works) · **Security boundary:** [security controls](https://www.ripodoc.com/security) · **Self-hosting:** [download & deployment](https://www.ripodoc.com/download)
+
+---
+
+## The report is the interface. The evidence should be accountable.
+
+Managed Service Providers routinely deliver QBRs, monthly service reports, security reports, and executive updates as PDFs. When a client asks, “Where did that number come from?”, the answer is often a sprawling spreadsheet, an over-broad portal, or a follow-up meeting.
+
+RipoDoc adds a **deliberate proof path** to that moment. It preserves a familiar client artifact while keeping the evidence behind an approved claim close, controlled, and inspectable.
+
+| RipoDoc is | RipoDoc is not |
 | --- | --- |
-| Familiar client experience | A standard PDF that opens in common viewers and keeps the report format your clients know. |
-| Evidence on demand | One click opens only the rows and provenance approved for that figure. |
-| Controlled delivery | Signed evidence claims bind the report, version, recipient hash, expiry, and revocation identifier. |
-| Accountable publication | Report manifests validate before storage; every figure has approved provenance. |
-| Auditability | Granted and denied access can be recorded in a SHA-256 hash chain. |
-| MSP-ready workspace | A customer dashboard, security-control view, downloadable report registry, and private administrator workspace. |
+| An evidence-delivery layer for a selected client-report claim | A replacement for PSA, RMM, BI, or client-portal platforms |
+| A workflow that starts with reviewed structured data and provenance | A promise to extract defensible evidence from any arbitrary PDF chart |
+| A path for recipient-aware, expiring, revocable evidence access | A permanent public share link |
+| A self-hostable application and private authoring-worker design | A claim that the hosted evaluation surface is production-enabled by default |
 
-## Product routes
+> **Hosted-workspace status:** the public deployment intentionally fails closed for account actions until durable identity, email, CAPTCHA, audit storage, and private-worker configuration pass the relevant release gate. The public site is an evaluation and documentation surface—not an invitation to submit client data.
 
-| Route | Audience | Purpose |
-| --- | --- | --- |
-| `/` | Prospects and MSP teams | Outcome-led product page with an interactive sample report backed by real fixture data. |
-| `/founding-partners` | Qualified MSP prospects | A paid-design-partner report-diagnostic path that collects only minimal workflow categories through a CSRF-protected, CAPTCHA-gated, rate-limited, encrypted-contact intake when production readiness is green. |
-| `/upload` | Verified self-hosted operators | Propose overlays and create a downloadable clickable PDF through the same-origin authoring gateway and a private RipoDoc worker. |
-| `/api/health` | Deployment monitoring | No-store operational health response with safe configuration indicators only; never returns tenants, reports, recipients, sessions, or secrets. |
-| `/dashboard` | Verified MSP workspace users | Review only reports owned by the authenticated tenant; report manifests require tenant-scoped session authorization. |
-| `/signup`, `/login`, `/verify-email`, `/forgot-password`, `/reset-password` | MSP workspace users | Complete account lifecycle with email activation, one-time codes, private sessions, rate limits, and CAPTCHA protection. |
-| `/security` | Operators and security reviewers | Inspect safe, live operational posture without exposing secrets, recipient identities, or audit records. |
-| `/legal` and `/legal/*` | Prospects, operators, and counsel | Transparent pre-launch legal, privacy, cookie, commercial, DPA, and healthcare-boundary status. These pages are not final contracts until the documented owner/counsel gate is complete. |
-| `/e/[token]/[elementId]` | Intended report recipient | Open the evidence authorized by a signed link. |
-| `/admin` | Private operators only | Protected report and recipient operations workspace. It is intentionally excluded from public navigation. |
+## See the method in one minute
 
-## Quick start
+```text
+Reviewed source data
+        │
+        ▼
+Approve a figure + its supporting rows, provenance, recipient and expiry
+        │
+        ▼
+Publish a validated report manifest
+        │
+        ▼
+Deliver the familiar PDF
+        │
+        ▼
+Reader opens a controlled proof view for that specific report claim
+```
 
-RipoDoc requires Node.js **22.6 or newer** because the toolchain uses native TypeScript stripping. The following sequence runs the public app and produces a locally clickable sample report.
+The evidence view is designed to return **only the approved rows for the requested figure** after evaluating its access condition. Evidence access events can be added to a tamper-evident hash chain for later verification.
+
+Explore the public [proof-view sample](https://www.ripodoc.com/#proof-view) or read the full [RipoDoc method](https://www.ripodoc.com/how-it-works).
+
+## Start locally
+
+RipoDoc requires **Node.js 22.6 or newer** because its toolchain uses native TypeScript stripping.
 
 ```bash
 git clone https://github.com/thecelestialmismatch/RipoDoc.git
 cd RipoDoc
 
-# Install the frontend and project dependencies.
 npm install
 npm install --prefix web/frontend
 
-# Use a strong server-only signing secret for evidence links.
+# A server-only signing secret is required for evidence delivery.
 export RIPODOC_EVIDENCE_SECRET="$(openssl rand -base64 32)"
 
-# Start the customer-facing application.
+# Start the public application.
 npm --prefix web/frontend run dev
+```
 
-# In a second terminal, generate a PDF whose evidence links point at localhost.
+In another terminal, produce a local clickable fixture report:
+
+```bash
 npm run build:pdf:local
 ```
 
-Open `build/demo-report.local.pdf` and select a report figure. The local application will show the approved evidence rows, provenance, and review metadata for that figure.
+Open `build/demo-report.local.pdf`, select a marked report figure, and inspect the approved fixture evidence in the local app.
 
-## Download and self-host the complete platform
+## Self-host the complete application
 
-RipoDoc is downloadable as a complete MSP deployment bundle, not merely a public marketing site. The bundle starts PostgreSQL, the protected workspace application, and a loopback-only PDF worker together. Copy the repository, create the required environment values, then run:
+RipoDoc is downloadable as a complete deployment bundle—not a marketing-only repository. The self-hosted architecture includes the Next.js application, PostgreSQL, a private PDF authoring worker, migrations, tests, hardened Compose defaults, runbooks, and software-supply-chain procedures.
 
 ```bash
 git clone https://github.com/thecelestialmismatch/RipoDoc.git
 cd RipoDoc
+
+# Keep these values outside the repository and out of NEXT_PUBLIC_* variables.
 export POSTGRES_PASSWORD="$(openssl rand -base64 32)"
 export RIPODOC_AUTH_SECRET="$(openssl rand -base64 32)"
 export RIPODOC_EVIDENCE_SECRET="$(openssl rand -base64 32)"
 export RIPODOC_WORKER_AUTH_SECRET="$(openssl rand -base64 32)"
 export RIPODOC_LEAD_ENCRYPTION_KEY="$(openssl rand -base64 32 | tr '+/' '-_' | tr -d '=')"
-# Set RIPODOC_APP_ORIGIN, RIPODOC_RESEND_API_KEY, RIPODOC_EMAIL_FROM,
-# RIPODOC_TURNSTILE_SECRET, and NEXT_PUBLIC_RIPODOC_TURNSTILE_SITE_KEY.
+
+# Also configure canonical origin, PostgreSQL URL, Resend, and Turnstile values.
 docker compose -f docker-compose.selfhost.yml up --build
 
-# With the reviewed production environment loaded, prove durable readiness.
+# Prove the durable production boundary after migrations and service configuration.
 npm run preflight:production
 ```
 
-The browser-facing app listens on `${RIPODOC_PORT:-3000}`. PostgreSQL remains internal to the compose network, while the PDF worker binds its host port to `127.0.0.1` and accepts only short-lived server-issued authoring capabilities. The browser never receives a worker credential or direct worker URL. The bundle runs the web and worker containers as non-root with read-only root filesystems, temporary `tmpfs` mounts, dropped Linux capabilities, health checks, and conservative CPU/memory limits. Deploy the web service behind an HTTPS reverse proxy using the canonical origin configured in `RIPODOC_APP_ORIGIN`.
-
-## Self-hosted report authoring
-
-The `/upload` route intentionally uses a **private self-hosted processing worker**. A public Vercel site must not receive an MSP's client report by default. Every upload, proposal download, review, publish, and artifact download starts with a verified workspace session. The web server issues a single-use, short-lived, tenant-bound capability to the worker; browser CORS and draft IDs are never treated as authorization. The authoring sequence is explicit: select a validated RipoDoc manifest, upload its matching PDF, review the proposed click zones, record a server-bound reviewer decision, then publish the downloadable PDF. Publication rechecks the exact source PDF, manifest, and reviewed-proposal digests.
-
-```bash
-# The worker signs evidence links and verifies a separate server-only
-# authoring credential. Do not place either value in NEXT_PUBLIC_ variables.
-export RIPODOC_EVIDENCE_SECRET="$(openssl rand -base64 32)"
-export RIPODOC_WORKER_AUTH_SECRET="$(openssl rand -base64 32)"
-export RIPODOC_LOCAL_WORKER_URL="http://127.0.0.1:4000/api/local"
-
-# Start the private PDF worker, then run the Next.js app with the same
-# RIPODOC_WORKER_AUTH_SECRET and RIPODOC_LOCAL_WORKER_URL values.
-npm run dev:local-server
-npm --prefix web/frontend run dev
-```
-
-The upload page uses same-origin `/api/authoring/*` routes. Configure `RIPODOC_LOCAL_WORKER_URL` only in the trusted web-server environment; never publish it as `NEXT_PUBLIC_*`, and never expose `RIPODOC_WORKER_AUTH_SECRET` to the browser. The worker rejects browser-originated requests, unsigned requests, expired/replayed capabilities, wrong-purpose capabilities, and cross-tenant draft access.
-
-| Mode | Use it when | Command |
+| Component | Responsibility | Default boundary |
 | --- | --- | --- |
-| Overlay | You want to retain the existing PDF your MSP already sends. | `npm run overlay:propose` then `npm run overlay:sample` |
-| Generate | You want RipoDoc to render a complete PDF from a report manifest. | `npm run build:pdf` or `npm run build:pdf:local` |
-| Local authoring UI | You want a browser interface connected to your self-hosted worker. | `npm run docker:run` and `npm --prefix web/frontend run dev` |
+| Web application | Client report workspace, identity, evidence delivery, operator controls | Deployed behind your canonical HTTPS edge |
+| PostgreSQL | Users, opaque sessions, one-time-code hashes, tenant/report ownership, rate limits, durable audit records | Private Compose network |
+| Private authoring worker | Proposes and publishes protected clickable PDF artifacts | Available only to the trusted web service |
+| Reverse proxy | TLS termination and public routing | Operated by the self-hosted MSP |
 
-## Environment configuration
+The browser never receives the worker credential or direct worker URL. The web service issues short-lived, single-use, tenant-bound capabilities; the worker rejects browser-originated, unsigned, replayed, wrong-purpose, and cross-tenant requests.
 
-Store all values below in the relevant server environment. Do not expose `RIPODOC_EVIDENCE_SECRET`, `RIPODOC_AUTH_SECRET`, or `RIPODOC_WORKER_AUTH_SECRET` to the browser.
+Read the [self-hosted operations runbook](docs/05-engineering/self-hosted-operations-runbook.md) before operating a real environment.
 
-| Variable | Required | Purpose |
-| --- | --- | --- |
-| `RIPODOC_EVIDENCE_SECRET` | Yes for evidence delivery | A 32-character-or-longer secret used to sign recipient-bound evidence claims. |
-| `RIPODOC_DATABASE_URL` | Yes for workspace authentication | PostgreSQL connection URL for tenant users, opaque sessions, one-time codes, rate-limit counters, and tenant report records. |
-| `RIPODOC_AUTH_SECRET` | Yes for workspace authentication | A separate 32-character-or-longer server-only HMAC secret for session, privacy, and one-time-code hashing. |
-| `RIPODOC_APP_ORIGIN` | Yes for workspace authentication | Canonical HTTPS application origin used in email messages and CSRF checks. |
-| `RIPODOC_RESEND_API_KEY` | Yes for workspace authentication | Server-only Resend API key used for verification, reset, and recipient-proof codes. |
-| `RIPODOC_EMAIL_FROM` | Yes for workspace authentication | Verified sender address for security notices. |
-| `RIPODOC_TURNSTILE_SECRET` | Yes in production | Server-only Cloudflare Turnstile secret used by every authentication action. |
-| `NEXT_PUBLIC_RIPODOC_TURNSTILE_SITE_KEY` | Yes in production | Public Cloudflare Turnstile site key for the authentication forms. |
-| `RIPODOC_AUDIT_BACKEND` | Required for hosted deployment | Set to `postgres` to persist the hosted evidence-access hash chain transactionally in PostgreSQL. Compose sets it automatically. |
-| `RIPODOC_AUDIT_LOG` | Recommended for file-based self-hosting | File path for a persisted, locally verifiable hash-chained audit log. Without it, events are emitted as structured stdout unless the PostgreSQL backend is selected. |
-| `RIPODOC_LEAD_ENCRYPTION_KEY` | Required for founding-partner intake | Dedicated base64url-encoded 32-byte server-only AES-256-GCM key used to encrypt prospect contact email at rest. It is not interchangeable with the authentication, evidence, or worker secret. |
-| `RIPODOC_REVOKED_JTIS` | Optional | Comma-separated claim identifiers that must no longer authorize evidence access. |
-| `RIPODOC_ALLOW_EXPORT` | Optional | Set to `false` to disable evidence CSV export. The default is enabled. |
-| `RIPODOC_CONTENT_ROOT` | Optional | Filesystem root for published report manifests in a self-hosted runtime. Defaults to `content/reports` under the active working directory. |
-| `RIPODOC_LOCAL_WORKER_URL` | Yes for private authoring | Server-only URL for the private worker. Compose sets this to `http://worker:4000/api/local`; local development may use `http://127.0.0.1:4000/api/local`. |
-| `RIPODOC_WORKER_AUTH_SECRET` | Yes for private authoring | A separate 32-character-or-longer server-only HMAC secret shared only by the web service and worker to issue and verify single-use, 90-second authoring capabilities. |
-| `RIPODOC_WORKER_MAX_CONCURRENT_JOBS` | Optional | Private worker concurrency cap. Defaults to `2` and is constrained to a maximum of `4`. |
-| `RIPODOC_HEALTHCARE_MODE` | Optional | Set only to `mode-b` for the restricted healthcare evaluation posture. It blocks public founding-partner intake and public authoring unless the explicit private authoring gate below is set. It is not a HIPAA compliance mode. |
-| `RIPODOC_MODE_B_ALLOW_PRIVATE_AUTHORING` | Optional self-hosted Mode B gate | Set only to `true` after the operator has completed the applicable self-hosted, security, contractual, and data-classification review. It never enables public intake or webhooks. |
-| `RIPODOC_WEBHOOK_ALLOWED_HOSTS` | Optional, future outbound integrations | Comma-separated exact HTTPS destination hostnames. Arbitrary URLs, local/private hosts, credentials, and non-standard ports are refused. No webhook provider is enabled by this release. |
-| `RIPODOC_WEBHOOKS_ENABLED` | Optional, future outbound integrations | Defaults to disabled. It remains disabled whenever Healthcare Mode B is enabled. |
+## Security model at a glance
 
-## Security model
-
-RipoDoc does not treat possession of a PDF URL as permanent authorization. Its evidence token contains the report identifier, version, recipient email hash, expiry, and revocation identifier; the email address itself is not embedded in the token. Before rendering scoped evidence, the recipient must complete a one-time code challenge delivered to the address whose hash is embedded in the signed claim. One-time codes are stored only as keyed hashes, expire quickly, are consumed atomically, and are never placed in links or audit logs.
-
-### Authentication technology stack
-
-The workspace identity service is deliberately implemented as a small, server-side TypeScript boundary rather than a browser-side identity shim. Next.js 16 App Router supplies the request and response surfaces; Node.js `crypto` provides random generation, HMAC, constant-time comparison, and scrypt; PostgreSQL is the durable authority for users, sessions, one-time codes, rate limits, audit events, tenants, and report ownership; the `pg` client uses parameterized statements and transactions; Resend delivers verification, recovery, and recipient-proof codes through HTTPS; and Cloudflare Turnstile is verified server-side for production anti-automation. The Next.js middleware sets the browser security headers and CSRF cookie.
-
-| Required authentication control | Shipped implementation | Primary source |
-| --- | --- | --- |
-| Enumeration-resistant lifecycle | Signup and recovery return one generic message, and login performs a dummy scrypt verification for unknown accounts before a fixed 900 ms response floor. | [`service.ts`](web/frontend/src/lib/auth/service.ts), [`primitives.ts`](web/frontend/src/lib/auth/primitives.ts) |
-| Rate limiting and CAPTCHA | PostgreSQL rate-limit buckets enforce address and IP limits; every production auth action verifies Turnstile before it invokes the auth service. | [`service.ts`](web/frontend/src/lib/auth/service.ts), [`captcha.ts`](web/frontend/src/lib/auth/captcha.ts), [`[action]/route.ts`](web/frontend/src/app/api/auth/[action]/route.ts) |
-| Verified account activation | New tenants are inactive until a one-time verification code is consumed; sign-in excludes unverified or disabled users. | [`service.ts`](web/frontend/src/lib/auth/service.ts) |
-| Slow password hashing | Passwords use Node.js scrypt with a random 16-byte salt and a 64-byte derived key; no plaintext, MD5, or raw SHA-256 password storage is used. | [`primitives.ts`](web/frontend/src/lib/auth/primitives.ts) |
-| Secure reset and proof codes | Codes are cryptographically random, HMAC-hashed before storage, single-use through an atomic transaction, delivered outside URLs, and expire after 30 minutes. | [`service.ts`](web/frontend/src/lib/auth/service.ts), [`recipient-proof.ts`](web/frontend/src/lib/evidence/recipient-proof.ts) |
-| Session and CSRF controls | Opaque session secrets are stored only as keyed hashes; session cookies use `HttpOnly`, strict same-site handling, and production-only `Secure`; state-changing actions require same-origin plus double-submit CSRF validation. | [`server.ts`](web/frontend/src/lib/auth/server.ts), [`middleware.ts`](web/frontend/src/middleware.ts) |
-
-The YC assessment, verified competitive boundaries, claim register, and the paid-design-partner discovery protocol are maintained in [`docs/01-research/yc-readiness-and-venture-thesis.md`](docs/01-research/yc-readiness-and-venture-thesis.md), [`docs/01-research/competitive-positioning-and-claim-register.md`](docs/01-research/competitive-positioning-and-claim-register.md), and [`docs/01-research/msp-discovery-and-design-partner-protocol.md`](docs/01-research/msp-discovery-and-design-partner-protocol.md). The founder-evidence event and privacy specification is maintained in [`docs/02-product/founder-evidence-dashboard-specification.md`](docs/02-product/founder-evidence-dashboard-specification.md).
-
-A deeper test and control inventory is maintained in [`docs/05-security/authentication-and-test-coverage.md`](docs/05-security/authentication-and-test-coverage.md). The historical read-only 20-control assessment is maintained in [`docs/05-security/self-hosted-deployment-and-read-only-audit.md`](docs/05-security/self-hosted-deployment-and-read-only-audit.md). The current private-worker threat model is maintained in [`docs/05-security/worker-hardening-threat-model.md`](docs/05-security/worker-hardening-threat-model.md), and the complete self-hosted operational procedure is maintained in [`docs/05-engineering/self-hosted-operations-runbook.md`](docs/05-engineering/self-hosted-operations-runbook.md). PR #9 supply-chain evidence, reproducible final-image scanning instructions, and CycloneDX SBOM files are maintained in [`docs/05-security/container-sbom-and-vulnerability-scan.md`](docs/05-security/container-sbom-and-vulnerability-scan.md); customer-facing self-hosted upgrade instructions are maintained in [`docs/05-security/pr9-self-hosted-security-advisory-and-migration-guide.md`](docs/05-security/pr9-self-hosted-security-advisory-and-migration-guide.md).
-
-> RipoDoc fails closed for hosted account actions until PostgreSQL, Resend, the canonical app origin, an authentication secret, and the production Turnstile configuration are present. It never substitutes ephemeral Vercel filesystem state or silent email failure for a durable identity deployment.
-
-> The evidence rows are not embedded in the PDF. Forwarding the document does not automatically forward the underlying dataset.
-
-Published manifests are schema-validated and immutable at the file-store boundary. When a durable `RIPODOC_AUDIT_LOG` is configured, audit events can be verified with:
-
-```bash
-npm run audit:verify -- --path /secure/audit/evidence-access.jsonl
-```
-
-The `/security` page provides operator-safe indicators for this posture. It never displays signing secrets, token identifiers, recipient identities, or audit-log contents.
-
-## Legal and Healthcare Mode B
-
-RipoDoc has a public [`/legal`](/legal) hub and a versioned [counsel-review launch policy packet](docs/06-legal/counsel-review-launch-policy-packet.md). The public pages distinguish verified technical facts from binding legal terms that require the accountable business owner and qualified counsel to supply and approve the legal entity, jurisdiction, commercial policy, service levels, retention schedule, and subprocessor configuration. They do not publish fabricated Terms, Privacy Policy, Cookie Policy, Refund/Cancellation Policy, SLA, or DPA.
-
-**Healthcare Mode B** is a restricted evaluation and self-hosted posture, not HIPAA certification, a BAA, or a representation that the public service processes PHI/ePHI. It blocks public founding-partner intake and public authoring by default; it disables webhook delivery; and it prohibits PHI/ePHI in public demo, email, analytics, public hosted processing, and webhook payloads. A future PHI/ePHI deployment requires a documented risk analysis, appropriate contractual/BAA review, verified infrastructure and subprocessors, access/audit and retention controls, incident process, and security/counsel approval.
-
-## Verification
-
-The repository uses the built-in Node.js test runner for evidence and application-runtime boundaries. The current regression suite completes **143 tests** with no failures, including an end-to-end local worker test that verifies the manifest requirement, review gate, signed publication, and PDF download; tenant-scoped dashboard/download contracts; and hardened founding-partner, durable-audit, encrypted-contact, and production-preflight contracts, followed by clean linting, type checking, and a production build. See [`docs/05-security/authentication-and-test-coverage.md`](docs/05-security/authentication-and-test-coverage.md) for the full file-by-file coverage map.
-
-```bash
-npm test              # evidence, audit, runtime-posture, and admin-key tests
-npm run lint          # ESLint for the Next.js frontend
-npm run typecheck     # strict TypeScript checks for web and tools
-npm run verify        # typecheck + test + production frontend build
-```
-
-## Deployment
-
-The public product site is designed for Vercel deployment from the `main` branch. Before enabling workspace accounts on Vercel, provision PostgreSQL and configure `RIPODOC_DATABASE_URL`, `RIPODOC_AUTH_SECRET`, `RIPODOC_APP_ORIGIN`, Resend, and Turnstile variables listed above. The application fails closed for account actions until that durable authentication configuration exists.
-
-The document processor is intentionally not bundled into the public Vercel application. Deploy the worker on infrastructure you control and configure its URL only through server-side `RIPODOC_LOCAL_WORKER_URL`, paired with `RIPODOC_WORKER_AUTH_SECRET`. This separation prevents report files from being silently routed through a public marketing deployment and prevents a browser from directly calling the worker.
-
-| Release gate | Required result |
+| Control | RipoDoc implementation |
 | --- | --- |
-| Automated checks | `npm run verify` exits successfully. |
-| Public route review | `/`, `/founding-partners`, `/download`, `/dashboard`, `/security`, `/legal`, every legal status route, and the safe `/api/health` deployment probe render without broken navigation. |
-| Durable production preflight | `npm run preflight:production` reports `ready` only after PostgreSQL connectivity/migrations and private-worker health pass. |
-| Private operations review | `/admin` redirects unauthenticated visitors to `/login`; verified `owner` and `admin` users see only their tenant-scoped operational summary. |
-| Worker review | A verified tenant session completes upload, review, and publication through `/api/authoring`; direct browser, unsigned, replayed, wrong-purpose, and cross-tenant worker requests fail without disclosing artifacts. |
-| Environment review | Server-only variables are present in the deployment environment and never committed. |
+| Evidence authorization | HMAC-signed claims carry the report, version, recipient hash, expiry, and revocation identifier. The email address itself is not embedded in the token. |
+| Reader proof | The intended reader completes a one-time code challenge delivered to the address represented by the signed recipient hash. |
+| Least-data delivery | The evidence view returns only the approved rows behind the requested figure, rather than a customer-wide export. |
+| Revocation and expiry | Individual token identifiers can be revoked; evidence claims have an explicit expiry. |
+| Audit integrity | Evidence-access events can be written to a SHA-256 hash chain and verified offline. |
+| Workspace identity | Passwords use scrypt; sessions and codes are stored as keyed hashes; state changes require same-origin and CSRF validation. |
+| Abuse resistance | Production auth actions are rate-limited and use server-verified Turnstile when configured. Generic lifecycle responses reduce account-enumeration signals. |
+| PDF authoring boundary | A private worker accepts only single-use, short-lived, tenant-bound server capabilities. |
 
-## Project structure
+Read the [security-control page](https://www.ripodoc.com/security), [authentication and test coverage](docs/05-security/authentication-and-test-coverage.md), and [worker hardening threat model](docs/05-security/worker-hardening-threat-model.md) for the complete, verifiable boundary.
+
+## Verify a change
+
+The current regression suite contains **143 automated tests** for evidence, identity, tenant isolation, private-worker authorization, audit integrity, release posture, and public-runtime contracts.
+
+```bash
+npm test              # Node built-in test runner
+npm run typecheck     # strict TypeScript: frontend and tools
+npm run lint          # ESLint for the frontend
+npm run verify        # typecheck + tests + production build
+```
+
+For production-capable operation, run the separate authenticated gate:
+
+```bash
+npm run preflight:production
+```
+
+> A passing build is not a production authorization. `preflight:production` exists to evaluate durable storage, configuration, migrations, and private-worker reachability in the real environment.
+
+## Repository map
 
 ```text
-web/frontend/                 Next.js App Router application
-  src/app/                    Public, customer, evidence, and admin routes
-  src/lib/evidence/           Manifest validation, tokens, audit, storage, posture
-  src/lib/admin/              HMAC session helpers for private operations
-  content/reports/            Validated published report manifests
+web/frontend/                         Next.js App Router product, public site, customer and admin routes
+  src/app/                            Product routes, SEO metadata, robots and sitemap
+  src/lib/auth/                       Scrypt identity, opaque sessions, CSRF, rate limiting and CAPTCHA boundary
+  src/lib/evidence/                   Manifests, recipient-proof flow, tokens, audit, storage and posture
+  src/lib/launch/                     Legal-status and healthcare-mode boundary models
 
-tools/evidence-pdf/           PDF generator, overlay engine, fixtures, and tests
-docker/local/                 Local self-hosted authoring worker
-var/msp_pitch_deck/           12-slide MSP sales and marketing pitch deck
-DESIGN.md                     RipoDoc visual system and interface standards
+tools/evidence-pdf/                   PDF generation, overlay engine, fixtures and regression tests
+docker/local/                         Private local/self-hosted PDF authoring worker
+migrations/                           PostgreSQL durable identity and evidence-record schema
+docs/01-research/                     Research, claim register, discovery protocol and public-experience baseline
+docs/05-security/                     Threat models, test coverage, advisory and supply-chain evidence
+docs/05-engineering/                  Self-hosted operations runbook
 ```
 
-## Sales and product materials
+## Research, claims and healthcare boundary
 
-The MSP sales deck is maintained in [`var/msp_pitch_deck/`](var/msp_pitch_deck/). It explains the reporting problem, the RipoDoc evidence workflow, integration posture, security approach, onboarding path, and commercial positioning.
+RipoDoc treats public claims as part of the product boundary. The following documents distinguish verified implementation facts from hypotheses or decisions that need accountable owner and counsel review:
 
-The product design system is maintained in [`DESIGN.md`](DESIGN.md). It documents the RipoDoc navy, blue, and teal visual language; layout principles; component behavior; accessibility expectations; and responsive constraints.
+- [Public experience and discovery baseline](docs/01-research/public-experience-and-discovery-baseline.md)
+- [Competitive positioning and claim register](docs/01-research/competitive-positioning-and-claim-register.md)
+- [MSP discovery and design-partner protocol](docs/01-research/msp-discovery-and-design-partner-protocol.md)
+- [Counsel-review launch policy packet](docs/06-legal/counsel-review-launch-policy-packet.md)
+- [Healthcare Mode B statement](https://www.ripodoc.com/legal/healthcare-mode-b)
 
-## Contributing
+**Healthcare Mode B** is a restricted evaluation and self-hosted posture. It is **not** HIPAA certification, a BAA, or a representation that the public RipoDoc service accepts or processes PHI/ePHI. Read the [public boundary statement](https://www.ripodoc.com/legal/healthcare-mode-b) before evaluating healthcare use cases.
 
-Keep trust boundaries explicit. Any change that affects evidence authorization, recipient binding, link expiry, revocation, report manifest validation, or audit behavior must include focused tests. Keep the public website truthful about deployment capabilities: a public preview is not a substitute for an explicitly configured self-hosted document processor.
+## Contribute
+
+RipoDoc is strongest when the workflow, trust boundary, and operating reality stay aligned. We welcome documentation, design, UX, security, testing, integration, and deployment contributions.
+
+1. Read [CONTRIBUTING.md](.github/CONTRIBUTING.md) and the [Code of Conduct](.github/CODE_OF_CONDUCT.md).
+2. Search existing issues before opening a new one.
+3. Create a focused branch and include tests for a behavior change.
+4. Run `npm run verify` and `npm run lint` before requesting review.
+5. Do not include client reports, recipient data, credentials, access tokens, or production secrets in an issue, pull request, fixture, or screenshot.
+
+Please report a security vulnerability through the private process in [SECURITY.md](.github/SECURITY.md), not in a public issue.
 
 ## License
 
-See [`LICENSE`](LICENSE) for the repository license terms.
+See [LICENSE](LICENSE) for repository licensing terms.

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<style>
+* { box-sizing: border-box; margin: 0; }
+body { margin: 0; }
+.slide-container { width: 1280px; min-height: 720px; background: #0a1730; color: #f8fafc; font-family: Arial, Helvetica, sans-serif; }
+.content { min-height: 720px; margin: 0 82px; padding-top: 57px; }
+.eyebrow { color: #28c6c8; font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+.title { font-size: 42px; line-height: 1.08; letter-spacing: -1px; margin-top: 15px; }
+.title span { color: #4d8cff; }
+.layout { display: flex; gap: 65px; margin-top: 44px; }
+.left { width: 40%; border-top: 3px solid #1769e8; padding-top: 19px; }
+.status { color: #fbbf24; font-size: 13px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; }
+.left h2 { font-size: 30px; line-height: 1.16; margin-top: 15px; max-width: 405px; }
+.left p { color: #c7d2e2; font-size: 17px; line-height: 1.46; margin-top: 18px; max-width: 410px; }
+.rule-list { margin-top: 30px; border-top: 1px solid rgba(148,163,184,.3); }
+.rule { min-height: 47px; border-bottom: 1px solid rgba(148,163,184,.2); display: flex; align-items: center; gap: 13px; color: #dbe7f6; font-size: 15px; }
+.index { color: #28c6c8; font-size: 13px; font-weight: 700; width: 25px; }
+.right { width: 60%; }
+.grid-label { color: #91a4c3; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; }
+.route-grid { display: grid; grid-template-columns: repeat(2, 1fr); column-gap: 28px; row-gap: 0; border-top: 1px solid rgba(148,163,184,.36); }
+.route { min-height: 74px; border-bottom: 1px solid rgba(148,163,184,.26); padding-top: 13px; }
+.route:nth-child(odd) { padding-right: 18px; }
+.route:nth-child(even) { padding-left: 18px; }
+.route-name { color: #f8fafc; font-size: 18px; font-weight: 700; }
+.route-path { color: #4d8cff; font-size: 13px; margin-top: 7px; }
+.route-note { color: #aebdd1; font-size: 13px; margin-top: 5px; }
+.transition { margin-top: 26px; min-height: 84px; display: flex; align-items: center; border-top: 2px solid #28c6c8; border-bottom: 1px solid rgba(148,163,184,.25); }
+.transition strong { color: #28c6c8; font-size: 16px; width: 202px; letter-spacing: .3px; }
+.transition p { color: #d7e2f0; font-size: 15px; line-height: 1.4; max-width: 420px; }
+.footer { display: flex; justify-content: space-between; border-top: 1px solid rgba(148,163,184,.22); margin-top: 27px; padding-top: 16px; color: #8fa1bf; font-size: 12px; }
+.footer b { color: #fbbf24; }
+</style>
+</head>
+<body>
+<div class="slide-container"><div class="content">
+  <div class="eyebrow">Launch controls / public trust surface</div>
+  <h1 class="title">The legal hub is <span>transparent by design.</span></h1>
+  <div class="layout">
+    <section class="left">
+      <div class="status">Current status: pre-launch information</div>
+      <h2>Publish what is verified. Do not manufacture a contract.</h2>
+      <p>RipoDoc exposes its technical data-handling boundary and the decisions still required for binding terms, rather than presenting incomplete policy language as legal certainty.</p>
+      <div class="rule-list">
+        <div class="rule"><span class="index">01</span><span>Verified application data flows and necessary cookies</span></div>
+        <div class="rule"><span class="index">02</span><span>Explicit owner and counsel approval gate</span></div>
+        <div class="rule"><span class="index">03</span><span>No price, refund, SLA, DPA, or BAA promise without authorization</span></div>
+      </div>
+    </section>
+    <section class="right">
+      <div class="grid-label">Public route family</div>
+      <div class="route-grid">
+        <div class="route"><div class="route-name">Privacy information</div><div class="route-path">/legal/privacy</div><div class="route-note">Data-map facts + required decisions</div></div>
+        <div class="route"><div class="route-name">Cookie information</div><div class="route-path">/legal/cookies</div><div class="route-note">Necessary cookies + change-control rule</div></div>
+        <div class="route"><div class="route-name">Terms status</div><div class="route-path">/legal/terms</div><div class="route-note">Commercial and jurisdiction decisions</div></div>
+        <div class="route"><div class="route-name">Refunds status</div><div class="route-path">/legal/refunds</div><div class="route-note">Billing, cancellation, refund decisions</div></div>
+        <div class="route"><div class="route-name">SLA status</div><div class="route-path">/legal/sla</div><div class="route-note">Service and support commitments</div></div>
+        <div class="route"><div class="route-name">DPA status</div><div class="route-path">/legal/dpa</div><div class="route-note">Processor, retention, transfer decisions</div></div>
+        <div class="route"><div class="route-name">Healthcare Mode B</div><div class="route-path">/legal/healthcare-mode-b</div><div class="route-note">Restricted posture; no compliance claim</div></div>
+      </div>
+      <div class="transition"><strong>STATUS PAGE → FINAL DOCUMENT</strong><p>Only after the business owner supplies entity, commercial, jurisdiction, retention, and subprocessor facts — and qualified counsel approves the applicable final terms.</p></div>
+    </section>
+  </div>
+  <div class="footer"><span>Public legal hub: <b>live</b> at ripodoc.com/legal</span><span>Source: Counsel-review launch policy packet</span></div>
+</div></div>
+</body>
+</html>
