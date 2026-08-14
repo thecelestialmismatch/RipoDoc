@@ -1,74 +1,53 @@
 import Link from 'next/link';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Code2, ShieldCheck } from 'lucide-react';
 import { BrandLockup } from '@/components/BrandLockup.tsx';
 
 const productLinks = [
-  { href: '/#demo', label: 'Interactive demo' },
-  { href: '/founding-partners', label: 'Founding report partners' },
-  { href: '/dashboard', label: 'Client workspace' },
+  { href: '/#proof-view', label: 'Proof view' },
+  { href: '/#how-it-works', label: 'Method' },
+  { href: '/founding-partners', label: 'Report diagnostic' },
   { href: '/download', label: 'Download & self-host' },
-  { href: '/security', label: 'Security controls' },
 ] as const;
 
-const resourceLinks = [
-  { href: 'https://github.com/thecelestialmismatch/RipoDoc', label: 'GitHub repository' },
-  { href: 'https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/01-research/yc-readiness-and-venture-thesis.md', label: 'YC-readiness research' },
-  { href: 'https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/05-security/pr11-self-hosted-security-advisory-and-migration-guide.md', label: 'Self-host migration guide' },
+const trustLinks = [
+  { href: '/security', label: 'Security controls' },
+  { href: '/legal', label: 'Legal status' },
+  { href: '/legal/healthcare-mode-b', label: 'Healthcare Mode B' },
+  { href: 'https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/01-research/yc-readiness-and-venture-thesis.md', label: 'YC-readiness research', external: true },
 ] as const;
 
 const legalLinks = [
-  { href: '/legal', label: 'Legal information hub' },
   { href: '/legal/privacy', label: 'Privacy information' },
   { href: '/legal/cookies', label: 'Cookie information' },
   { href: '/legal/terms', label: 'Terms status' },
   { href: '/legal/refunds', label: 'Refunds status' },
   { href: '/legal/sla', label: 'SLA status' },
   { href: '/legal/dpa', label: 'DPA status' },
-  { href: '/legal/healthcare-mode-b', label: 'Healthcare Mode B' },
 ] as const;
 
 export function Footer() {
   return (
-    <footer className="border-t border-slate-200 bg-[#F6F8FC]">
-      <div className="mx-auto max-w-7xl px-6 py-12">
-        <div className="grid gap-10 md:grid-cols-2 xl:grid-cols-[1.35fr_0.62fr_0.72fr_0.72fr]">
+    <footer className="bg-[#081126] text-white">
+      <div className="mx-auto max-w-7xl px-6 py-14 lg:py-16">
+        <div className="grid gap-12 border-b border-white/15 pb-12 lg:grid-cols-[1.3fr_0.58fr_0.72fr_0.78fr]">
           <div>
             <BrandLockup showDescriptor />
-            <p className="mt-5 max-w-md text-sm leading-6 text-slate-600">
-              The secure reporting delivery and evidence layer for MSPs. Send a normal PDF where every figure is clickable, recipient-bound, and auditable.
-            </p>
-            <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-teal-200 bg-white px-3 py-1.5 text-xs font-semibold text-[#087E84]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#12B9BE]" aria-hidden="true" />
-              Evidence workflow with explicit release gates
-            </div>
+            <p className="mt-5 max-w-md text-sm leading-7 text-slate-300">The controlled evidence-delivery layer for MSP client reports. Keep the PDF familiar. Keep the claim accountable.</p>
+            <a href="https://github.com/thecelestialmismatch/RipoDoc" target="_blank" rel="noopener noreferrer" className="mt-7 inline-flex items-center gap-2 border border-white/20 px-3.5 py-2.5 text-sm font-bold text-white transition hover:border-teal-300 hover:text-teal-100"><Code2 className="h-4 w-4" aria-hidden="true" /> Inspect the open-source build <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></a>
           </div>
-
-          <div>
-            <h2 className="text-sm font-semibold text-[#11162E]">Product</h2>
-            <ul className="mt-4 space-y-3 text-sm text-slate-600">
-              {productLinks.map((link) => <li key={link.href}><Link href={link.href} className="transition hover:text-[#1769E8]">{link.label}</Link></li>)}
-            </ul>
-          </div>
-
-          <div>
-            <h2 className="text-sm font-semibold text-[#11162E]">Resources</h2>
-            <ul className="mt-4 space-y-3 text-sm text-slate-600">
-              {resourceLinks.map((link) => <li key={link.href}><a href={link.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 transition hover:text-[#1769E8]">{link.label}<ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" /></a></li>)}
-            </ul>
-          </div>
-
-          <div>
-            <h2 className="text-sm font-semibold text-[#11162E]">Legal status</h2>
-            <ul className="mt-4 space-y-3 text-sm text-slate-600">
-              {legalLinks.map((link) => <li key={link.href}><Link href={link.href} className="transition hover:text-[#1769E8]">{link.label}</Link></li>)}
-            </ul>
-          </div>
+          <FooterColumn title="Product" links={productLinks} />
+          <FooterColumn title="Trust & research" links={trustLinks} />
+          <FooterColumn title="Legal status" links={legalLinks} />
         </div>
-        <div className="mt-12 flex flex-col gap-3 border-t border-slate-200 pt-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} RipoDoc. Built for clear, defensible MSP client reporting.</p>
-          <p>Every reported number deserves its evidence.</p>
+        <div className="flex flex-col gap-4 pt-7 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+          <p>© {new Date().getFullYear()} RipoDoc. Every reported number deserves its evidence.</p>
+          <p className="inline-flex items-center gap-2"><ShieldCheck className="h-3.5 w-3.5 text-teal-300" aria-hidden="true" /> Public status pages describe verified boundaries; they are not final contracts.</p>
         </div>
       </div>
     </footer>
   );
+}
+
+function FooterColumn({ title, links }: { readonly title: string; readonly links: readonly { readonly href: string; readonly label: string; readonly external?: boolean }[] }) {
+  return <div><h2 className="text-xs font-bold uppercase tracking-[0.16em] text-teal-200">{title}</h2><ul className="mt-5 space-y-3 text-sm text-slate-300">{links.map((link) => <li key={link.href}>{link.external ? <a href={link.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 transition hover:text-white">{link.label}<ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" /></a> : <Link href={link.href} className="transition hover:text-white">{link.label}</Link>}</li>)}</ul></div>;
 }

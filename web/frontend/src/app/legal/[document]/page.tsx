@@ -43,7 +43,12 @@ const sectionFor = (key: LegalDocumentKey) => {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const value = (await params).document;
   const document = legalDocuments.find((candidate) => candidate.key === value);
-  return document ? { title: `${document.title} | RipoDoc`, description: document.summary } : {};
+  return document ? {
+    title: document.title,
+    description: document.summary,
+    alternates: { canonical: document.href },
+    openGraph: { title: `${document.title} | RipoDoc`, description: document.summary, url: document.href },
+  } : {};
 }
 
 export default async function LegalDocumentPage({ params }: Props) {

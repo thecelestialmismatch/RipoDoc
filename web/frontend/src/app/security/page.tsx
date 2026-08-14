@@ -1,7 +1,8 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
   ArrowRight,
-  CheckCircle2,
+  Check,
   CircleAlert,
   DatabaseZap,
   FileCheck2,
@@ -10,209 +11,82 @@ import {
   LockKeyhole,
   ShieldCheck,
   TimerReset,
+  type LucideIcon,
 } from 'lucide-react';
 import { getSecurityPosture } from '@/lib/evidence/security-status.ts';
 
 export const dynamic = 'force-dynamic';
 
-interface StatusPillProps {
-  readonly ok: boolean;
-  readonly label: string;
-}
+export const metadata: Metadata = {
+  title: 'Security controls and operating boundary',
+  description: 'Inspect RipoDoc’s public control model for recipient-bound evidence access, expiry, revocation, immutable manifests, audit verification, and self-hosted operating posture.',
+  alternates: { canonical: '/security' },
+  openGraph: { title: 'RipoDoc security controls', description: 'Inspect the control boundary for recipient-scoped, time-limited report evidence.', url: '/security' },
+};
 
-function StatusPill({ ok, label }: StatusPillProps) {
-  return (
-    <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${
-        ok ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-800'
-      }`}
-    >
-      {ok ? <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" /> : <CircleAlert className="h-3.5 w-3.5" aria-hidden="true" />}
-      {label}
-    </span>
-  );
+function StatusMark({ ok, label }: { readonly ok: boolean; readonly label: string }) {
+  return <span className={`inline-flex items-center gap-1.5 border px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] ${ok ? 'border-[#007e83]/25 bg-[#dcfbf5] text-[#007e83]' : 'border-amber-400/35 bg-amber-50 text-amber-900'}`}>{ok ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : <CircleAlert className="h-3.5 w-3.5" aria-hidden="true" />}{label}</span>;
 }
 
 export default async function SecurityPage() {
   const posture = await getSecurityPosture();
   const auditVerified = posture.auditLog.verification?.ok === true;
   const auditIssue = posture.auditLog.verification?.ok === false;
-
-  const controls = [
-    {
-      icon: KeyRound,
-      title: 'Recipient-bound signatures',
-      status: posture.evidenceSecretConfigured,
-      statusLabel: posture.evidenceSecretConfigured ? 'Signing secret configured' : 'Action required',
-      body: 'Every evidence URL is HMAC-signed and includes a hash of the intended recipient. A forwarded URL does not become a valid second reader.',
-    },
-    {
-      icon: TimerReset,
-      title: 'Expiry and revocation',
-      status: true,
-      statusLabel: `${posture.revokedTokenCount} revoked token${posture.revokedTokenCount === 1 ? '' : 's'} configured`,
-      body: 'Evidence claims carry their own expiry. Token identifiers can be revoked individually without reissuing the report or rotating the signing key.',
-    },
-    {
-      icon: DatabaseZap,
-      title: 'Scoped evidence delivery',
-      status: true,
-      statusLabel: 'Least-data response',
-      body: 'A recipient sees only the approved rows behind one requested figure, not a customer-wide data export or a public report portal.',
-    },
-    {
-      icon: FileCheck2,
-      title: 'Immutable manifests',
-      status: posture.publishedReportCount > 0,
-      statusLabel: `${posture.publishedReportCount} validated manifest${posture.publishedReportCount === 1 ? '' : 's'}`,
-      body: 'Published reports pass full schema validation before storage. Their evidence, provenance, version, and recipient details are treated as immutable.',
-    },
+  const hostedReady = posture.hostedReadiness.authenticationConfigured && posture.hostedReadiness.durableAuditConfigured && posture.hostedReadiness.privateWorkerConfigured;
+  const controls: readonly { readonly mark: string; readonly icon: LucideIcon; readonly title: string; readonly status: boolean; readonly statusLabel: string; readonly body: string }[] = [
+    { mark: 'A', icon: KeyRound, title: 'Recipient-bound signatures', status: posture.evidenceSecretConfigured, statusLabel: posture.evidenceSecretConfigured ? 'Signing secret configured' : 'Action required', body: 'Every evidence URL is HMAC-signed and includes a hash of the intended recipient. A forwarded URL does not become a valid second reader.' },
+    { mark: 'B', icon: TimerReset, title: 'Expiry and revocation', status: true, statusLabel: `${posture.revokedTokenCount} revoked token${posture.revokedTokenCount === 1 ? '' : 's'} configured`, body: 'Evidence claims carry their own expiry. Token identifiers can be revoked individually without reissuing the report or rotating the signing key.' },
+    { mark: 'C', icon: DatabaseZap, title: 'Scoped evidence delivery', status: true, statusLabel: 'Least-data response', body: 'A recipient sees only the approved rows behind one requested figure, not a customer-wide data export or a public report portal.' },
+    { mark: 'D', icon: FileCheck2, title: 'Immutable manifests', status: posture.publishedReportCount > 0, statusLabel: `${posture.publishedReportCount} validated manifest${posture.publishedReportCount === 1 ? '' : 's'}`, body: 'Published reports pass full schema validation before storage. Their evidence, provenance, version, and recipient details are treated as immutable.' },
   ];
 
-  return (
-    <div className="min-h-[calc(100vh-64px)] bg-slate-50">
-      <section className="border-b border-slate-200 bg-slate-950 text-white">
-        <div className="mx-auto max-w-7xl px-6 py-14">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-300">
-              <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
-              Security model
-            </div>
-            <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
-              Trust controls you can inspect
-            </h1>
-            <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300">
-              RipoDoc is designed to make sensitive reporting evidence least-privilege, time-bound,
-              and auditable. This page reports only safe operational state; it never exposes keys,
-              recipient identities, or audit records.
-            </p>
-          </div>
+  return <div className="bg-[#f5f7fb] text-[#0b1226]">
+    <section className="proof-canvas relative overflow-hidden text-white">
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(118deg,rgba(8,17,38,0.1),rgba(8,17,38,0.85))]" />
+      <div className="relative mx-auto grid max-w-7xl gap-12 px-6 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-end lg:py-24">
+        <div>
+          <p className="eyebrow-rule text-xs font-bold uppercase tracking-[0.2em] text-teal-200">Public control report</p>
+          <h1 className="mt-6 max-w-3xl text-5xl font-bold leading-[0.98] tracking-[-0.06em] sm:text-6xl">The evidence boundary should be easier to inspect than to assume.</h1>
+          <p className="mt-7 max-w-2xl text-lg leading-8 text-slate-300">RipoDoc is designed for least-privilege report evidence: the smallest approved dataset, for the intended reader, for a defined time. This page publishes safe operational posture—not secrets, recipients or audit records.</p>
+        </div>
+        <div className="border border-white/20 bg-[#081126]/75 p-6 backdrop-blur-sm">
+          <div className="flex items-start justify-between gap-5"><div><p className="text-xs font-bold uppercase tracking-[0.16em] text-teal-200">Hosted production gate</p><h2 className="mt-2 text-2xl font-bold tracking-[-0.035em]">A deployment earns the right to collect data.</h2></div><ShieldCheck className="h-6 w-6 shrink-0 text-teal-300" aria-hidden="true" /></div>
+          <div className="mt-7 border-t border-white/15 pt-5"><StatusMark ok={hostedReady} label={hostedReady ? 'Boundary configured' : 'Boundary incomplete'} /><p className="mt-4 text-sm leading-6 text-slate-300">Configuration state is not a production approval. The release gate also requires authenticated checks, schema verification and private-worker reachability.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <main>
+      <section className="mx-auto max-w-7xl px-6 py-16 lg:py-20" aria-labelledby="control-boundary-heading">
+        <div className="flex flex-col gap-5 border-b border-slate-300 pb-8 lg:flex-row lg:items-end lg:justify-between"><div><p className="eyebrow-rule text-xs font-bold uppercase tracking-[0.2em] text-[#007e83]">Control boundary</p><h2 id="control-boundary-heading" className="mt-4 text-4xl font-bold tracking-[-0.055em] sm:text-5xl">What a controlled proof view is designed to do.</h2></div><p className="max-w-md text-base leading-7 text-slate-600">These are runtime-safe control summaries. Status indications reflect configuration and local state, not a blanket compliance certification.</p></div>
+        <div className="mt-0 grid border-b border-slate-300 md:grid-cols-2">
+          {controls.map((control) => { const Icon = control.icon; return <article key={control.title} className="evidence-rail relative border-r border-t border-slate-300 px-7 py-8 even:border-r-0 md:px-9"><div className="flex items-start justify-between gap-4"><span className="font-mono text-xs font-bold tracking-[0.15em] text-[#2f62e8]">{control.mark} / CONTROL</span><Icon className="h-5 w-5 text-[#007e83]" aria-hidden="true" /></div><div className="mt-8"><StatusMark ok={control.status} label={control.statusLabel} /></div><h3 className="mt-5 text-2xl font-bold tracking-[-0.035em]">{control.title}</h3><p className="mt-3 max-w-lg text-sm leading-7 text-slate-600">{control.body}</p></article>; })}
         </div>
       </section>
 
-      <main className="mx-auto max-w-7xl px-6 py-10">
-        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4" aria-label="Security controls">
-          {controls.map((control) => {
-            const Icon = control.icon;
-            return (
-              <article key={control.title} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <Icon className="h-5 w-5 text-blue-600" aria-hidden="true" />
-                <div className="mt-4"><StatusPill ok={control.status} label={control.statusLabel} /></div>
-                <h2 className="mt-4 text-base font-semibold text-slate-950">{control.title}</h2>
-                <p className="mt-2 text-sm leading-6 text-slate-600">{control.body}</p>
-              </article>
-            );
-          })}
-        </section>
-
-        <section className="mt-10 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8" aria-labelledby="hosted-readiness-heading">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#087E84]">Hosted production readiness</p><h2 id="hosted-readiness-heading" className="mt-1 text-xl font-semibold text-slate-950">A deployment should earn the right to collect customer data.</h2><p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">These flags report configuration state only. The release gate still requires authenticated checks, database schema verification, and private-worker reachability through <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs">npm run preflight:production</code>.</p></div><StatusPill ok={posture.hostedReadiness.authenticationConfigured && posture.hostedReadiness.durableAuditConfigured && posture.hostedReadiness.privateWorkerConfigured} label={posture.hostedReadiness.authenticationConfigured && posture.hostedReadiness.durableAuditConfigured && posture.hostedReadiness.privateWorkerConfigured ? 'Hosted boundary configured' : 'Hosted boundary incomplete'} /></div>
-          <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="border-y border-slate-200 bg-white py-16 lg:py-20" aria-labelledby="readiness-heading">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="grid gap-8 lg:grid-cols-[0.74fr_1.26fr] lg:items-end"><div><p className="eyebrow-rule text-xs font-bold uppercase tracking-[0.2em] text-[#007e83]">Readiness ledger</p><h2 id="readiness-heading" className="mt-4 text-4xl font-bold leading-[1.02] tracking-[-0.055em]">No green badge without an actual boundary.</h2></div><p className="max-w-2xl text-base leading-7 text-slate-600">The hosted workspace remains fail-closed unless necessary production configuration is present. Self-hosted operators should still run the published preflight before opening account actions.</p></div>
+          <div className="mt-12 grid border-y border-slate-200 md:grid-cols-2 xl:grid-cols-4">
             {[
-              ['Durable identity', posture.hostedReadiness.authenticationConfigured, 'Database, auth, origin, email, and production CAPTCHA configuration are present.'],
+              ['Durable identity', posture.hostedReadiness.authenticationConfigured, 'Database, auth, origin, email and production CAPTCHA configuration are present.'],
               ['Durable evidence audit', posture.hostedReadiness.durableAuditConfigured, 'A PostgreSQL or persistent file hash-chain sink is selected.'],
               ['Private authoring worker', posture.hostedReadiness.privateWorkerConfigured, 'The server-side worker URL and capability secret are configured.'],
-              ['Founding-partner intake', posture.hostedReadiness.foundingPartnerIntakeConfigured, 'Encrypted contact storage has a dedicated server-only key.'],
-            ].map(([title, ok, body]) => <article key={String(title)} className="rounded-xl border border-slate-200 bg-slate-50 p-4"><StatusPill ok={Boolean(ok)} label={Boolean(ok) ? 'Configured' : 'Not configured'} /><h3 className="mt-3 text-sm font-semibold text-slate-950">{title}</h3><p className="mt-1 text-xs leading-5 text-slate-600">{body}</p></article>)}
+              ['Partner intake boundary', posture.hostedReadiness.foundingPartnerIntakeConfigured, 'Encrypted contact storage has a dedicated server-only key.'],
+            ].map(([title, ok, body], index) => <article key={String(title)} className="border-b border-r border-slate-200 px-5 py-6 last:border-r-0 md:border-b-0"><span className="font-mono text-xs font-bold text-[#2f62e8]">0{index + 1}</span><div className="mt-5"><StatusMark ok={Boolean(ok)} label={Boolean(ok) ? 'Configured' : 'Not configured'} /></div><h3 className="mt-5 text-base font-bold">{String(title)}</h3><p className="mt-2 text-sm leading-6 text-slate-600">{String(body)}</p></article>)}
           </div>
-        </section>
+          <p className="mt-7 text-sm leading-6 text-slate-600">Run <code className="border border-slate-200 bg-slate-50 px-2 py-1 font-mono text-xs text-[#17378d]">npm run preflight:production</code> as part of an authenticated operational release check.</p>
+        </div>
+      </section>
 
-        <section className="mt-10 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm" aria-labelledby="pr9-heading">
-          <div className="border-b border-slate-200 bg-slate-950 px-6 py-5 text-white sm:px-8">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">PR #9 hardened release</p>
-                <h2 id="pr9-heading" className="mt-1 text-xl font-semibold">A stronger boundary for self-hosted MSP deployments</h2>
-              </div>
-              <span className="inline-flex w-fit items-center gap-2 rounded-full border border-emerald-300/25 bg-emerald-300/10 px-3 py-1 text-xs font-semibold text-emerald-200">
-                <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
-                Upgrade guidance available
-              </span>
-            </div>
-          </div>
-          <div className="grid gap-5 p-6 sm:grid-cols-3 sm:p-8">
-            <article>
-              <p className="text-sm font-semibold text-slate-950">Private authoring worker</p>
-              <p className="mt-2 text-sm leading-6 text-slate-600">Browser requests stay behind the application API. The worker accepts only short-lived, single-use, tenant-bound server capabilities.</p>
-            </article>
-            <article>
-              <p className="text-sm font-semibold text-slate-950">Role-bound operations</p>
-              <p className="mt-2 text-sm leading-6 text-slate-600">The retired shared administrator key is replaced by verified individual owner and administrator workspace roles.</p>
-            </article>
-            <article>
-              <p className="text-sm font-semibold text-slate-950">Hardened container defaults</p>
-              <p className="mt-2 text-sm leading-6 text-slate-600">The delivered self-hosted configuration applies non-root execution, read-only application roots, health checks, and bounded worker resources.</p>
-            </article>
-          </div>
-          <div className="border-t border-slate-100 bg-slate-50 px-6 py-4 sm:px-8">
-            <Link href="https://github.com/thecelestialmismatch/RipoDoc/tree/main/docs/05-security" className="inline-flex items-center gap-2 text-sm font-semibold text-blue-700 hover:text-blue-800">
-              Review the self-hosted security advisory and migration materials <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-          </div>
-        </section>
+      <section className="mx-auto max-w-7xl px-6 py-16 lg:py-20" aria-labelledby="audit-heading">
+        <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
+          <article className="document-cut bg-[#0b1226] p-7 text-white sm:p-9"><div className="flex flex-wrap items-start justify-between gap-5"><div><p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-200">Tamper-evident audit chain</p><h2 id="audit-heading" className="mt-3 text-3xl font-bold tracking-[-0.045em]">Every access event belongs to an order that can be verified.</h2></div><Fingerprint className="h-6 w-6 text-teal-300" aria-hidden="true" /></div><p className="mt-5 max-w-2xl text-sm leading-7 text-slate-300">Audit events are chained with SHA-256 so deletion, reordering or modification is detectable during verification. The runtime reports only the safe posture of that check.</p><div className="mt-9 grid gap-px bg-white/15 sm:grid-cols-2"><div className="bg-[#101e40] p-5"><p className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Persistence mode</p><p className="mt-3 text-lg font-bold">{posture.auditLog.mode === 'file' ? 'Hash-chained file log' : posture.auditLog.mode === 'postgres' ? 'PostgreSQL hash chain' : 'Structured stdout'}</p></div><div className="bg-[#101e40] p-5"><p className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Verification result</p><p className="mt-3 text-lg font-bold">{auditVerified ? `${posture.auditLog.verification.records} record${posture.auditLog.verification.records === 1 ? '' : 's'} verified` : auditIssue ? `Failed at record ${posture.auditLog.verification.failedAt}` : posture.auditLog.mode === 'postgres' ? 'Run authenticated production preflight' : 'No readable file log in this runtime'}</p></div></div><p className={`mt-5 border px-4 py-3 text-sm leading-6 ${auditIssue ? 'border-rose-400/40 bg-rose-500/10 text-rose-100' : 'border-white/15 bg-white/5 text-slate-300'}`}>{posture.auditLog.message}</p><div className="mt-5 border border-white/10 bg-black/25 p-4 font-mono text-xs leading-6 text-slate-200"><span className="text-slate-400"># Verify a persisted audit log</span><br />npm run audit:verify -- --path /secure/audit/evidence-access.jsonl</div></article>
+          <aside className="border border-slate-200 bg-white p-7"><LockKeyhole className="h-6 w-6 text-[#2f62e8]" aria-hidden="true" /><h2 className="mt-5 text-2xl font-bold tracking-[-0.035em]">Operator release checklist</h2><ol className="mt-7 space-y-5 text-sm leading-6 text-slate-600"><li><strong className="font-mono text-[#2f62e8]">01 / </strong>Set a 32+ character <code className="bg-slate-100 px-1.5 py-0.5 text-xs">RIPODOC_EVIDENCE_SECRET</code>.</li><li><strong className="font-mono text-[#2f62e8]">02 / </strong>Send the evidence link only to its intended reader and choose an appropriate expiry.</li><li><strong className="font-mono text-[#2f62e8]">03 / </strong>Use durable audit storage: PostgreSQL for hosted operation, or a reviewed persisted file chain for self-hosting.</li><li><strong className="font-mono text-[#2f62e8]">04 / </strong>Run the production preflight before opening hosted account actions.</li></ol><div className="mt-9 border-t border-slate-200 pt-5"><Link href="/download" className="inline-flex items-center gap-2 text-sm font-bold text-[#17378d] transition hover:text-[#007e83]">Open self-hosted deployment guidance <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link></div></aside>
+        </div>
+      </section>
 
-        <section className="mt-10 grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
-          <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="flex flex-col gap-3 border-b border-slate-100 pb-5 sm:flex-row sm:items-start sm:justify-between">
-              <div>
-                <div className="flex items-center gap-2">
-                  <Fingerprint className="h-5 w-5 text-violet-600" aria-hidden="true" />
-                  <h2 className="text-lg font-semibold text-slate-950">Tamper-evident audit chain</h2>
-                </div>
-                <p className="mt-2 text-sm leading-6 text-slate-600">
-                  Audit events are chained using SHA-256 so deletion, reordering, or modification is detectable during verification.
-                </p>
-              </div>
-              <StatusPill
-                ok={auditVerified}
-                label={auditVerified ? 'Chain verified' : auditIssue ? 'Integrity check failed' : 'Runtime status unavailable'}
-              />
-            </div>
-
-            <div className="mt-6 grid gap-4 sm:grid-cols-2">
-              <div className="rounded-xl bg-slate-50 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Persistence mode</p>
-                <p className="mt-2 text-base font-semibold text-slate-950">
-                  {posture.auditLog.mode === 'file' ? 'Hash-chained file log' : posture.auditLog.mode === 'postgres' ? 'PostgreSQL hash chain' : 'Structured stdout'}
-                </p>
-              </div>
-              <div className="rounded-xl bg-slate-50 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Verification result</p>
-                <p className="mt-2 text-base font-semibold text-slate-950">
-                  {auditVerified
-                    ? `${posture.auditLog.verification.records} record${posture.auditLog.verification.records === 1 ? '' : 's'} verified`
-                    : auditIssue
-                      ? `Failed at record ${posture.auditLog.verification.failedAt}`
-                      : posture.auditLog.mode === 'postgres'
-                        ? 'Run authenticated production preflight'
-                        : 'No readable file log in this runtime'}
-                </p>
-              </div>
-            </div>
-            <p className={`mt-5 rounded-xl border px-4 py-3 text-sm leading-6 ${auditIssue ? 'border-rose-200 bg-rose-50 text-rose-900' : 'border-slate-200 bg-slate-50 text-slate-700'}`}>
-              {posture.auditLog.message}
-            </p>
-            <div className="mt-5 rounded-xl bg-slate-950 p-4 font-mono text-xs leading-6 text-slate-100">
-              <span className="text-slate-400"># Verify a persisted audit log</span><br />
-              npm run audit:verify -- --path /secure/audit/evidence-access.jsonl
-            </div>
-          </article>
-
-          <aside className="rounded-2xl border border-blue-100 bg-blue-50 p-6">
-            <LockKeyhole className="h-6 w-6 text-blue-700" aria-hidden="true" />
-            <h2 className="mt-4 text-lg font-semibold text-slate-950">Operator checklist</h2>
-            <ol className="mt-4 space-y-3 text-sm leading-6 text-slate-700">
-              <li><span className="mr-2 font-semibold text-blue-700">01.</span>Set a 32+ character <code className="rounded bg-white px-1.5 py-0.5 text-xs">RIPODOC_EVIDENCE_SECRET</code>.</li>
-              <li><span className="mr-2 font-semibold text-blue-700">02.</span>Send links only to the intended recipient and configure a suitable expiry.</li>
-              <li><span className="mr-2 font-semibold text-blue-700">03.</span>For hosted operation, set <code className="rounded bg-white px-1.5 py-0.5 text-xs">RIPODOC_AUDIT_BACKEND=postgres</code> and apply the durable-audit migration. For self-hosting, persist a reviewed file chain.</li>
-              <li><span className="mr-2 font-semibold text-blue-700">04.</span>Run <code className="rounded bg-white px-1.5 py-0.5 text-xs">npm run preflight:production</code> before opening hosted account actions.</li>
-            </ol>
-            <Link href="/dashboard" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-blue-700 hover:text-blue-800">
-              Open customer workspace <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-          </aside>
-        </section>
-      </main>
-    </div>
-  );
+      <section className="border-t border-slate-200 bg-[#e7f0ff] py-14"><div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 md:flex-row md:items-center md:justify-between"><div><p className="text-xs font-bold uppercase tracking-[0.16em] text-[#17378d]">Self-hosted operating posture</p><h2 className="mt-2 text-2xl font-bold tracking-[-0.035em] text-[#0b1226]">Inspect the hardening model before you operate it.</h2></div><Link href="https://github.com/thecelestialmismatch/RipoDoc/tree/main/docs/05-security" className="inline-flex w-fit items-center gap-2 bg-[#0b1226] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#17378d]">Read the migration and advisory materials <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link></div></section>
+    </main>
+  </div>;
 }
