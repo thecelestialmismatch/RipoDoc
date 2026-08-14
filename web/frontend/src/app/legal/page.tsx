@@ -4,53 +4,17 @@ import { ArrowRight, FileText, ShieldCheck } from 'lucide-react';
 import { legalDecisionNotice, legalDocuments, legalStatusNotice, modeBNotice } from '@/lib/launch/legal.ts';
 
 export const metadata: Metadata = {
-  title: 'Legal information | RipoDoc',
-  description: 'Pre-launch legal, privacy, cookie, service-level, data-processing, and healthcare-mode information for RipoDoc.',
+  title: 'Legal information',
+  description: 'Pre-launch legal, privacy, cookie, service-level, data-processing and healthcare-mode information for RipoDoc.',
+  alternates: { canonical: '/legal' },
+  openGraph: { title: 'RipoDoc legal and trust information', description: 'Verified technical facts and clearly marked decisions pending before contractual launch.', url: '/legal' },
 };
 
 export default function LegalHubPage() {
-  return (
-    <div className="bg-slate-50 text-slate-950">
-      <section className="border-b border-slate-800 bg-slate-950 text-white">
-        <div className="mx-auto max-w-7xl px-6 py-14 sm:py-18">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-cyan-300">Legal and trust information</p>
-          <h1 className="mt-3 max-w-4xl text-4xl font-bold tracking-tight sm:text-5xl">Clear status before contractual launch.</h1>
-          <p className="mt-5 max-w-3xl text-base leading-7 text-slate-300 sm:text-lg">RipoDoc is publishing its verified data-handling and security boundary while the accountable business owner finalizes the entity, commercial, jurisdiction, retention, and subprocessor decisions required for final legal documents.</p>
-        </div>
-      </section>
-
-      <main className="mx-auto max-w-7xl px-6 py-10 sm:py-14">
-        <section className="grid gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.65fr)]">
-          <div className="rounded-3xl border border-amber-200 bg-amber-50 p-6 sm:p-8">
-            <div className="flex items-start gap-3"><FileText className="mt-1 h-6 w-6 text-amber-700" aria-hidden="true" /><div><p className="text-xs font-bold uppercase tracking-[0.16em] text-amber-800">Pre-launch legal status</p><h2 className="mt-2 text-2xl font-bold tracking-tight text-amber-950">The final documents are not yet published as binding terms.</h2></div></div>
-            <p className="mt-4 max-w-3xl text-sm leading-7 text-amber-950">{legalStatusNotice} {legalDecisionNotice}</p>
-          </div>
-          <aside className="rounded-3xl border border-cyan-200 bg-cyan-50 p-6">
-            <ShieldCheck className="h-6 w-6 text-cyan-800" aria-hidden="true" />
-            <h2 className="mt-4 text-lg font-bold text-slate-950">Need the technical boundary?</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-700">Review live-safe operational status and the private-worker/self-hosted deployment model before evaluating a data-processing workflow.</p>
-            <div className="mt-5 flex flex-wrap gap-3"><Link href="/security" className="text-sm font-bold text-cyan-800 hover:text-cyan-950">Security controls</Link><Link href="/download" className="text-sm font-bold text-cyan-800 hover:text-cyan-950">Self-hosting</Link></div>
-          </aside>
-        </section>
-
-        <section className="mt-10" aria-labelledby="documents-heading">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"><div><p className="text-xs font-bold uppercase tracking-[0.16em] text-cyan-700">Document status</p><h2 id="documents-heading" className="mt-1 text-3xl font-bold tracking-tight">What we can state today.</h2></div><p className="max-w-md text-sm leading-6 text-slate-600">Each page separates verified technical facts from decisions requiring an accountable business owner and counsel review.</p></div>
-          <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {legalDocuments.map((document) => (
-              <Link key={document.key} href={document.href} className="group rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-cyan-300 hover:bg-cyan-50/40 focus:outline-none focus:ring-2 focus:ring-cyan-700 focus:ring-offset-2">
-                <p className="text-xs font-bold uppercase tracking-[0.15em] text-amber-700">Pre-launch information</p><h3 className="mt-3 text-lg font-bold text-slate-950">{document.title}</h3><p className="mt-2 text-sm leading-6 text-slate-600">{document.summary}</p><span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-cyan-800">Review status <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" aria-hidden="true" /></span>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        <section className="mt-10 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8" aria-labelledby="healthcare-heading">
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-cyan-700">Healthcare boundary</p>
-          <h2 id="healthcare-heading" className="mt-2 text-2xl font-bold tracking-tight">Healthcare Mode B prevents healthcare language from becoming a compliance promise.</h2>
-          <p className="mt-4 max-w-4xl text-sm leading-7 text-slate-700">{modeBNotice}</p>
-          <Link href="/legal/healthcare-mode-b" className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-cyan-800 hover:text-cyan-950">Read Healthcare Mode B <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link>
-        </section>
-      </main>
-    </div>
-  );
+  return <div className="bg-[#f5f7fb] text-[#0b1226]">
+    <section className="proof-canvas relative overflow-hidden text-white"><div className="pointer-events-none absolute right-[12%] top-0 h-full w-px bg-white/10" /><div className="relative mx-auto grid max-w-7xl gap-9 px-6 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-end lg:py-24"><div><p className="eyebrow-rule text-xs font-bold uppercase tracking-[0.2em] text-teal-200">Legal &amp; trust information</p><h1 className="mt-6 max-w-4xl text-5xl font-bold leading-[0.98] tracking-[-0.06em] sm:text-6xl">Clarity before contractual launch.</h1><p className="mt-7 max-w-3xl text-lg leading-8 text-slate-300">RipoDoc publishes verified data-handling and security boundaries while the accountable business owner completes the entity, commercial, jurisdiction, retention and subprocessor decisions required for binding legal documents.</p></div><div className="border border-amber-300/30 bg-amber-100/10 p-6 text-amber-50"><FileText className="h-6 w-6 text-amber-200" aria-hidden="true" /><p className="mt-5 text-xs font-bold uppercase tracking-[0.16em] text-amber-200">Pre-launch legal status</p><h2 className="mt-2 text-2xl font-bold tracking-[-0.035em]">The final documents are not yet published as binding terms.</h2><p className="mt-4 text-sm leading-7 text-amber-50/85">{legalStatusNotice} {legalDecisionNotice}</p></div></div></section>
+    <main className="mx-auto max-w-7xl px-6 py-16 lg:py-20"><section className="grid gap-8 border-b border-slate-300 pb-10 lg:grid-cols-[0.75fr_1.25fr] lg:items-end"><div><p className="eyebrow-rule text-xs font-bold uppercase tracking-[0.2em] text-[#007e83]">Document status</p><h2 className="mt-4 text-4xl font-bold leading-[1.02] tracking-[-0.055em] sm:text-5xl">What we can state today.</h2></div><p className="max-w-2xl text-base leading-7 text-slate-600">Each page separates verified technical facts from decisions that need an accountable business owner and counsel review. This is intentional—not legal theatre.</p></section>
+    <section className="grid border-b border-slate-300 md:grid-cols-2 xl:grid-cols-3" aria-label="Legal document status">{legalDocuments.map((document, index) => <Link key={document.key} href={document.href} className="evidence-rail group relative border-r border-t border-slate-300 p-7 transition hover:bg-white"><p className="font-mono text-xs font-bold tracking-[0.15em] text-[#2f62e8]">{String(index + 1).padStart(2, '0')} / PRE-LAUNCH</p><h3 className="mt-7 text-2xl font-bold tracking-[-0.035em]">{document.title}</h3><p className="mt-3 min-h-20 text-sm leading-7 text-slate-600">{document.summary}</p><span className="mt-7 inline-flex items-center gap-2 text-sm font-bold text-[#17378d] transition group-hover:text-[#007e83]">Review status <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" aria-hidden="true" /></span></Link>)}</section>
+    <section className="mt-16 grid gap-8 lg:grid-cols-[1.1fr_0.9fr]"><article className="document-cut bg-[#0b1226] p-7 text-white sm:p-9"><ShieldCheck className="h-6 w-6 text-teal-300" aria-hidden="true" /><p className="mt-6 text-xs font-bold uppercase tracking-[0.16em] text-teal-200">Healthcare boundary</p><h2 className="mt-3 text-3xl font-bold tracking-[-0.045em]">Healthcare Mode B prevents a care-context request from becoming a compliance promise.</h2><p className="mt-5 text-sm leading-7 text-slate-300">{modeBNotice}</p><Link href="/legal/healthcare-mode-b" className="mt-7 inline-flex items-center gap-2 text-sm font-bold text-teal-200 transition hover:text-white">Read Healthcare Mode B <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link></article><aside className="border border-slate-200 bg-white p-7"><ShieldCheck className="h-6 w-6 text-[#2f62e8]" aria-hidden="true" /><h2 className="mt-5 text-2xl font-bold tracking-[-0.035em]">Need the technical boundary first?</h2><p className="mt-3 text-sm leading-7 text-slate-600">Review live-safe operational status and the private-worker/self-hosted model before evaluating a data-processing workflow.</p><div className="mt-8 flex flex-col gap-3"><Link href="/security" className="inline-flex items-center gap-2 text-sm font-bold text-[#17378d] transition hover:text-[#007e83]">Inspect security controls <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link><Link href="/download" className="inline-flex items-center gap-2 text-sm font-bold text-[#17378d] transition hover:text-[#007e83]">Review self-hosting <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link></div></aside></section></main>
+  </div>;
 }
