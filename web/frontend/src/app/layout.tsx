@@ -39,20 +39,34 @@ const structuredData = [
   {
     '@context': 'https://schema.org',
     '@type': 'Organization',
+    '@id': 'https://www.ripodoc.com/#organization',
     name: 'RipoDoc',
     url: siteUrl.toString(),
+    logo: 'https://www.ripodoc.com/ripodoc-mark.png',
     description: 'RipoDoc provides controlled evidence delivery for MSP client reports.',
     sameAs: ['https://github.com/thecelestialmismatch/RipoDoc'],
   },
   {
     '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': 'https://www.ripodoc.com/#website',
+    name: 'RipoDoc',
+    url: siteUrl.toString(),
+    description: siteDescription,
+    publisher: { '@id': 'https://www.ripodoc.com/#organization' },
+    inLanguage: 'en-US',
+  },
+  {
+    '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
+    '@id': 'https://www.ripodoc.com/#software',
     name: 'RipoDoc',
     applicationCategory: 'BusinessApplication',
     applicationSubCategory: 'Evidence delivery for MSP client reports',
     operatingSystem: 'Web, Linux (self-hosted)',
     url: siteUrl.toString(),
     description: siteDescription,
+    publisher: { '@id': 'https://www.ripodoc.com/#organization' },
     featureList: [
       'Controlled proof views linked to approved report figures',
       'Recipient-scoped, time-limited evidence access',
@@ -64,7 +78,7 @@ const structuredData = [
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-    <body className="flex min-h-full flex-col bg-[#f5f7fb] text-[#0b1226] [color-scheme:light]">
+    <body className="flex min-h-full flex-col bg-[#f6f0e5] text-[#1d1a16] [color-scheme:light]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
       <Navbar />
       <main className="flex-1">{children}</main>

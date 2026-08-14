@@ -1,61 +1,30 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import {
-  ArrowDownRight,
-  ArrowRight,
-  ArrowUpRight,
-  Check,
-  FileCheck2,
-  FileText,
-  Fingerprint,
-  LockKeyhole,
-  MousePointer2,
-  Network,
-  ScanSearch,
-  ShieldCheck,
-  type LucideIcon,
-} from 'lucide-react';
+import { ArrowDownRight, ArrowRight, ArrowUpRight, FileCheck2, FileText, Fingerprint, Layers3, LockKeyhole, MousePointer2, ScanSearch, ShieldCheck, type LucideIcon } from 'lucide-react';
 import { SampleReport } from '@/components/marketing/SampleReport.tsx';
 import { loadManifest } from '@/lib/evidence/store.ts';
 
 export const metadata: Metadata = {
-  title: 'Controlled evidence delivery for MSP client reports',
-  description: 'RipoDoc lets MSPs keep the familiar client PDF while giving approved report figures a recipient-scoped, expiring and auditable proof path.',
+  title: 'RipoDoc — controlled evidence delivery for MSP client reports',
+  description: 'RipoDoc helps managed service providers keep client reports familiar while connecting approved claims to narrow, recipient-aware, expiring evidence.',
   alternates: { canonical: '/' },
-  openGraph: {
-    title: 'RipoDoc | Controlled evidence delivery for MSP client reports',
-    description: 'Keep the client PDF familiar. Make the evidence behind a reported claim deliberate, recipient-scoped and accountable.',
-    url: '/',
-  },
+  openGraph: { title: 'RipoDoc — controlled evidence delivery for MSP client reports', description: 'A client report can remain familiar and still make one approved claim accountable.', url: '/' },
 };
 
 const SAMPLE_REPORT_ID = 'rpt-demo-0001';
 
-const controlMoments: readonly { readonly number: string; readonly title: string; readonly detail: string; readonly icon: LucideIcon }[] = [
-  {
-    number: '01',
-    title: 'Keep the client artifact familiar',
-    detail: 'Deliver the PDF your client already opens. RipoDoc adds a controlled evidence path without turning a QBR into another portal login.',
-    icon: FileText,
-  },
-  {
-    number: '02',
-    title: 'Make the proof intentional',
-    detail: 'Approve the rows, provenance, reader and expiry that support a single reported figure before it leaves the review boundary.',
-    icon: FileCheck2,
-  },
-  {
-    number: '03',
-    title: 'Control the reader, not just the link',
-    detail: 'A forwarded PDF is not a second authorization. Evidence access is recipient-bound, expiring, revocable and observable.',
-    icon: Fingerprint,
-  },
+const recordFields: readonly { readonly number: string; readonly title: string; readonly detail: string; readonly icon: LucideIcon }[] = [
+  { number: '01', title: 'Claim', detail: 'A report sentence precise enough for a client to question.', icon: FileText },
+  { number: '02', title: 'Source', detail: 'The reviewed structured data or mapping that gives the claim meaning.', icon: Layers3 },
+  { number: '03', title: 'Scope', detail: 'Only the approved detail that supports this one statement.', icon: ScanSearch },
+  { number: '04', title: 'Reader', detail: 'A deliberate recipient condition—not a generic forwarded link.', icon: Fingerprint },
+  { number: '05', title: 'Review', detail: 'An accountable decision before the evidence path is published.', icon: FileCheck2 },
 ] as const;
 
-const realityChecks = [
-  ['NOT A DASHBOARD REPLACEMENT', 'Keep PSA, RMM and BI where they belong. RipoDoc delivers the evidence layer at the client-report moment.'],
-  ['NOT A PDF EXTRACTION PROMISE', 'Start with connected, reviewed source data. An arbitrary chart does not reliably contain the rows needed to prove a claim.'],
-  ['NOT A PERMANENT SHARE LINK', 'A report element can carry the right proof for the right reader and lose access when the decision changes.'],
+const antiPromises = [
+  ['No data-portal theatre', 'RipoDoc does not ask every client to live in another dashboard just to question one number in one report.'],
+  ['No magic PDF extraction', 'A defensible proof path begins with a reviewed structured source or mapping—not an arbitrary visual chart.'],
+  ['No permanent forwarding problem', 'Evidence access is designed around an approved reader, a decision window, and the ability to revoke.'],
 ] as const;
 
 export default async function Home() {
@@ -63,194 +32,50 @@ export default async function Home() {
   const figureCount = manifest?.elements.length ?? 0;
   const evidenceRowCount = manifest?.elements.reduce((count, element) => count + element.evidence.table.rows.length, 0) ?? 0;
 
-  return (
-    <div className="overflow-hidden bg-[#f5f7fb] text-[#0b1226]">
-      <section className="proof-canvas relative isolate overflow-hidden text-white">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/15" />
-        <div className="pointer-events-none absolute left-[8%] top-0 h-full w-px bg-white/10" />
-        <div className="pointer-events-none absolute right-[12%] top-0 h-full w-px bg-white/10" />
-        <div className="pointer-events-none absolute -right-20 top-28 h-80 w-80 rounded-full bg-teal-300/10 blur-3xl" />
-        <div className="pointer-events-none absolute -left-24 bottom-0 h-72 w-72 rounded-full bg-blue-500/15 blur-3xl" />
-
-        <div className="relative mx-auto max-w-7xl px-6 pb-20 pt-14 lg:pb-28 lg:pt-20">
-          <div className="grid items-center gap-14 lg:grid-cols-[0.87fr_1.13fr]">
-            <div className="max-w-2xl">
-              <p className="eyebrow-rule text-xs font-bold uppercase tracking-[0.2em] text-teal-200">Evidence delivery for MSP client reports</p>
-              <h1 className="mt-7 text-5xl font-bold leading-[0.98] tracking-[-0.065em] text-white sm:text-6xl lg:text-[5.1rem]">
-                Make every
-                <span className="block text-teal-300">report claim</span>
-                able to answer back.
-              </h1>
-              <p className="mt-7 max-w-xl text-lg leading-8 text-slate-300 sm:text-xl">
-                RipoDoc turns the PDF your client already trusts into a controlled evidence experience. Click one number. See only the approved detail behind it. Keep the decision accountable.
-              </p>
-              <div className="mt-9 flex flex-wrap gap-3">
-                <Link href="#proof-view" className="inline-flex min-h-12 items-center gap-2 bg-teal-300 px-5 py-3 text-sm font-bold text-[#06152b] transition hover:bg-white active:scale-[0.98]">
-                  Explore the proof view <ArrowDownRight className="h-4 w-4" aria-hidden="true" />
-                </Link>
-                <Link href="/founding-partners" className="inline-flex min-h-12 items-center gap-2 border border-white/25 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:border-teal-200/80 hover:bg-white/10 active:scale-[0.98]">
-                  Request a report diagnostic <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                </Link>
-              </div>
-              <div className="mt-10 grid max-w-xl grid-cols-3 gap-4 border-t border-white/15 pt-5 text-xs text-slate-300 sm:text-sm">
-                <span className="flex items-start gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-teal-300" aria-hidden="true" />Normal PDF delivery</span>
-                <span className="flex items-start gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-teal-300" aria-hidden="true" />Reader-scoped proof</span>
-                <span className="flex items-start gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-teal-300" aria-hidden="true" />Review-ready audit</span>
-              </div>
-            </div>
-
-            <div id="proof-view" className="relative scroll-mt-28">
-              <div className="proof-scanline absolute -left-8 right-8 top-10 h-px" aria-hidden="true" />
-              <div className="document-cut interaction-shadow relative bg-[#f7fbff] p-3 text-[#0b1226] sm:p-5">
-                <div className="mb-4 flex items-center justify-between gap-3 border-b border-slate-200 pb-4">
-                  <div className="flex items-center gap-3">
-                    <span className="flex h-9 w-9 items-center justify-center bg-[#e7f0ff] text-[#2f62e8]"><ScanSearch className="h-4 w-4" aria-hidden="true" /></span>
-                    <div>
-                      <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">RipoDoc proof view</p>
-                      <p className="text-sm font-bold text-[#0b1226]">Select a report figure. Inspect its evidence.</p>
-                    </div>
-                  </div>
-                  <span className="hidden border border-teal-800/15 bg-[#dcfbf5] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-[#007e83] sm:inline-block">Sample data</span>
-                </div>
-                {manifest ? <SampleReport manifest={manifest} /> : <DemoUnavailable />}
-              </div>
-              <div className="mt-4 grid grid-cols-3 gap-px bg-white/10 text-white">
-                <ProofMetric value={figureCount.toString()} label="approved figures" />
-                <ProofMetric value={evidenceRowCount.toString()} label="sample evidence rows" />
-                <ProofMetric value="0" label="rows embedded in the PDF" />
-              </div>
-              <p className="mt-4 max-w-lg text-xs leading-5 text-slate-400">Interactive sample uses fixture data. A production report remains governed by its approved manifest, recipient controls and delivery boundary.</p>
-            </div>
+  return <div className="ledger-field overflow-hidden text-[#1d1a16]">
+    <section className="ledger-hero relative isolate overflow-hidden border-b border-[#1d1a16]">
+      <div className="relative mx-auto max-w-7xl px-6 pb-14 pt-10 lg:pb-20 lg:pt-16">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#1d1a16]/25 pb-4">
+          <p className="ledger-kicker">RipoDoc / Controlled evidence delivery</p>
+          <div className="flex flex-wrap gap-2"><span className="ledger-tab" data-tone="yellow">MSP report system</span><span className="ledger-tab" data-tone="blue">Open source</span></div>
+        </div>
+        <div className="grid gap-10 py-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:py-16">
+          <div className="max-w-2xl">
+            <span className="ledger-stamp ledger-stamp--red">Client report / evidence record</span>
+            <h1 className="ledger-display mt-7 text-6xl leading-[0.88] sm:text-7xl lg:text-[5.4rem]">The report stays simple. The claim does not get to hide.</h1>
+            <p className="mt-8 max-w-xl text-lg leading-8 text-[#5f594f] sm:text-xl">RipoDoc keeps the PDF your client already understands and gives a selected report claim a controlled way to answer the question behind it.</p>
+            <div className="mt-9 flex flex-wrap gap-3"><Link href="#sample-report" className="inline-flex min-h-12 items-center gap-2 border border-[#1d1a16] bg-[#d9503b] px-5 py-3 text-sm font-bold text-white shadow-[4px_4px_0_#1d1a16] transition hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none">Inspect a sample claim <ArrowDownRight className="h-4 w-4" aria-hidden="true" /></Link><Link href="/report-evidence-readiness" className="inline-flex min-h-12 items-center gap-2 border border-[#1d1a16] bg-[#fffdf8] px-5 py-3 text-sm font-bold text-[#1d1a16] transition hover:bg-[#efd66b]">Check evidence readiness <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link></div>
+            <div className="mt-11 grid max-w-xl grid-cols-3 gap-px border border-[#1d1a16] bg-[#1d1a16]"><HeroFact value="PDF" label="still client-first" /><HeroFact value="1" label="claim at a time" /><HeroFact value="0" label="rows in the PDF" /></div>
+          </div>
+          <div id="sample-report" className="relative scroll-mt-28">
+            <div className="absolute -left-3 -top-3 hidden h-20 w-20 border-l-2 border-t-2 border-[#3d55b3] lg:block" aria-hidden="true" />
+            <div className="ledger-panel relative p-3 sm:p-5"><div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#1d1a16] pb-4"><div className="flex items-center gap-3"><span className="flex h-9 w-9 items-center justify-center border border-[#1d1a16] bg-[#efd66b]"><ScanSearch className="h-4 w-4" aria-hidden="true" /></span><div><p className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-[#3d55b3]">RipoDoc sample record</p><p className="text-sm font-bold">Select a figure. Inspect its boundary.</p></div></div><span className="ledger-stamp ledger-stamp--blue">Fixture data</span></div>{manifest ? <SampleReport manifest={manifest} /> : <DemoUnavailable />}</div>
+            <div className="mt-4 grid grid-cols-3 gap-px border border-[#1d1a16] bg-[#1d1a16]"><ProofMetric value={figureCount.toString()} label="approved figures" /><ProofMetric value={evidenceRowCount.toString()} label="sample rows" /><ProofMetric value="0" label="rows inside PDF" /></div>
+            <p className="ledger-margin-line mt-5 max-w-xl pl-4 text-xs leading-5 text-[#5f594f]">This live sample uses fixture data. A production evidence view remains governed by an approved manifest, intended recipient and current access condition.</p>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section className="relative bg-white py-20 lg:py-28">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="grid gap-12 lg:grid-cols-[0.7fr_1.3fr] lg:items-end">
-            <div>
-              <p className="eyebrow-rule text-xs font-bold uppercase tracking-[0.2em] text-[#007e83]">The client-report moment</p>
-              <h2 className="mt-5 text-4xl font-bold leading-[1.02] tracking-[-0.055em] text-[#0b1226] sm:text-5xl">A client question should not create a data chase.</h2>
-            </div>
-            <p className="max-w-2xl text-lg leading-8 text-slate-600">When a client asks where a number came from, the answer should be as deliberate as the report itself. RipoDoc keeps the meeting moving by making the approved proof available at the figure—not in a later spreadsheet, a broad portal export, or a new meeting.</p>
-          </div>
-          <div className="mt-14 grid border-y border-slate-200 lg:grid-cols-3">
-            {controlMoments.map((moment) => {
-              const Icon = moment.icon;
-              return (
-                <article key={moment.number} className="evidence-rail relative border-b border-slate-200 px-7 py-8 last:border-b-0 lg:border-b-0 lg:border-r lg:last:border-r-0 lg:px-9">
-                  <div className="flex items-start justify-between gap-4">
-                    <span className="font-mono text-xs font-bold tracking-[0.16em] text-[#2f62e8]">{moment.number}</span>
-                    <Icon className="h-5 w-5 text-[#007e83]" aria-hidden="true" />
-                  </div>
-                  <h3 className="mt-10 text-2xl font-bold tracking-[-0.035em] text-[#0b1226]">{moment.title}</h3>
-                  <p className="mt-4 max-w-sm text-sm leading-7 text-slate-600">{moment.detail}</p>
-                </article>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+    <section className="border-b border-[#1d1a16] bg-[#1d1a16] py-3 text-[#fffdf8]"><div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-8 gap-y-2 px-6 font-mono text-[10px] font-bold uppercase tracking-[0.14em]"><span>Client PDF first</span><span className="text-[#efd66b]">Source scoped</span><span>Reader aware</span><span className="text-[#efd66b]">Review before delivery</span><span>Self-hostable</span></div></section>
 
-      <section id="how-it-works" className="border-y border-slate-200 bg-[#eef2f8] py-20 lg:py-28">
-        <div className="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div>
-            <p className="eyebrow-rule text-xs font-bold uppercase tracking-[0.2em] text-[#007e83]">The proof canvas</p>
-            <h2 className="mt-5 text-4xl font-bold leading-[1.02] tracking-[-0.055em] text-[#0b1226] sm:text-5xl">The report stays calm. The controls stay close.</h2>
-            <p className="mt-6 max-w-xl text-lg leading-8 text-slate-600">RipoDoc is designed around a simple publishing boundary: source data is reviewed, each figure is connected to a controlled evidence view, and delivery remains familiar to the intended reader.</p>
-            <div className="mt-8 border-t border-slate-300 pt-6">
-              <Link href="/security" className="inline-flex items-center gap-2 text-sm font-bold text-[#17378d] transition hover:text-[#007e83]">Inspect the security-control boundary <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Link>
-            </div>
-          </div>
-          <div className="relative bg-[#0b1226] p-6 text-white sm:p-8">
-            <div className="absolute right-0 top-0 h-24 w-24 border-b border-l border-teal-300/40" aria-hidden="true" />
-            <div className="flex items-center justify-between border-b border-white/15 pb-5">
-              <span className="text-xs font-bold uppercase tracking-[0.18em] text-teal-200">One accountable workflow</span>
-              <Network className="h-5 w-5 text-teal-300" aria-hidden="true" />
-            </div>
-            <ol className="mt-7 space-y-0">
-              <WorkflowRow number="01" title="Connect reviewed source data" detail="Start with a structured CSV, REST response, or reviewed mapping—not a promise to extract unprovable data from arbitrary charts." />
-              <WorkflowRow number="02" title="Approve the evidence set" detail="Attach the rows, provenance, recipient and expiry that support a particular reported claim." />
-              <WorkflowRow number="03" title="Deliver a controlled proof path" detail="The reader opens the familiar PDF. The proof view checks identity, scope and status before rendering detail." />
-            </ol>
-          </div>
-        </div>
-      </section>
+    <main>
+      <section className="bg-[#fffdf8] py-20 lg:py-28"><div className="mx-auto max-w-7xl px-6"><div className="grid gap-10 border-b border-[#cfc2ae] pb-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-end"><div><p className="ledger-kicker">The reporting problem</p><h2 className="ledger-display mt-5 text-5xl leading-[0.95] sm:text-6xl">“Where did that number come from?” should not start a data chase.</h2></div><p className="max-w-2xl text-lg leading-8 text-[#5f594f]">A strong QBR is concise enough for an executive to follow. The supporting evidence should still be accurate, reviewable, and available when a client challenges a specific claim—without turning a report into a sprawling portal.</p></div><div className="mt-0 grid border-b border-[#cfc2ae] lg:grid-cols-[0.42fr_0.58fr]"><div className="border-b border-[#cfc2ae] p-7 lg:border-b-0 lg:border-r lg:p-10"><span className="ledger-stamp ledger-stamp--ink">The usual handoff</span><p className="mt-7 text-2xl font-bold tracking-[-0.04em]">A number, a follow-up, and a broader export than anyone needed.</p><p className="mt-4 text-sm leading-7 text-[#5f594f]">The conversation leaves the report. The evidence arrives later. The reader gets more operational data than the single question required.</p></div><div className="ledger-paper relative p-7 lg:p-10"><span className="ledger-stamp ledger-stamp--red">The RipoDoc handoff</span><p className="mt-7 text-2xl font-bold tracking-[-0.04em]">A selected claim, an approved evidence set, and a visible boundary.</p><p className="mt-4 max-w-xl text-sm leading-7 text-[#5f594f]">The report stays familiar. The proof path stays narrow. The reader sees the details that were deliberately approved for that statement.</p><span className="absolute bottom-6 right-7 font-mono text-5xl font-bold tracking-[-0.1em] text-[#d9503b]/15" aria-hidden="true">01</span></div></div></div></section>
 
-      <section className="bg-white py-20 lg:py-28">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="grid gap-8 border-b border-slate-200 pb-12 lg:grid-cols-[1fr_0.86fr] lg:items-end">
-            <div>
-              <p className="eyebrow-rule text-xs font-bold uppercase tracking-[0.2em] text-[#007e83]">Truthful by design</p>
-              <h2 className="mt-5 text-4xl font-bold leading-[1.02] tracking-[-0.055em] text-[#0b1226] sm:text-5xl">A clear product is more credible than a broad promise.</h2>
-            </div>
-            <p className="text-lg leading-8 text-slate-600">RipoDoc has a narrow job: deliver approved report evidence with intentional access controls. It does not claim to replace the systems that produce your operational data.</p>
-          </div>
-          <div className="divide-y divide-slate-200">
-            {realityChecks.map(([label, detail]) => (
-              <div key={label} className="grid gap-5 py-7 md:grid-cols-[0.47fr_1fr] md:gap-12">
-                <h3 className="text-sm font-bold tracking-[0.08em] text-[#17378d]">{label}</h3>
-                <p className="max-w-2xl text-base leading-7 text-slate-600">{detail}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <section className="border-b border-[#1d1a16] bg-[#e9dfcf] py-20 lg:py-28"><div className="mx-auto max-w-7xl px-6"><div className="grid gap-8 lg:grid-cols-[0.75fr_1.25fr] lg:items-end"><div><p className="ledger-kicker">A five-field record</p><h2 className="ledger-display mt-5 text-5xl leading-[0.95] sm:text-6xl">The smallest useful evidence design.</h2></div><p className="max-w-2xl text-lg leading-8 text-[#5f594f]">RipoDoc is built around a disciplined publication decision. Before a client gets a proof path, someone should be able to name the claim, source, scope, reader, and reviewer behind it.</p></div><div className="mt-12 border border-[#1d1a16] bg-[#1d1a16] sm:grid sm:grid-cols-2 lg:grid-cols-5">{recordFields.map((field) => <RecordField key={field.number} {...field} />)}</div><div className="mt-8 flex flex-wrap items-center justify-between gap-5 border-t border-[#1d1a16]/25 pt-6"><p className="max-w-2xl text-sm leading-6 text-[#5f594f]">This is not a compliance score. It is the operating discipline that makes an evidence view more useful than a permanent share link.</p><Link href="/report-evidence-readiness" className="inline-flex items-center gap-2 text-sm font-bold text-[#243a87] hover:text-[#a62f26]">Use the no-data readiness check <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Link></div></div></section>
 
-      <section className="border-y border-[#17378d] bg-[#e7f0ff] py-16 lg:py-20">
-        <div className="mx-auto grid max-w-7xl gap-8 px-6 lg:grid-cols-[1.25fr_0.75fr] lg:items-center">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#17378d]">Choose the right first move</p>
-            <h2 className="mt-4 text-4xl font-bold tracking-[-0.05em] text-[#0b1226] sm:text-5xl">Start with the report—and the boundary you need.</h2>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-            <Link href="/founding-partners" className="lift-on-hover group border border-[#2f62e8]/25 bg-white p-5 transition hover:border-[#2f62e8]">
-              <span className="text-xs font-bold uppercase tracking-[0.15em] text-[#007e83]">For MSP teams</span>
-              <span className="mt-2 flex items-center justify-between gap-4 text-lg font-bold text-[#0b1226]">Request a report diagnostic <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" aria-hidden="true" /></span>
-              <span className="mt-2 block text-sm leading-6 text-slate-600">Validate the report moment with a founding-partner workflow.</span>
-            </Link>
-            <Link href="/download" className="lift-on-hover group border border-[#2f62e8]/25 bg-[#0b1226] p-5 text-white transition hover:border-teal-300">
-              <span className="text-xs font-bold uppercase tracking-[0.15em] text-teal-200">For operators</span>
-              <span className="mt-2 flex items-center justify-between gap-4 text-lg font-bold">Download &amp; self-host <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" aria-hidden="true" /></span>
-              <span className="mt-2 block text-sm leading-6 text-slate-300">Run the app, database and private authoring worker in your controlled environment.</span>
-            </Link>
-          </div>
-        </div>
-      </section>
+      <section className="bg-[#f6f0e5] py-20 lg:py-28"><div className="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center"><div><p className="ledger-kicker">A deliberate product boundary</p><h2 className="ledger-display mt-5 text-5xl leading-[0.95] sm:text-6xl">The best product promise is the one a buyer can inspect.</h2><p className="mt-7 max-w-xl text-lg leading-8 text-[#5f594f]">RipoDoc does not compete to become your RMM, PSA, BI system, or general-purpose client portal. It is the evidence-delivery layer for a client-report moment.</p><Link href="/how-it-works" className="mt-8 inline-flex items-center gap-2 border-b-2 border-[#d9503b] pb-1 text-sm font-bold text-[#1d1a16] transition hover:text-[#a62f26]">Read the method in full <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link></div><div className="border-y border-[#cfc2ae]">{antiPromises.map(([label, detail], index) => <article key={label} className="grid gap-4 border-b border-[#cfc2ae] py-7 last:border-b-0 sm:grid-cols-[70px_0.75fr_1.25fr] sm:gap-7"><span className="font-mono text-xs font-bold tracking-[0.13em] text-[#3d55b3]">0{index + 1}</span><h3 className="text-lg font-bold tracking-[-0.025em]">{label}</h3><p className="text-sm leading-7 text-[#5f594f]">{detail}</p></article>)}</div></div></section>
 
-      <section className="bg-[#081126] py-20 text-white lg:py-28">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="grid gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:items-start">
-            <div>
-              <p className="eyebrow-rule text-xs font-bold uppercase tracking-[0.2em] text-teal-200">Research the method</p>
-              <h2 className="mt-5 text-4xl font-bold leading-[1.02] tracking-[-0.055em] sm:text-5xl">Let the buyer inspect the thinking—not just the interface.</h2>
-            </div>
-            <div className="grid gap-px bg-white/15 sm:grid-cols-3">
-              <ResourceLink href="/security" icon={ShieldCheck} title="Security controls" detail="Review the safe operational posture and evidence boundary." />
-              <ResourceLink href="/legal" icon={LockKeyhole} title="Legal status" detail="See verified facts and the remaining launch approval gate." />
-              <ResourceLink href="https://github.com/thecelestialmismatch/RipoDoc" icon={MousePointer2} title="Open source" detail="Inspect the implementation, self-host bundle and research." external />
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-  );
+      <section className="border-y border-[#1d1a16] bg-[#3d55b3] py-16 text-white"><div className="mx-auto grid max-w-7xl gap-8 px-6 lg:grid-cols-[1fr_0.9fr] lg:items-center"><div><p className="font-mono text-xs font-bold uppercase tracking-[0.16em] text-[#efd66b]">Pick an operating path</p><h2 className="ledger-display mt-4 text-5xl leading-[0.95] sm:text-6xl">See the product boundary before you trust it.</h2><p className="mt-5 max-w-2xl text-base leading-7 text-white/80">Inspect the method, run the self-hosted stack, or bring a real reporting workflow to a focused diagnostic. The public site does not collect customer report data.</p></div><div className="grid gap-3"><RouteCard href="/download" label="For operators" title="Run it on your terms" detail="Inspect the self-hosted deployment path, architecture and operating prerequisites." dark /><RouteCard href="/founding-partners" label="For MSP teams" title="Request a report diagnostic" detail="Explore whether a real client-report moment has an evidence-delivery wedge." /></div></div></section>
+
+      <section className="bg-[#fffdf8] py-20 lg:py-28"><div className="mx-auto max-w-7xl px-6"><div className="grid gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:items-start"><div><p className="ledger-kicker">Inspect the work</p><h2 className="ledger-display mt-5 text-5xl leading-[0.95] sm:text-6xl">Trust comes from a trail a buyer can actually follow.</h2></div><div className="grid gap-px border border-[#1d1a16] bg-[#1d1a16] sm:grid-cols-2 xl:grid-cols-4"><ResourceLink href="/report-evidence-readiness" icon={FileCheck2} title="Evidence readiness" detail="Use the five-check decision aid without submitting report data." /><ResourceLink href="/security" icon={ShieldCheck} title="Security controls" detail="Review the current control boundary and fail-closed posture." /><ResourceLink href="/legal" icon={LockKeyhole} title="Legal status" detail="Separate published facts from commercial decisions still awaiting counsel." /><ResourceLink href="https://github.com/thecelestialmismatch/RipoDoc" icon={MousePointer2} title="Open source" detail="Inspect the code, self-host bundle, research and contribution path." external /></div></div></div></section>
+    </main>
+  </div>;
 }
 
-function ProofMetric({ value, label }: { readonly value: string; readonly label: string }) {
-  return <div className="bg-[#081126] px-4 py-4 sm:px-5"><p className="text-2xl font-bold tracking-[-0.05em] text-white">{value}</p><p className="mt-1 text-[11px] font-medium leading-4 text-slate-400">{label}</p></div>;
-}
-
-function WorkflowRow({ number, title, detail }: { readonly number: string; readonly title: string; readonly detail: string }) {
-  return <li className="grid grid-cols-[45px_1fr] gap-3 border-b border-white/10 py-6 last:border-b-0"><span className="font-mono text-xs font-bold tracking-[0.13em] text-teal-300">{number}</span><div><h3 className="text-xl font-bold tracking-[-0.025em]">{title}</h3><p className="mt-2 max-w-xl text-sm leading-6 text-slate-300">{detail}</p></div></li>;
-}
-
-function ResourceLink({ href, icon: Icon, title, detail, external = false }: { readonly href: string; readonly icon: LucideIcon; readonly title: string; readonly detail: string; readonly external?: boolean }) {
-  const content = <><Icon className="h-5 w-5 text-teal-300" aria-hidden="true" /><h3 className="mt-10 text-xl font-bold tracking-[-0.03em]">{title}</h3><p className="mt-3 text-sm leading-6 text-slate-300">{detail}</p><span className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-teal-200">Explore <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></span></>;
-  const className = 'lift-on-hover block min-h-62 bg-[#101e40] p-6 transition hover:bg-[#142851]';
-  return external ? <a href={href} target="_blank" rel="noopener noreferrer" className={className}>{content}</a> : <Link href={href} className={className}>{content}</Link>;
-}
-
-function DemoUnavailable() {
-  return <div className="border border-amber-300 bg-amber-50 p-6 text-sm leading-6 text-amber-950"><p className="font-bold">The interactive sample is not available in this runtime.</p><p className="mt-2">You can still inspect the self-hosted workflow and public security controls.</p></div>;
-}
+function HeroFact({ value, label }: { readonly value: string; readonly label: string }) { return <div className="bg-[#fffdf8] px-4 py-4 sm:px-5"><p className="font-mono text-2xl font-bold tracking-[-0.08em] text-[#1d1a16]">{value}</p><p className="mt-1 text-[10px] font-bold uppercase tracking-[0.1em] text-[#5f594f]">{label}</p></div>; }
+function ProofMetric({ value, label }: { readonly value: string; readonly label: string }) { return <div className="bg-[#1d1a16] px-4 py-4 text-[#fffdf8] sm:px-5"><p className="font-mono text-2xl font-bold tracking-[-0.06em]">{value}</p><p className="mt-1 text-[10px] font-bold uppercase leading-4 tracking-[0.08em] text-white/55">{label}</p></div>; }
+function RecordField({ number, title, detail, icon: Icon }: { readonly number: string; readonly title: string; readonly detail: string; readonly icon: LucideIcon }) { return <article className="min-h-62 border-b border-[#1d1a16] bg-[#fffdf8] p-6 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0"><div className="flex items-start justify-between gap-3"><span className="font-mono text-xs font-bold tracking-[0.14em] text-[#3d55b3]">{number}</span><Icon className="h-4 w-4 text-[#d9503b]" aria-hidden="true" /></div><h3 className="mt-12 text-xl font-bold tracking-[-0.04em]">{title}</h3><p className="mt-3 text-sm leading-6 text-[#5f594f]">{detail}</p></article>; }
+function RouteCard({ href, label, title, detail, dark = false }: { readonly href: string; readonly label: string; readonly title: string; readonly detail: string; readonly dark?: boolean }) { return <Link href={href} className={`group block border p-5 transition hover:-translate-y-0.5 ${dark ? 'border-[#1d1a16] bg-[#1d1a16] text-white hover:bg-[#302b24]' : 'border-white bg-[#fffdf8] text-[#1d1a16] hover:bg-[#efd66b]'}`}><span className={`font-mono text-[10px] font-bold uppercase tracking-[0.15em] ${dark ? 'text-[#efd66b]' : 'text-[#3d55b3]'}`}>{label}</span><span className="mt-3 flex items-center justify-between gap-4 text-xl font-bold tracking-[-0.035em]">{title}<ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" aria-hidden="true" /></span><span className={`mt-2 block text-sm leading-6 ${dark ? 'text-white/70' : 'text-[#5f594f]'}`}>{detail}</span></Link>; }
+function ResourceLink({ href, icon: Icon, title, detail, external = false }: { readonly href: string; readonly icon: LucideIcon; readonly title: string; readonly detail: string; readonly external?: boolean }) { const content = <><Icon className="h-5 w-5 text-[#d9503b]" aria-hidden="true" /><h3 className="mt-11 text-xl font-bold tracking-[-0.035em]">{title}</h3><p className="mt-3 text-sm leading-6 text-[#5f594f]">{detail}</p><span className="mt-7 inline-flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.13em] text-[#3d55b3]">Inspect <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></span></>; const className = 'block min-h-64 bg-[#fffdf8] p-6 transition hover:bg-[#efd66b]'; return external ? <a href={href} target="_blank" rel="noopener noreferrer" className={className}>{content}</a> : <Link href={href} className={className}>{content}</Link>; }
+function DemoUnavailable() { return <div className="border border-[#ac6629] bg-[#fff4dc] p-6 text-sm leading-6 text-[#654016]"><p className="font-bold">The interactive sample is not available in this runtime.</p><p className="mt-2">You can still inspect the method, self-hosting workflow and security controls.</p></div>; }
