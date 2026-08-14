@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability privately
+    url: https://github.com/thecelestialmismatch/RipoDoc/security/advisories/new
+    about: Do not include vulnerabilities, customer data, credentials, report files, or evidence tokens in a public issue.
+  - name: Explore the RipoDoc evidence-delivery method
+    url: https://www.ripodoc.com/how-it-works
+    about: Review the product boundary, interactive claim sample, and self-hosted operating model before opening a feature discussion.
+  - name: Request an MSP report diagnostic
+    url: https://www.ripodoc.com/founding-partners
+    about: Start with a non-sensitive reporting workflow discussion; do not upload or include customer report data.
