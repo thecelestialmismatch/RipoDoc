@@ -1,3 +1,7 @@
+<p align="center">
+  <a href="https://www.ripodoc.com"><img src="web/frontend/public/ripodoc-mark.png" width="96" alt="RipoDoc website logo — controlled evidence delivery for MSP client reports" /></a>
+</p>
+
 # RipoDoc
 
 > **Controlled evidence delivery for MSP client reports.**
@@ -9,7 +13,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Self-hostable](https://img.shields.io/badge/Deployment-self--hostable-007E83?style=flat-square)](https://www.ripodoc.com/download)
 
-**Website:** [ripodoc.com](https://www.ripodoc.com) · **Method:** [how it works](https://www.ripodoc.com/how-it-works) · **Security boundary:** [security controls](https://www.ripodoc.com/security) · **Self-hosting:** [download & deployment](https://www.ripodoc.com/download)
+**Website:** [ripodoc.com](https://www.ripodoc.com) · **Claim sample:** [inspect the interactive report evidence](https://www.ripodoc.com/#sample-report) · **Method:** [how it works](https://www.ripodoc.com/how-it-works) · **Evidence readiness:** [five-check decision aid](https://www.ripodoc.com/report-evidence-readiness) · **Security boundary:** [security controls](https://www.ripodoc.com/security) · **Self-hosting:** [download & deployment](https://www.ripodoc.com/download)
 
 ---
 
@@ -48,7 +52,7 @@ Reader opens a controlled proof view for that specific report claim
 
 The evidence view is designed to return **only the approved rows for the requested figure** after evaluating its access condition. Evidence access events can be added to a tamper-evident hash chain for later verification.
 
-Explore the public [proof-view sample](https://www.ripodoc.com/#proof-view) or read the full [RipoDoc method](https://www.ripodoc.com/how-it-works).
+Explore the public [interactive claim sample](https://www.ripodoc.com/#sample-report), use the no-data [evidence-readiness check](https://www.ripodoc.com/report-evidence-readiness), or read the full [RipoDoc method](https://www.ripodoc.com/how-it-works).
 
 ## Start locally
 
@@ -165,6 +169,8 @@ docs/05-engineering/                  Self-hosted operations runbook
 RipoDoc treats public claims as part of the product boundary. The following documents distinguish verified implementation facts from hypotheses or decisions that need accountable owner and counsel review:
 
 - [Public experience and discovery baseline](docs/01-research/public-experience-and-discovery-baseline.md)
+- [Search-discovery and authority audit](docs/01-research/next-release-authority-audit.md)
+- [Ledger Edition design decision](docs/01-research/ledger-edition-design-reference.md)
 - [Competitive positioning and claim register](docs/01-research/competitive-positioning-and-claim-register.md)
 - [MSP discovery and design-partner protocol](docs/01-research/msp-discovery-and-design-partner-protocol.md)
 - [Counsel-review launch policy packet](docs/06-legal/counsel-review-launch-policy-packet.md)
