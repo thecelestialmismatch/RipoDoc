@@ -101,6 +101,33 @@ body {
 .ledger-panel--blue { background: #eaf0ff; }
 .ledger-panel--ink { background: #1d1a16; color: #fffdf8; }
 
+/* Conversion controls: designed to remain clear and comfortably tappable at mobile density. */
+.ledger-button, .ledger-button-secondary {
+  align-items: center;
+  border: 1px solid #1d1a16;
+  box-shadow: 3px 3px 0 rgb(29 26 22 / 0.24);
+  display: inline-flex;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 750;
+  gap: 0.6rem;
+  justify-content: center;
+  letter-spacing: 0.01em;
+  min-height: 3rem;
+  padding: 0.7rem 1rem;
+  text-decoration: none;
+  transition: background-color 160ms ease, box-shadow 160ms ease, color 160ms ease, transform 160ms ease;
+}
+.ledger-button { background: #d9503b; color: #fffdf8; }
+.ledger-button-secondary { background: #fffdf8; color: #1d1a16; }
+.ledger-button:hover { background: #a62f26; box-shadow: 5px 5px 0 rgb(29 26 22 / 0.24); transform: translate(-1px, -1px); }
+.ledger-button-secondary:hover { background: #efd66b; box-shadow: 5px 5px 0 rgb(29 26 22 / 0.24); transform: translate(-1px, -1px); }
+.ledger-button:active, .ledger-button-secondary:active { box-shadow: 1px 1px 0 rgb(29 26 22 / 0.24); transform: translate(1px, 1px) scale(0.98); }
+
+@media (max-width: 639px) {
+  .ledger-button, .ledger-button-secondary { justify-content: space-between; width: 100%; }
+}
+
 /* Compatibility utilities for routes migrating in the same release. */
 .brand-gradient-text { color: #d9503b; }
 .proof-canvas { background: #1d1a16; }
