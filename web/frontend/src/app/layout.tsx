@@ -52,6 +52,7 @@ const structuredData = [
     '@type': 'WebSite',
     '@id': 'https://www.ripodoc.com/#website',
     name: 'RipoDoc',
+    alternateName: ['ripodoc.com'],
     url: siteUrl.toString(),
     description: siteDescription,
     publisher: { '@id': 'https://www.ripodoc.com/#organization' },
