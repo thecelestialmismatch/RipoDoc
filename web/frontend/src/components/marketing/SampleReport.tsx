@@ -18,8 +18,8 @@ export function SampleReport({ manifest }: { readonly manifest: ReportManifest }
   const maxBar = Math.max(...(chart?.series ?? []).map((datum) => datum.value), 1);
 
   return (
-    <div className="grid gap-4 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
-      <section aria-label="Sample report figures" className="rounded-2xl border border-slate-200 bg-[#F6F8FC] p-3 sm:p-4">
+    <div className="grid min-w-0 gap-4 2xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+      <section aria-label="Sample report figures" className="min-w-0 rounded-2xl border border-slate-200 bg-[#F6F8FC] p-3 sm:p-4">
         <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-200 pb-3">
           <div>
             <div className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.13em] text-[#087E84]"><FileText className="h-3.5 w-3.5" aria-hidden="true" />{manifest.provider}</div>
@@ -88,7 +88,7 @@ export function SampleReport({ manifest }: { readonly manifest: ReportManifest }
         )}
       </section>
 
-      <section aria-live="polite" aria-label="Evidence detail" className="min-h-[18rem]">
+      <section aria-live="polite" aria-label="Evidence detail" className="min-h-[18rem] min-w-0">
         {active ? (
           <div className="h-full rounded-2xl border border-[#1769E8]/15 bg-white p-4 shadow-sm sm:p-5">
             <div className="flex items-start justify-between gap-4">
@@ -109,8 +109,8 @@ export function SampleReport({ manifest }: { readonly manifest: ReportManifest }
         ) : (
           <div className="flex min-h-[18rem] h-full flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white p-7 text-center">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#EAF5FF] text-[#1769E8]"><MouseCue /></span>
-            <h3 className="mt-4 text-sm font-bold text-[#11162E]">The detail opens beside the report.</h3>
-            <p className="mt-2 max-w-xs text-xs leading-5 text-slate-600">Select any sample figure to inspect its approved rows and provenance — the same interaction your recipient gets from the PDF.</p>
+            <h3 className="mt-4 text-sm font-bold text-[#11162E]">The detail opens in a straight panel.</h3>
+            <p className="mt-2 max-w-xs text-xs leading-5 text-slate-600">Select any sample figure to inspect its approved rows and provenance below the report on mobile, or beside it on wide screens.</p>
           </div>
         )}
       </section>
