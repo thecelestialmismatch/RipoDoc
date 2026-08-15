@@ -224,15 +224,48 @@ test('future inbound webhook verification enforces timestamp skew and constant-t
 });
 
 
-test('public launch surfaces disclose the necessary-cookie posture and keep optional tracking categories disabled by default', async () => {
+test('public launch surfaces provide accessible accept, reject, and settings controls while optional tracking remains disabled', async () => {
   const notice = await readFile(new URL('../../../web/frontend/src/components/CookieNotice.tsx', import.meta.url), 'utf8');
+  const footer = await readFile(new URL('../../../web/frontend/src/components/Footer.tsx', import.meta.url), 'utf8');
+  const settingsButton = await readFile(new URL('../../../web/frontend/src/components/CookieSettingsButton.tsx', import.meta.url), 'utf8');
+  const legalPage = await readFile(new URL('../../../web/frontend/src/app/legal/[document]/page.tsx', import.meta.url), 'utf8');
   const layout = await readFile(new URL('../../../web/frontend/src/app/layout.tsx', import.meta.url), 'utf8');
-
-  assert.match(notice, /Essential cookies, explained/);
-  assert.match(notice, /We do not load advertising, analytics, replay, chat, or marketing cookies/);
+  assert.match(notice, /Cookie choice/);
+  assert.match(notice, />\s*Accept/);
+  assert.match(notice, />\s*Reject/);
+  assert.match(notice, /Cookie settings/);
+  assert.match(notice, /localStorage/);
+  assert.match(notice, /analytics: false/);
+  assert.match(notice, /marketing: false/);
+  assert.match(notice, /role="dialog"/);
+  assert.match(notice, /aria-modal="true"/);
   assert.match(notice, /href="\/legal\/cookies"/);
-  assert.doesNotMatch(notice, /Accept all/);
+  assert.match(footer, /<CookieSettingsButton \/>/);
+  assert.match(settingsButton, /OPEN_COOKIE_SETTINGS_EVENT/);
+  assert.match(legalPage, /ripodoc-cookie-preferences-v1/);
+  assert.match(legalPage, /accept, reject, and cookie-settings controls/);
   assert.match(layout, /<CookieNotice \/>/);
+});
+test('discovery and authentication boundaries explicitly separate indexable public entity content from private product routes', async () => {
+  const robots = await readFile(new URL('../../../web/frontend/src/app/robots.ts', import.meta.url), 'utf8');
+  const sitemap = await readFile(new URL('../../../web/frontend/src/app/sitemap.ts', import.meta.url), 'utf8');
+  const about = await readFile(new URL('../../../web/frontend/src/app/about/page.tsx', import.meta.url), 'utf8');
+  const llms = await readFile(new URL('../../../web/frontend/src/app/llms.txt/route.ts', import.meta.url), 'utf8');
+  const config = await readFile(new URL('../../../web/frontend/next.config.ts', import.meta.url), 'utf8');
+  assert.match(robots, /OAI-SearchBot/);
+  assert.match(robots, /'\/about'/);
+  assert.match(robots, /'\/llms\.txt'/);
+  assert.match(robots, /'\/dashboard'/);
+  assert.match(sitemap, /lastModified/);
+  assert.match(sitemap, /2026-08-15/);
+  assert.match(sitemap, /\/about/);
+  assert.match(about, /RipoDoc is controlled evidence delivery for MSP client reports/);
+  assert.match(about, /AboutPage/);
+  assert.match(llms, /About RipoDoc/);
+  assert.match(config, /X-Robots-Tag/);
+  assert.match(config, /noindex, nofollow, noarchive, nosnippet/);
+  assert.match(config, /'\/dashboard\/:path\*'/);
+  assert.match(config, /'\/e\/:path\*'/);
 });
 
 test('MSP launch page preserves RipoDoc’s narrow evidence-delivery boundary and sample-data warning', async () => {

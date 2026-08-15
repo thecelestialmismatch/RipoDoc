@@ -9,6 +9,7 @@ RipoDoc helps Managed Service Providers keep the familiar client PDF while conne
 ## Canonical sources
 
 - [Homepage](https://www.ripodoc.com/): Product overview and interactive claim sample using fixture data.
+- [About RipoDoc](https://www.ripodoc.com/about): Exact product name, category definition, operating boundary, and open-source reference.
 - [How RipoDoc works](https://www.ripodoc.com/how-it-works): Product method, design limits, and answer-oriented FAQ.
 - [RipoDoc for MSPs](https://www.ripodoc.com/for-msps): A five-minute report-teardown guide, product boundary, and sample-data demo context.
 - [Evidence readiness](https://www.ripodoc.com/report-evidence-readiness): No-data-submitted decision aid for assessing one client-report metric.
