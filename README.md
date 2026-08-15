@@ -13,9 +13,19 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Self-hostable](https://img.shields.io/badge/Deployment-self--hostable-007E83?style=flat-square)](https://www.ripodoc.com/download)
 
-**Website:** [ripodoc.com](https://www.ripodoc.com) · **Claim sample:** [inspect the interactive report evidence](https://www.ripodoc.com/#sample-report) · **Method:** [how it works](https://www.ripodoc.com/how-it-works) · **Evidence readiness:** [five-check decision aid](https://www.ripodoc.com/report-evidence-readiness) · **Security boundary:** [security controls](https://www.ripodoc.com/security) · **Self-hosting:** [download & deployment](https://www.ripodoc.com/download)
+**Website:** [ripodoc.com](https://www.ripodoc.com) · **For MSPs:** [demo & fit](https://www.ripodoc.com/for-msps) · **Claim sample:** [inspect the interactive report evidence](https://www.ripodoc.com/#sample-report) · **Method:** [how it works](https://www.ripodoc.com/how-it-works) · **Evidence readiness:** [five-check decision aid](https://www.ripodoc.com/report-evidence-readiness) · **Security boundary:** [security controls](https://www.ripodoc.com/security) · **Self-hosting:** [download & deployment](https://www.ripodoc.com/download)
 
 ---
+
+## See the real product surface
+
+<p align="center">
+  <a href="https://www.ripodoc.com/#sample-report"><img src="docs/assets/ripodoc-claim-sample.png" alt="RipoDoc’s real interactive sample report showing a selected report claim and an adjacent evidence area" width="900" /></a>
+</p>
+
+The image above is captured from the local RipoDoc application and uses the shipped **sample data**—not client information. Explore the live [interactive claim sample](https://www.ripodoc.com/#sample-report), read the [MSP demo and fit guide](https://www.ripodoc.com/for-msps), or download the short capture-based [demo tour video](docs/assets/ripodoc-demo-tour.mp4). The animated [GIF version](docs/assets/ripodoc-demo-tour.gif) is available for platforms that do not play MP4 previews.
+
+> The demo tour is a visual walkthrough of actual local pages. It does not simulate customer use, make performance claims, or depict a configured hosted workspace.
 
 ## The report is the interface. The evidence should be accountable.
 
@@ -171,6 +181,9 @@ RipoDoc treats public claims as part of the product boundary. The following docu
 - [Public experience and discovery baseline](docs/01-research/public-experience-and-discovery-baseline.md)
 - [Search-discovery and authority audit](docs/01-research/next-release-authority-audit.md)
 - [Ledger Edition design decision](docs/01-research/ledger-edition-design-reference.md)
+- [Launch market, competition, and buyer-needs research](docs/01-research/launch-market-competition-and-buyer-needs.md)
+- [Six-month launch-readiness operating plan](docs/00-strategy/launch-readiness-operating-plan.md)
+- [RipoDoc entity card and commercial constraints](docs/00-strategy/ripodoc-entity-card.md)
 - [Competitive positioning and claim register](docs/01-research/competitive-positioning-and-claim-register.md)
 - [MSP discovery and design-partner protocol](docs/01-research/msp-discovery-and-design-partner-protocol.md)
 - [Counsel-review launch policy packet](docs/06-legal/counsel-review-launch-policy-packet.md)

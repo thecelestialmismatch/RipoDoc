@@ -9,6 +9,7 @@ import { BrandLockup } from '@/components/BrandLockup.tsx';
 const NAV_LINKS: readonly { readonly href: string; readonly label: string; readonly icon?: LucideIcon }[] = [
   { href: '/#sample-report', label: 'Sample' },
   { href: '/how-it-works', label: 'Method' },
+  { href: '/for-msps', label: 'For MSPs' },
   { href: '/report-evidence-readiness', label: 'Readiness' },
   { href: '/security', label: 'Controls', icon: ShieldCheck },
   { href: '/download', label: 'Self-host' },
