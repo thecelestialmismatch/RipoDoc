@@ -222,3 +222,32 @@ test('future inbound webhook verification enforces timestamp skew and constant-t
   assert.equal(webhookPayloadTooLarge('65537'), true);
   assert.equal(webhookPayloadTooLarge(null), true);
 });
+
+
+test('public launch surfaces disclose the necessary-cookie posture and keep optional tracking categories disabled by default', async () => {
+  const notice = await readFile(new URL('../../../web/frontend/src/components/CookieNotice.tsx', import.meta.url), 'utf8');
+  const layout = await readFile(new URL('../../../web/frontend/src/app/layout.tsx', import.meta.url), 'utf8');
+
+  assert.match(notice, /Essential cookies, explained/);
+  assert.match(notice, /We do not load advertising, analytics, replay, chat, or marketing cookies/);
+  assert.match(notice, /href="\/legal\/cookies"/);
+  assert.doesNotMatch(notice, /Accept all/);
+  assert.match(layout, /<CookieNotice \/>/);
+});
+
+test('MSP launch page preserves RipoDoc’s narrow evidence-delivery boundary and sample-data warning', async () => {
+  const page = await readFile(new URL('../../../web/frontend/src/app/for-msps/page.tsx', import.meta.url), 'utf8');
+  assert.match(page, /controlled evidence-delivery layer/);
+  assert.match(page, /does not claim to do/);
+  assert.match(page, /The public demonstration uses sample data/);
+  assert.match(page, /not a blanket compliance certification/);
+  assert.match(page, /Request a report diagnostic/);
+});
+
+test('README uses the exact website mark and only authentic local demo assets', async () => {
+  const readme = await readFile(new URL('../../../README.md', import.meta.url), 'utf8');
+  assert.match(readme, /web\/frontend\/public\/ripodoc-mark\.png/);
+  assert.match(readme, /docs\/assets\/ripodoc-claim-sample\.png/);
+  assert.match(readme, /docs\/assets\/ripodoc-demo-tour\.mp4/);
+  assert.match(readme, /sample data/);
+});
