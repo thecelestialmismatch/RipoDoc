@@ -8,7 +8,7 @@ export const metadata: Metadata = {
    * surfaced in a search result. `noarchive` matters as much as `noindex`: a
    * cached copy would outlive revocation.
    */
-  robots: { index: false, follow: false, nocache: true, noarchive: true },
+  robots: { index: false, follow: false, nocache: true, noarchive: true, nosnippet: true },
 };
 
 /**
