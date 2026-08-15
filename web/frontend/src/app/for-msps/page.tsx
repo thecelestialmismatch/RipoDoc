@@ -43,7 +43,7 @@ export default function ForMspsPage() {
             <p className="mt-7 max-w-2xl text-lg leading-8 text-[#4b463e]">RipoDoc is a controlled evidence-delivery layer for the report your MSP already sends. Let the client conversation stay concise—then make an approved claim answerable when someone asks to inspect it.</p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link href="/#sample-report" className="ledger-button">Open the sample report <ArrowRight className="size-4" /></Link>
-              <Link href="/founding-partners" className="ledger-button-secondary">Request a report diagnostic</Link>
+              <Link href="/report-diagnostic-starter-kit" className="ledger-button-secondary">Use the report diagnostic kit</Link>
             </div>
             <p className="mt-4 max-w-xl text-xs leading-5 text-[#665f56]">The sample uses demonstration data. The hosted workspace remains intentionally fail-closed until its production services are configured.</p>
           </div>
@@ -99,7 +99,7 @@ export default function ForMspsPage() {
       <section className="border-y border-[#1d1a16] bg-[#2f5bea] text-[#fffdf8]">
         <div className="ledger-wrap grid gap-9 py-14 lg:grid-cols-[1fr_.8fr] lg:items-end">
           <div><UsersRound className="size-6 text-[#76e3cb]" /><p className="mt-6 font-mono text-[10px] font-bold uppercase tracking-[.16em] text-[#cbd8ff]">Report diagnostic</p><h2 className="mt-4 max-w-3xl font-serif text-4xl leading-none tracking-[-.045em] sm:text-5xl">Bring one report question—not a vague transformation project.</h2><p className="mt-5 max-w-2xl text-base leading-7 text-[#e6ecff]">The practical next step is a report teardown: identify one claim, its source, the intended reader, and the delivery boundary. It produces the evidence needed to decide whether this is a paid problem.</p></div>
-          <div className="lg:justify-self-end"><Link href="/founding-partners" className="inline-flex items-center gap-2 border border-[#fffdf8] bg-[#fffdf8] px-5 py-3 text-xs font-bold uppercase tracking-[.12em] text-[#1d1a16] hover:bg-[#76e3cb]"><ShieldCheck className="size-4" /> Start the diagnostic</Link><p className="mt-4 text-xs leading-5 text-[#cbd8ff]">Do not send credentials, customer exports, PHI/ePHI, or other sensitive production data through the public form.</p></div>
+          <div className="lg:justify-self-end"><Link href="/report-diagnostic-starter-kit" className="inline-flex items-center gap-2 border border-[#fffdf8] bg-[#fffdf8] px-5 py-3 text-xs font-bold uppercase tracking-[.12em] text-[#1d1a16] hover:bg-[#76e3cb]"><ShieldCheck className="size-4" /> Use the starter kit</Link><p className="mt-4 text-xs leading-5 text-[#cbd8ff]">The starter kit is not a place to submit credentials, customer exports, PHI/ePHI, or other sensitive production data.</p></div>
         </div>
       </section>
 
