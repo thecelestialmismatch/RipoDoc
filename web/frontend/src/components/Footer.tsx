@@ -9,6 +9,7 @@ const productLinks = [
   { href: '/about', label: 'About RipoDoc' },
   { href: '/for-msps', label: 'For MSPs: demo & fit' },
   { href: '/report-evidence-readiness', label: 'Evidence-readiness check' },
+  { href: '/report-diagnostic-starter-kit', label: 'Report diagnostic starter kit' },
   { href: '/download', label: 'Download & self-host' },
 ] as const;
 

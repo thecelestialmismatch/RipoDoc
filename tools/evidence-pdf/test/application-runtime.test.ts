@@ -260,9 +260,11 @@ test('discovery and authentication boundaries explicitly separate indexable publ
   assert.match(sitemap, /lastModified/);
   assert.match(sitemap, /2026-08-15/);
   assert.match(sitemap, /\/about/);
+  assert.match(sitemap, /\/report-diagnostic-starter-kit/);
   assert.match(about, /RipoDoc is controlled evidence delivery for MSP client reports/);
   assert.match(about, /AboutPage/);
   assert.match(llms, /About RipoDoc/);
+  assert.match(llms, /Report diagnostic starter kit/);
   assert.match(config, /X-Robots-Tag/);
   assert.match(config, /noindex, nofollow, noarchive, nosnippet/);
   assert.match(config, /'\/dashboard\/:path\*'/);
@@ -277,7 +279,19 @@ test('MSP launch page preserves RipoDoc’s narrow evidence-delivery boundary an
   assert.match(page, /does not claim to do/);
   assert.match(page, /The public demonstration uses sample data/);
   assert.match(page, /not a blanket compliance certification/);
-  assert.match(page, /Request a report diagnostic/);
+  assert.match(page, /Use the report diagnostic kit/);
+  assert.match(page, /\/report-diagnostic-starter-kit/);
+});
+
+test('report diagnostic starter kit provides a no-data five-question conversion resource', async () => {
+  const kit = await readFile(new URL('../../../web/frontend/src/app/report-diagnostic-starter-kit/page.tsx', import.meta.url), 'utf8');
+  const partners = await readFile(new URL('../../../web/frontend/src/app/founding-partners/page.tsx', import.meta.url), 'utf8');
+  const footer = await readFile(new URL('../../../web/frontend/src/components/Footer.tsx', import.meta.url), 'utf8');
+  assert.match(kit, /MSP report diagnostic starter kit/);
+  assert.match(kit, /Name the claim/);
+  assert.match(kit, /Do not paste client names, credentials, report files/);
+  assert.match(partners, /Use the starter kit/);
+  assert.match(footer, /Report diagnostic starter kit/);
 });
 
 test('README uses the exact website mark and only authentic local demo assets', async () => {
