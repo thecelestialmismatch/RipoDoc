@@ -251,3 +251,24 @@ test('README uses the exact website mark and only authentic local demo assets', 
   assert.match(readme, /docs\/assets\/ripodoc-demo-tour\.mp4/);
   assert.match(readme, /sample data/);
 });
+
+
+test('interactive sample keeps evidence vertically composed through tablet widths and renders row cards on mobile', async () => {
+  const sample = await readFile(new URL('../../../web/frontend/src/components/marketing/SampleReport.tsx', import.meta.url), 'utf8');
+  const grid = await readFile(new URL('../../../web/frontend/src/components/evidence/EvidenceGrid.tsx', import.meta.url), 'utf8');
+
+  assert.match(sample, /2xl:grid-cols/);
+  assert.match(sample, /below the report on mobile/);
+  assert.match(grid, /md:hidden/);
+  assert.match(grid, /hidden overflow-x-auto md:block/);
+  assert.match(grid, /break-words/);
+});
+
+test('footer uses an inverse RipoDoc lockup so the full wordmark remains legible on the dark surface', async () => {
+  const footer = await readFile(new URL('../../../web/frontend/src/components/Footer.tsx', import.meta.url), 'utf8');
+  const brandLockup = await readFile(new URL('../../../web/frontend/src/components/BrandLockup.tsx', import.meta.url), 'utf8');
+
+  assert.match(footer, /<BrandLockup showDescriptor inverse \/>/);
+  assert.match(brandLockup, /readonly inverse\?: boolean/);
+  assert.match(brandLockup, /inverse \? 'text-\[#fffdf8\]'/);
+});
