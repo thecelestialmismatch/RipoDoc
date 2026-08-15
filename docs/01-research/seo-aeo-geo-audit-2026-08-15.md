@@ -155,6 +155,28 @@ The following outcomes are intentionally **not** claimed as completed because th
 | Establish real external corroboration. | Only add Wikidata, directories, review profiles, press, customer case studies, or social `sameAs` links after they genuinely exist and are owner-approved. |
 | Decide production AI-provider and data-flow governance before enabling AI Report Studio. | The hosted workspace is fail-closed and an AI model/provider integration remains deliberately disabled until the documented tenant, provider, privacy, security, audit, and human-review release gate passes. [7] [8] |
 
+## Post-release follow-up checkpoint
+
+**Checked:** 2026-08-15, after the merged production release.
+
+| Signal | Verified state | Interpretation |
+| --- | --- | --- |
+| Live public document head | Homepage serves the current title, description, canonical URL, Open Graph title, and two JSON-LD scripts. | The old public-search snippet observed during the exact-name check is not the current live document title; it is likely an index/cache refresh lag and must not be treated as a live metadata defect. |
+| Live crawl assets | Raw `robots.txt` serves both the `*` and `OAI-SearchBot` rules; sitemap serves 16 URLs with timestamps. | The public discovery layer released successfully. A crawler can still choose when or whether to crawl and index. [1] [5] |
+| Public exact-name discovery | A public web search surfaced the RipoDoc homepage for the exact-name/category check, although adjacent results are heavily dominated by the unrelated Cyberpunk `ripperdoc` term. | This is a positive early visibility signal, not proof of Google Search Console coverage, ranking, or knowledge-graph inclusion. The spelling collision remains a material brand-disambiguation constraint. |
+| Category discovery | Searches combining MSP and reporting returned primarily generic MSP/Medicare reporting and broader MSP-reporting competitors rather than RipoDoc. | Category-level visibility is not yet established. The most defensible next lever is third-party corroboration that uses the exact RipoDoc name plus `managed service provider` wording. |
+| Google Search Console owner evidence | **Unverified.** The enabled My Browser session returned an extension timeout (HTTP 504) before the Search Console workspace could load. | No Search Console impression, indexing, sitemap-processing, or URL-inspection state was inferred. Owner-console verification remains required. [4] |
+
+### Prioritized next actions
+
+| Priority | Action | Owner | Reason |
+| --- | --- | --- | --- |
+| 1 | Verify the `www.ripodoc.com` property in Google Search Console, submit the live sitemap, and inspect the homepage and `/about` URLs. | Domain owner | This supplies the only authoritative Google crawl, canonical, and index coverage evidence. [4] |
+| 2 | Keep the title and category phrase stable while search systems refresh; do not repeatedly rewrite live metadata in response to stale snippets. | Product owner | Stable entity language helps systems consolidate the new identity signals. |
+| 3 | Earn two to five authentic, relevant external references that name RipoDoc and use the full `Managed Service Provider` term: an MSP community launch post, an independent self-hosted-software listing, customer/waitlist evidence, a technical integration write-up, or sourced comparison coverage. | Founder / marketing | External corroboration is the missing entity and category evidence. Do not create synthetic reviews, fake directories, purchased links, or unsupported claims. |
+| 4 | Recheck Search Console after crawl activity rather than trying to force a Google Knowledge Panel or AI-answer inclusion. | Owner / marketing | Search and answer engines decide ranking and citation independently; source quality and verifiable corroboration are the sustainable inputs. [2] [6] |
+| 5 | Decide separately whether `GPTBot` should be allowed. The current explicit policy covers `OAI-SearchBot`; OpenAI documents it as distinct from training behavior. | Product owner / counsel | This is a policy and data-governance choice, not a prerequisite for ChatGPT Search eligibility. [5] |
+
 ## References
 
 [1]: https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap "Google Search Central — Build and submit a sitemap"
