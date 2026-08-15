@@ -1,5 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 const AUTH_CSRF_COOKIE = 'ripodoc_csrf';
+const TOKENIZED_EVIDENCE_PREFIX = '/e/';
+const PRIVATE_ROBOTS_POLICY = 'noindex, nofollow, noarchive, nosnippet';
 const edgeCsrfToken = (): string => {
   const bytes = new Uint8Array(24);
   crypto.getRandomValues(bytes);
@@ -30,6 +32,9 @@ export function proxy(request: NextRequest) {
   response.headers.set('X-Frame-Options', 'DENY');
   response.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
   response.headers.set('Cross-Origin-Resource-Policy', 'same-origin');
+  if (request.nextUrl.pathname.startsWith(TOKENIZED_EVIDENCE_PREFIX)) {
+    response.headers.set('X-Robots-Tag', PRIVATE_ROBOTS_POLICY);
+  }
   if (!request.cookies.get(AUTH_CSRF_COOKIE)) {
     response.cookies.set({ name: AUTH_CSRF_COOKIE, value: edgeCsrfToken(), httpOnly: false, sameSite: 'strict', secure: process.env.NODE_ENV === 'production', path: '/', maxAge: 60 * 60 });
   }
