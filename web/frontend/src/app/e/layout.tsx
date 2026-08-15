@@ -4,11 +4,10 @@ export const metadata: Metadata = {
   title: 'Evidence — RipoDoc',
   description: 'The approved source data behind a figure in your report.',
   /**
-   * Evidence pages are recipient-bound and must never be indexed, archived or
-   * surfaced in a search result. `noarchive` matters as much as `noindex`: a
-   * cached copy would outlive revocation.
+   * Tokenized evidence routes inherit the centralized X-Robots-Tag policy in
+   * next.config.ts. The response header is authoritative for redirects and
+   * prevents an App Router metadata header from weakening `nosnippet`.
    */
-  robots: { index: false, follow: false, nocache: true, noarchive: true, nosnippet: true },
 };
 
 /**
