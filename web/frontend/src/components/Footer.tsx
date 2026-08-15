@@ -5,6 +5,7 @@ import { BrandLockup } from '@/components/BrandLockup.tsx';
 const productLinks = [
   { href: '/#sample-report', label: 'Interactive claim sample' },
   { href: '/how-it-works', label: 'How the method works' },
+  { href: '/for-msps', label: 'For MSPs: demo & fit' },
   { href: '/report-evidence-readiness', label: 'Evidence-readiness check' },
   { href: '/download', label: 'Download & self-host' },
 ] as const;

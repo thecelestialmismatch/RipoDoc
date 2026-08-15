@@ -10,6 +10,7 @@ RipoDoc helps Managed Service Providers keep the familiar client PDF while conne
 
 - [Homepage](https://www.ripodoc.com/): Product overview and interactive claim sample using fixture data.
 - [How RipoDoc works](https://www.ripodoc.com/how-it-works): Product method, design limits, and answer-oriented FAQ.
+- [RipoDoc for MSPs](https://www.ripodoc.com/for-msps): A five-minute report-teardown guide, product boundary, and sample-data demo context.
 - [Evidence readiness](https://www.ripodoc.com/report-evidence-readiness): No-data-submitted decision aid for assessing one client-report metric.
 - [Security controls](https://www.ripodoc.com/security): Public, runtime-safe control posture and self-hosted operating boundary.
 - [Self-host RipoDoc](https://www.ripodoc.com/download): Source bundle, deployment outline, production preflight, and operator path.
