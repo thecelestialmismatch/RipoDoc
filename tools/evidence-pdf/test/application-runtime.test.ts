@@ -253,6 +253,7 @@ test('discovery and authentication boundaries explicitly separate indexable publ
   const llms = await readFile(new URL('../../../web/frontend/src/app/llms.txt/route.ts', import.meta.url), 'utf8');
   const config = await readFile(new URL('../../../web/frontend/next.config.ts', import.meta.url), 'utf8');
   const evidenceLayout = await readFile(new URL('../../../web/frontend/src/app/e/layout.tsx', import.meta.url), 'utf8');
+  const proxy = await readFile(new URL('../../../web/frontend/src/proxy.ts', import.meta.url), 'utf8');
   assert.match(robots, /OAI-SearchBot/);
   assert.match(robots, /'\/about'/);
   assert.match(robots, /'\/llms\.txt'/);
@@ -268,6 +269,8 @@ test('discovery and authentication boundaries explicitly separate indexable publ
   assert.match(config, /'\/dashboard\/:path\*'/);
   assert.match(config, /'\/e\/:path\*'/);
   assert.match(evidenceLayout, /nosnippet: true/);
+  assert.match(proxy, /TOKENIZED_EVIDENCE_PREFIX/);
+  assert.match(proxy, /noindex, nofollow, noarchive, nosnippet/);
 });
 
 test('MSP launch page preserves RipoDoc’s narrow evidence-delivery boundary and sample-data warning', async () => {
