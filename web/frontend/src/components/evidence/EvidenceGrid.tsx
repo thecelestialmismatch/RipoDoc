@@ -93,8 +93,8 @@ export function EvidenceGrid({
 
   return (
     <div className="rounded-lg border border-slate-200 bg-white">
-      <div className="flex flex-wrap items-center gap-3 border-b border-slate-200 px-4 py-3">
-        <label className="relative flex-1 min-w-[12rem]">
+      <div className="flex flex-wrap items-center gap-3 border-b border-slate-200 px-3 py-3 sm:px-4">
+        <label className="relative min-w-0 basis-full sm:min-w-[12rem] sm:flex-1">
           <Search
             aria-hidden="true"
             className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
@@ -116,7 +116,7 @@ export function EvidenceGrid({
           <button
             type="button"
             onClick={downloadCsv}
-            className="inline-flex items-center gap-2 rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-100"
+            className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-100 sm:w-auto"
           >
             <Download aria-hidden="true" className="h-4 w-4" />
             Export CSV
@@ -128,7 +128,26 @@ export function EvidenceGrid({
         )}
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="divide-y divide-slate-100 md:hidden">
+        {visible.length === 0 ? (
+          <p className="px-4 py-8 text-center text-sm text-slate-500">No rows match that search.</p>
+        ) : (
+          visible.map((row, index) => (
+            <article key={`${safePage}-${index}`} className="p-3">
+              <dl className="space-y-2">
+                {table.columns.map((column) => (
+                  <div key={column.key} className="grid grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] gap-3 border-b border-slate-100 py-2 last:border-b-0">
+                    <dt className="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-500">{column.label}</dt>
+                    <dd className={`min-w-0 break-words text-sm text-slate-800 ${column.align === 'right' ? 'text-right tabular-nums' : 'text-left'}`}>{formatCell(row[column.key] ?? '')}</dd>
+                  </div>
+                ))}
+              </dl>
+            </article>
+          ))
+        )}
+      </div>
+
+      <div className="hidden overflow-x-auto md:block">
         <table className="w-full border-collapse text-sm">
           <caption className="sr-only">
             {`Evidence rows${query ? ` matching “${query}”` : ''}`}
@@ -205,17 +224,17 @@ export function EvidenceGrid({
         </table>
       </div>
 
-      <div className="flex items-center justify-between border-t border-slate-200 px-4 py-3 text-sm text-slate-600">
+      <div className="flex flex-col items-stretch gap-3 border-t border-slate-200 px-3 py-3 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between sm:px-4">
         <span>
           {sorted.length} {sorted.length === 1 ? 'row' : 'rows'}
           {query ? ` of ${table.rows.length}` : ''}
         </span>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-2 sm:justify-start">
           <button
             type="button"
             onClick={() => setPage((current) => Math.max(0, current - 1))}
             disabled={safePage === 0}
-            className="rounded-md border border-slate-300 px-2.5 py-1 disabled:opacity-40"
+            className="min-h-9 rounded-md border border-slate-300 px-2.5 py-1 disabled:opacity-40"
           >
             Previous
           </button>
@@ -226,7 +245,7 @@ export function EvidenceGrid({
             type="button"
             onClick={() => setPage((current) => Math.min(pageCount - 1, current + 1))}
             disabled={safePage >= pageCount - 1}
-            className="rounded-md border border-slate-300 px-2.5 py-1 disabled:opacity-40"
+            className="min-h-9 rounded-md border border-slate-300 px-2.5 py-1 disabled:opacity-40"
           >
             Next
           </button>
