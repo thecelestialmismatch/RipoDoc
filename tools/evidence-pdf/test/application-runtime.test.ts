@@ -291,8 +291,19 @@ test('MSP launch page keeps explicit responsive ratios and page-level overflow p
   assert.match(page, /lg:grid-cols-\[minmax\(0,1\.12fr\)_minmax\(18rem,\.88fr\)\]/);
   assert.match(page, /lg:grid-cols-3/);
   assert.match(styles, /\.ledger-page \{ min-width: 0; overflow-x: clip; \}/);
-  assert.match(styles, /\.ledger-wrap \{ box-sizing: border-box; margin-inline: auto; max-width: 84rem; padding-inline: 1rem; width: 100%; \}/);
+  assert.match(styles, /\.ledger-wrap \{ box-sizing: border-box; margin-inline: auto; max-width: 84rem; padding-inline: 1\.25rem; width: 100%; \}/);
   assert.match(styles, /@media \(min-width: 1024px\) \{\n  \.ledger-wrap \{ padding-inline: 2rem; \}/);
+});
+
+test('shared application shell and self-host page preserve the sitewide mobile gutter boundary', async () => {
+  const layout = await readFile(new URL('../../../web/frontend/src/app/layout.tsx', import.meta.url), 'utf8');
+  const download = await readFile(new URL('../../../web/frontend/src/app/download/page.tsx', import.meta.url), 'utf8');
+  assert.match(layout, /<main className="min-w-0 flex-1">/);
+  assert.match(download, /ledger-page ledger-field/);
+  assert.match(download, /ledger-wrap grid gap-12/);
+  assert.match(download, /minmax\(0,1fr\)_minmax\(0,\.98fr\)/);
+  assert.match(download, /max-w-full overflow-x-auto/);
+  assert.match(download, /<code className="block min-w-max">/);
 });
 
 test('report diagnostic starter kit provides a no-data five-question conversion resource', async () => {
