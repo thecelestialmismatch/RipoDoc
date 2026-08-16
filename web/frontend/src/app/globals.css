@@ -56,6 +56,22 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Shared public-page geometry. Every route using the Ledger system keeps a readable measure and a deliberate mobile gutter. */
+.ledger-page { min-width: 0; overflow-x: clip; }
+.ledger-wrap { box-sizing: border-box; margin-inline: auto; max-width: 84rem; padding-inline: 1rem; width: 100%; }
+
+@media (min-width: 400px) {
+  .ledger-wrap { padding-inline: 1.25rem; }
+}
+
+@media (min-width: 640px) {
+  .ledger-wrap { padding-inline: 1.5rem; }
+}
+
+@media (min-width: 1024px) {
+  .ledger-wrap { padding-inline: 2rem; }
+}
+
 ::selection { background: #efd66b; color: #1d1a16; }
 :focus-visible { outline: 3px solid #3d55b3; outline-offset: 3px; }
 
@@ -82,7 +98,7 @@ body {
 
 .ledger-display { font-family: Georgia, 'Times New Roman', serif; font-weight: 700; letter-spacing: -0.06em; }
 
-.ledger-kicker { color: #3d55b3; font-family: var(--font-geist-mono), monospace; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; }
+.ledger-kicker { color: #3d55b3; font-family: var(--font-geist-mono), monospace; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.16em; line-height: 1.45; text-transform: uppercase; }
 .ledger-kicker::before { background: #d9503b; content: ''; display: inline-block; height: 9px; margin-right: 9px; transform: rotate(45deg); width: 9px; }
 .ledger-rule { border-color: var(--border); }
 

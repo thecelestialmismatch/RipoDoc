@@ -283,6 +283,18 @@ test('MSP launch page preserves RipoDoc’s narrow evidence-delivery boundary an
   assert.match(page, /\/report-diagnostic-starter-kit/);
 });
 
+test('MSP launch page keeps explicit responsive ratios and page-level overflow protection', async () => {
+  const page = await readFile(new URL('../../../web/frontend/src/app/for-msps/page.tsx', import.meta.url), 'utf8');
+  const styles = await readFile(new URL('../../../web/frontend/src/app/globals.css', import.meta.url), 'utf8');
+  assert.match(page, /lg:grid-cols-\[minmax\(0,1\.08fr\)_minmax\(22rem,\.92fr\)\]/);
+  assert.match(page, /lg:grid-cols-\[minmax\(0,\.72fr\)_minmax\(0,1\.28fr\)\]/);
+  assert.match(page, /lg:grid-cols-\[minmax\(0,1\.12fr\)_minmax\(18rem,\.88fr\)\]/);
+  assert.match(page, /lg:grid-cols-3/);
+  assert.match(styles, /\.ledger-page \{ min-width: 0; overflow-x: clip; \}/);
+  assert.match(styles, /\.ledger-wrap \{ box-sizing: border-box; margin-inline: auto; max-width: 84rem; padding-inline: 1rem; width: 100%; \}/);
+  assert.match(styles, /@media \(min-width: 1024px\) \{\n  \.ledger-wrap \{ padding-inline: 2rem; \}/);
+});
+
 test('report diagnostic starter kit provides a no-data five-question conversion resource', async () => {
   const kit = await readFile(new URL('../../../web/frontend/src/app/report-diagnostic-starter-kit/page.tsx', import.meta.url), 'utf8');
   const partners = await readFile(new URL('../../../web/frontend/src/app/founding-partners/page.tsx', import.meta.url), 'utf8');
