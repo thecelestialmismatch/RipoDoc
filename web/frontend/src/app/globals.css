@@ -58,11 +58,7 @@ body {
 
 /* Shared public-page geometry. Every route using the Ledger system keeps a readable measure and a deliberate mobile gutter. */
 .ledger-page { min-width: 0; overflow-x: clip; }
-.ledger-wrap { box-sizing: border-box; margin-inline: auto; max-width: 84rem; padding-inline: 1rem; width: 100%; }
-
-@media (min-width: 400px) {
-  .ledger-wrap { padding-inline: 1.25rem; }
-}
+.ledger-wrap { box-sizing: border-box; margin-inline: auto; max-width: 84rem; padding-inline: 1.25rem; width: 100%; }
 
 @media (min-width: 640px) {
   .ledger-wrap { padding-inline: 1.5rem; }
