@@ -1,0 +1,52 @@
+===== / =====
+HTTP/2 200
+content-type: text/html; charset=utf-8
+  <title>RipoDoc — controlled evidence delivery for MSP client reports</title>
+  <meta name="robots" content="index, follow"/>
+  <link rel="canonical" href="https://www.ripodoc.com"/>
+  <script type="application/ld+json"
+===== /about =====
+HTTP/2 200
+content-type: text/html; charset=utf-8
+  <title>About RipoDoc | RipoDoc</title>
+  <meta name="robots" content="index, follow"/>
+  <link rel="canonical" href="https://www.ripodoc.com/about"/>
+  <script type="application/ld+json"
+  <script type="application/ld+json"
+===== /for-msps =====
+HTTP/2 200
+content-type: text/html; charset=utf-8
+  <title>For MSPs | Keep QBRs strategic. Keep proof within reach. | RipoDoc</title>
+  <meta name="robots" content="index, follow"/>
+  <link rel="canonical" href="https://www.ripodoc.com/for-msps"/>
+  <script type="application/ld+json"
+  <script type="application/ld+json"
+===== /how-it-works =====
+HTTP/2 200
+content-type: text/html; charset=utf-8
+  <title>How RipoDoc works: controlled evidence delivery for MSP reports | RipoDoc</title>
+  <meta name="robots" content="index, follow"/>
+  <link rel="canonical" href="https://www.ripodoc.com/how-it-works"/>
+  <script type="application/ld+json"
+  <script type="application/ld+json"
+===== /report-diagnostic-starter-kit =====
+HTTP/2 200
+content-type: text/html; charset=utf-8
+  <title>MSP report diagnostic starter kit | RipoDoc</title>
+  <meta name="robots" content="index, follow"/>
+  <link rel="canonical" href="https://www.ripodoc.com/report-diagnostic-starter-kit"/>
+  <script type="application/ld+json"
+===== /download =====
+HTTP/2 200
+content-type: text/html; charset=utf-8
+  <title>Download &amp; self-host RipoDoc | RipoDoc</title>
+  <meta name="robots" content="index, follow"/>
+  <link rel="canonical" href="https://www.ripodoc.com/download"/>
+  <script type="application/ld+json"
+===== /security =====
+HTTP/2 200
+content-type: text/html; charset=utf-8
+  <title>RipoDoc security controls and operating boundary | RipoDoc</title>
+  <meta name="robots" content="index, follow"/>
+  <link rel="canonical" href="https://www.ripodoc.com/security"/>
+  <script type="application/ld+json"

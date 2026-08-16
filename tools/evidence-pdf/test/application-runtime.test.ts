@@ -253,14 +253,22 @@ test('discovery and authentication boundaries explicitly separate indexable publ
   const llms = await readFile(new URL('../../../web/frontend/src/app/llms.txt/route.ts', import.meta.url), 'utf8');
   const config = await readFile(new URL('../../../web/frontend/next.config.ts', import.meta.url), 'utf8');
   const proxy = await readFile(new URL('../../../web/frontend/src/proxy.ts', import.meta.url), 'utf8');
+  const indexNowWorkflow = await readFile(new URL('../../../.github/workflows/indexnow-production.yml', import.meta.url), 'utf8');
+  const indexNowKey = await readFile(new URL('../../../web/frontend/public/f0cf1c91d611e53368f14a952ee0551092ce9922f9866ded9fea39f468a97e92.txt', import.meta.url), 'utf8');
+  const footer = await readFile(new URL('../../../web/frontend/src/components/Footer.tsx', import.meta.url), 'utf8');
+  const guide = await readFile(new URL('../../../web/frontend/src/app/guides/msp-client-reporting-qbr-metric-evidence/page.tsx', import.meta.url), 'utf8');
   assert.match(robots, /OAI-SearchBot/);
   assert.match(robots, /'\/about'/);
   assert.match(robots, /'\/llms\.txt'/);
+  assert.match(robots, /'\/report-diagnostic-starter-kit'/);
+  assert.match(robots, /'\/legal\/healthcare-mode-b'/);
+  assert.match(robots, /'\/guides\/msp-client-reporting-qbr-metric-evidence'/);
   assert.match(robots, /'\/dashboard'/);
   assert.match(sitemap, /lastModified/);
-  assert.match(sitemap, /2026-08-15/);
+  assert.match(sitemap, /2026-08-16/);
   assert.match(sitemap, /\/about/);
   assert.match(sitemap, /\/report-diagnostic-starter-kit/);
+  assert.match(sitemap, /\/guides\/msp-client-reporting-qbr-metric-evidence/);
   assert.match(about, /RipoDoc is controlled evidence delivery for MSP client reports/);
   assert.match(about, /AboutPage/);
   assert.match(llms, /About RipoDoc/);
@@ -271,6 +279,15 @@ test('discovery and authentication boundaries explicitly separate indexable publ
   assert.match(config, /'\/e\/:path\*'/);
   assert.match(proxy, /TOKENIZED_EVIDENCE_PREFIX/);
   assert.match(proxy, /noindex, nofollow, noarchive, nosnippet/);
+  assert.match(indexNowWorkflow, /deployment_status/);
+  assert.match(indexNowWorkflow, /environment == 'Production'/);
+  assert.match(indexNowWorkflow, /tools\/discovery\/submit-indexnow\.mjs/);
+  assert.equal(indexNowKey.trim(), 'f0cf1c91d611e53368f14a952ee0551092ce9922f9866ded9fea39f468a97e92');
+  assert.match(footer, /QBR metric evidence guide/);
+  assert.match(guide, /MSP client reporting: when a QBR metric needs evidence/);
+  assert.match(guide, /FAQPage/);
+  assert.match(guide, /fixture data, not a customer deployment/i);
+  assert.match(guide, /not a replacement for a PSA, RMM, BI platform, general client portal/i);
 });
 
 test('MSP launch page preserves RipoDoc’s narrow evidence-delivery boundary and sample-data warning', async () => {
