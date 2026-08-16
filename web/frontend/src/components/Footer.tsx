@@ -10,6 +10,7 @@ const productLinks = [
   { href: '/for-msps', label: 'For MSPs: demo & fit' },
   { href: '/report-evidence-readiness', label: 'Evidence-readiness check' },
   { href: '/report-diagnostic-starter-kit', label: 'Report diagnostic starter kit' },
+  { href: '/guides/msp-client-reporting-qbr-metric-evidence', label: 'QBR metric evidence guide' },
   { href: '/download', label: 'Download & self-host' },
 ] as const;
 
