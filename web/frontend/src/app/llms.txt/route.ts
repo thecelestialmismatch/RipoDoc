@@ -14,6 +14,7 @@ RipoDoc helps Managed Service Providers keep the familiar client PDF while conne
 - [RipoDoc for MSPs](https://www.ripodoc.com/for-msps): A five-minute report-teardown guide, product boundary, and sample-data demo context.
 - [Evidence readiness](https://www.ripodoc.com/report-evidence-readiness): No-data-submitted decision aid for assessing one client-report metric.
 - [Report diagnostic starter kit](https://www.ripodoc.com/report-diagnostic-starter-kit): A no-data five-question worksheet for deciding whether a selected client-report claim needs a controlled evidence path.
+- [MSP QBR metric evidence guide](https://www.ripodoc.com/guides/msp-client-reporting-qbr-metric-evidence): A practical, fixture-safe guide to keeping a QBR concise while making a material report claim answerable with reviewed, bounded evidence.
 - [Security controls](https://www.ripodoc.com/security): Public, runtime-safe control posture and self-hosted operating boundary.
 - [Self-host RipoDoc](https://www.ripodoc.com/download): Source bundle, deployment outline, production preflight, and operator path.
 - [Legal status](https://www.ripodoc.com/legal): Published legal-status information and explicit remaining approval decisions.
