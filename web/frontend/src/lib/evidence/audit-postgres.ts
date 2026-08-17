@@ -1,6 +1,7 @@
-import { transaction } from '../auth/database.ts';
+import { query, transaction } from '../auth/database.ts';
 import { GENESIS, chainRecord } from './audit-log.ts';
 import type { AccessEvent, AuditSink } from './audit.ts';
+import type { ReportAuditSummary } from './operations.ts';
 
 const CHAIN_KEY = 'evidence-access-v1';
 
@@ -70,3 +71,52 @@ export const createPostgresAuditSink = (): AuditSink => ({
 
 export const postgresAuditConfigured = (): boolean =>
   process.env.RIPODOC_AUDIT_BACKEND?.toLowerCase() === 'postgres';
+
+interface AuditSummaryRow {
+  readonly report_id: string;
+  readonly granted: string;
+  readonly denied: string;
+  readonly last_granted_at: string | null;
+  readonly last_event_at: string | null;
+}
+
+/**
+ * Summarise only report ids that have already been tenant-authorised by the
+ * workspace layer. The audit table deliberately stores recipient hashes only;
+ * this query never returns raw email addresses, tokens, evidence rows, or
+ * client-report content.
+ */
+export const loadPostgresAuditSummaries = async (
+  reportIds: readonly string[],
+): Promise<ReadonlyMap<string, ReportAuditSummary>> => {
+  const empty = new Map<string, ReportAuditSummary>();
+  if (!postgresAuditConfigured() || reportIds.length === 0) return empty;
+
+  try {
+    const rows = await query<AuditSummaryRow>(
+      `SELECT report_id,
+              COUNT(*) FILTER (WHERE outcome = 'granted')::text AS granted,
+              COUNT(*) FILTER (WHERE outcome = 'denied')::text AS denied,
+              MAX(at) FILTER (WHERE outcome = 'granted') AS last_granted_at,
+              MAX(at) AS last_event_at
+       FROM evidence_access_audit_records
+       WHERE report_id = ANY($1::text[])
+       GROUP BY report_id`,
+      [reportIds],
+    );
+    for (const row of rows) {
+      empty.set(row.report_id, {
+        status: 'durable',
+        granted: Number(row.granted),
+        denied: Number(row.denied),
+        ...(row.last_granted_at ? { lastGrantedAt: row.last_granted_at } : {}),
+        ...(row.last_event_at ? { lastEventAt: row.last_event_at } : {}),
+      });
+    }
+  } catch {
+    // Dashboard analytics are supplemental. A read issue must not weaken the
+    // evidence-delivery path or expose database internals to the operator.
+    return new Map<string, ReportAuditSummary>();
+  }
+  return empty;
+};

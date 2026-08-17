@@ -265,7 +265,7 @@ test('discovery and authentication boundaries explicitly separate indexable publ
   assert.match(robots, /'\/guides\/msp-client-reporting-qbr-metric-evidence'/);
   assert.match(robots, /'\/dashboard'/);
   assert.match(sitemap, /lastModified/);
-  assert.match(sitemap, /2026-08-16/);
+  assert.match(sitemap, /const lastSignificantUpdate = new Date\(\)/);
   assert.match(sitemap, /\/about/);
   assert.match(sitemap, /\/report-diagnostic-starter-kit/);
   assert.match(sitemap, /\/guides\/msp-client-reporting-qbr-metric-evidence/);
