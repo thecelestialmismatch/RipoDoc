@@ -8,15 +8,18 @@ interface BrandLockupProps {
 }
 
 export function BrandLockup({ compact = false, showDescriptor = false, inverse = false, className = '' }: BrandLockupProps) {
-  const iconSize = compact ? 34 : 42;
+  const iconSize = compact ? 36 : 44;
+  const wordTone = inverse ? 'text-[#fffdf8]' : 'text-[#141111]';
+  const mottoTone = inverse ? 'text-[#ff9b88]' : 'text-[#b52e20]';
 
   return <span className={`inline-flex items-center gap-2.5 ${className}`}>
-    <span className="relative flex shrink-0 items-center justify-center overflow-hidden border border-[#1d1a16] bg-[#fffdf8] shadow-[2px_2px_0_#1d1a16]">
-      <Image src="/ripodoc-mark.png" alt="" width={iconSize} height={iconSize} className="h-full w-full object-contain p-0.5" priority />
+    <span className={`relative flex shrink-0 items-center justify-center overflow-hidden ${inverse ? 'bg-[#e8442e]' : 'bg-[#e8442e]'}`}>
+      <Image src="/proof-theatre-mark.png" alt="" width={iconSize} height={iconSize} className="h-full w-full object-contain" priority />
     </span>
     <span className="min-w-0 leading-none">
-      <span className={`block whitespace-nowrap font-serif text-[1.25rem] font-bold tracking-[-0.08em] ${inverse ? 'text-[#fffdf8]' : 'text-[#1d1a16]'}`}>Ripo<span className="font-medium text-[#d9503b]">Doc</span></span>
-      {showDescriptor && <span className={`mt-1 block whitespace-nowrap font-mono text-[0.55rem] font-bold uppercase tracking-[0.13em] ${inverse ? 'text-[#cec8bc]' : 'text-[#5f594f]'}`}>Controlled report evidence</span>}
+      <span className={`block whitespace-nowrap text-[1.3rem] font-extrabold tracking-[-0.08em] ${wordTone}`}>RipoDoc</span>
+      <span className={`mt-1 block whitespace-nowrap font-mono text-[0.52rem] font-bold uppercase tracking-[0.15em] ${mottoTone}`}>From report to reality.</span>
+      {showDescriptor && <span className={`mt-2 block max-w-48 text-[0.68rem] leading-4 ${inverse ? 'text-[#f8f0df]/70' : 'text-[#655c55]'}`}>Controlled evidence delivery for client-report moments.</span>}
     </span>
   </span>;
 }
