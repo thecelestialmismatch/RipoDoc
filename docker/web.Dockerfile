@@ -5,8 +5,10 @@ COPY web/frontend/package.json web/frontend/package-lock.json ./web/frontend/
 RUN npm ci --prefix web/frontend --ignore-scripts
 
 FROM dependencies AS build
+ARG NEXT_PUBLIC_RIPODOC_WEB_VITALS_ENABLED=false
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV NEXT_PUBLIC_RIPODOC_WEB_VITALS_ENABLED=${NEXT_PUBLIC_RIPODOC_WEB_VITALS_ENABLED}
 RUN npm --prefix web/frontend run build \
   && npm --prefix web/frontend prune --omit=dev
 

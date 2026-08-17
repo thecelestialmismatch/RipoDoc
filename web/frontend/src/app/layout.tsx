@@ -4,6 +4,7 @@ import './globals.css';
 import { Navbar } from '@/components/Navbar.tsx';
 import { Footer } from '@/components/Footer.tsx';
 import { CookieNotice } from '@/components/CookieNotice.tsx';
+import { WebVitalsReporter } from '@/components/telemetry/WebVitalsReporter.tsx';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] });
@@ -86,6 +87,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <main className="min-w-0 flex-1">{children}</main>
       <Footer />
       <CookieNotice />
+      <WebVitalsReporter />
     </body>
   </html>;
 }
