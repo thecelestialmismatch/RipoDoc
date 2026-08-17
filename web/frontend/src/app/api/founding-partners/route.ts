@@ -4,6 +4,7 @@ import { verifyCaptcha } from '@/lib/auth/captcha.ts';
 import { assertSameOriginAndCsrf, clientIp } from '@/lib/auth/server.ts';
 import { leadIntakeConfigured } from '@/lib/founder/lead-crypto.ts';
 import { submitFoundingPartnerLead } from '@/lib/founder/leads.ts';
+import { syncConsentedLeadToEspoCrm } from '@/lib/founder/espocrm.ts';
 import { healthcareModeBEnabled } from '@/lib/launch/healthcare-webhooks.ts';
 
 export const runtime = 'nodejs';
@@ -26,7 +27,7 @@ export async function POST(request: Request): Promise<Response> {
   if (!(await verifyCaptcha(form.get('captcha'), ip))) return destination(request, 'received');
 
   try {
-    await submitFoundingPartnerLead({
+    const consentedLead = await submitFoundingPartnerLead({
       contactName: String(form.get('contactName') ?? ''),
       companyName: String(form.get('companyName') ?? ''),
       email: String(form.get('email') ?? ''),
@@ -34,8 +35,10 @@ export async function POST(request: Request): Promise<Response> {
       reportingToolBand: String(form.get('reportingToolBand') ?? ''),
       interestMode: String(form.get('interestMode') ?? ''),
       source: String(form.get('source') ?? 'website'),
+      crmSyncConsent: form.get('crmSyncConsent') === 'yes',
       ip,
     });
+    if (consentedLead) await syncConsentedLeadToEspoCrm(consentedLead);
   } catch {
     return destination(request, 'unavailable');
   }
