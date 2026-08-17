@@ -44,6 +44,9 @@ RIPODOC_EMAIL_FROM=RipoDoc <reports@example-msp.com>
 RIPODOC_TURNSTILE_SECRET=<turnstile-secret>
 NEXT_PUBLIC_RIPODOC_TURNSTILE_SITE_KEY=<turnstile-site-key>
 RIPODOC_PORT=3000
+# Optional anonymous field-performance logging. Disabled unless both values are true.
+RIPODOC_WEB_VITALS_LOG=false
+NEXT_PUBLIC_RIPODOC_WEB_VITALS_ENABLED=false
 RIPODOC_WORKER_MAX_CONCURRENT_JOBS=2
 ```
 
@@ -85,6 +88,12 @@ Monitor service health, restart count, database space, worker volume space, work
 | Audit verification failure | Integrity chain discontinuity or storage issue | Preserve storage snapshot, stop claiming verified audit integrity, investigate before cleanup. |
 
 The public `/api/health` endpoint is a deployment probe, not a diagnostics console. It must never be extended to reveal customer data, worker URLs, worker credentials, session state, recipient records, audit events, secret presence by name, or stack traces.
+
+### Optional anonymous Web Vitals measurement
+
+The application can emit first-party field measurements for `CLS`, `FCP`, `INP`, `LCP`, and `TTFB` only when **both** `NEXT_PUBLIC_RIPODOC_WEB_VITALS_ENABLED=true` and `RIPODOC_WEB_VITALS_LOG=true` are set. The public flag is a **build argument** in `docker-compose.selfhost.yml`, so rebuild the web image after changing it: `docker compose -f docker-compose.selfhost.yml up --build -d`.
+
+The endpoint accepts a small, validated JSON payload and writes only metric name, numeric value, rating, navigation type, and timestamp to application logs. It intentionally does **not** log visitor identifiers, recipient identity, report identifiers, URLs, tokens, source rows, evidence content, or raw user-agent strings. The feature is disabled by default. Operators are responsible for deciding whether this narrow operational telemetry is compatible with their privacy notice, analytics governance, and log-retention policy.
 
 ## 3. Backup and restore rehearsal
 

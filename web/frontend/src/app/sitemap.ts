@@ -2,8 +2,9 @@ import type { MetadataRoute } from 'next';
 import { legalDocuments } from '@/lib/launch/legal.ts';
 
 const baseUrl = 'https://www.ripodoc.com';
-// Update this value only when a material content, metadata, or internal-link revision ships.
-const lastSignificantUpdate = new Date('2026-08-16T00:00:00.000Z');
+// Evaluated at build time for the static sitemap. A production release therefore
+// refreshes `lastmod` instead of retaining a stale manually maintained date.
+const lastSignificantUpdate = new Date();
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const publicPages: MetadataRoute.Sitemap = [
