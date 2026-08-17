@@ -1,124 +1,53 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight, Check, FileSearch, LockKeyhole, Presentation, ScanSearch, ShieldCheck, UsersRound } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Check, FileSearch, LockKeyhole, Presentation, ScanSearch, ShieldCheck, UsersRound } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'For MSPs | Keep QBRs strategic. Keep proof within reach.',
-  description: 'See how RipoDoc helps MSPs pair a concise client report with controlled, reviewable evidence for selected claims—without replacing PSA, RMM, BI, or portal systems.',
+  title: 'For MSPs | Make a challenged QBR claim answerable',
+  description: 'RipoDoc helps MSPs pair a concise client report with controlled, reviewable evidence for selected claims—without replacing PSA, RMM, BI, or portal systems.',
   alternates: { canonical: '/for-msps' },
-  openGraph: { url: '/for-msps', title: 'RipoDoc for MSPs | Controlled evidence delivery', description: 'A focused evidence-delivery layer for the report your MSP already sends.' },
-  twitter: { card: 'summary_large_image', title: 'RipoDoc for MSPs | Controlled evidence delivery', description: 'Keep QBRs strategic. Keep proof within reach.' },
+  openGraph: { url: '/for-msps', title: 'RipoDoc for MSPs | Controlled evidence delivery', description: 'A focused evidence-delivery layer for the client report your MSP already sends.' },
+  twitter: { card: 'summary_large_image', title: 'RipoDoc for MSPs | Controlled evidence delivery', description: 'Make a challenged QBR claim answerable.' },
 };
 
 const faq = [
-  { q: 'Does RipoDoc replace our PSA, RMM, BI tool, or client portal?', a: 'No. RipoDoc is designed as a controlled evidence-delivery layer for a selected report claim. It does not represent itself as a replacement for the systems that produce operational data.' },
-  { q: 'What happens when a client asks to see the data behind a report claim?', a: 'The intended workflow is to open a bounded evidence view for the selected approved claim, rather than sending an unrestricted operational export. What is available depends on the configured workspace and the published evidence boundary.' },
-  { q: 'Is the public demo real client data?', a: 'No. The public demonstration uses sample data. Do not submit customer data, credentials, PHI/ePHI, or other sensitive production information through the public demo.' },
-  { q: 'Can RipoDoc be used as a compliance certification?', a: 'No. RipoDoc is not a blanket compliance certification. Customers remain responsible for their reporting content, source systems, approvals, access rules, and regulatory obligations.' },
+  { q: 'Does RipoDoc replace our PSA, RMM, BI tool, or client portal?', a: 'No. RipoDoc is a controlled evidence-delivery layer for a selected report claim. It is not a replacement for the systems that produce operational data.' },
+  { q: 'What happens when a client asks to see the data behind a report claim?', a: 'The intended workflow opens a bounded evidence view for the selected approved claim rather than sending an unrestricted operational export. Availability depends on the configured workspace and published evidence boundary.' },
+  { q: 'Is the public sample real client data?', a: 'No. The public sample uses fixture data. Do not submit customer data, credentials, PHI/ePHI, or other sensitive production information through public pages.' },
+  { q: 'Can RipoDoc certify our compliance or reporting?', a: 'No. RipoDoc is not a blanket compliance certification. Customers remain responsible for report content, source systems, approvals, access rules, and regulatory obligations.' },
 ];
 
-const structuredData = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
-};
+const structuredData = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) };
 
 const steps = [
-  ['Start with the report', 'Keep the executive narrative concise: one result, one recommendation, one decision.'],
-  ['Select a claim', 'Choose the statement likely to trigger a reasonable “show me the source” question.'],
-  ['Bound the support', 'Use only the supporting rows and provenance relevant to that statement—not a broad raw export.'],
-  ['Review before publishing', 'Keep a human approval boundary before any evidence experience is delivered.'],
-  ['Deliver with controls', 'Use the configured evidence-access boundary and retain the delivery outcome that the product records.'],
-];
+  ['Open the report claim', 'Begin with a statement a client can reasonably question.'],
+  ['Name the reader question', 'Be specific about what the recipient needs to verify.'],
+  ['Bound the supporting evidence', 'Use only the source rows and provenance relevant to that statement.'],
+  ['Review the delivery decision', 'Keep a human approval boundary before evidence is published.'],
+  ['Record the outcome', 'Use the configured delivery controls and keep the product record current.'],
+] as const;
 
 export default function ForMspsPage() {
   return (
-    <div className="ledger-page">
+    <div className="signal-page">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
-
-      <section className="ledger-hero border-b border-[#1d1a16]">
-        <div className="ledger-wrap grid gap-8 py-12 sm:gap-10 sm:py-14 lg:grid-cols-[minmax(0,1.08fr)_minmax(22rem,.92fr)] lg:items-center lg:gap-10 lg:py-20 xl:gap-14">
-          <div className="min-w-0">
-            <p className="ledger-kicker leading-5 tracking-[.13em] sm:tracking-[.16em]"><span /> The RipoDoc method · MSP client reporting</p>
-            <h1 className="mt-5 max-w-[11ch] font-serif text-[clamp(2.75rem,9.5vw,4.25rem)] leading-[.94] tracking-[-.055em] text-[#1d1a16] sm:max-w-4xl sm:text-6xl lg:text-7xl">
-              Keep the QBR strategic.<br />
-              <em className="font-serif text-[#2f5bea]">Keep proof within reach.</em>
-            </h1>
-            <p className="mt-6 max-w-2xl text-base leading-7 text-[#4b463e] sm:mt-7 sm:text-lg sm:leading-8">RipoDoc is a controlled evidence-delivery layer for the report your MSP already sends. Let the client conversation stay concise—then make an approved claim answerable when someone asks to inspect it.</p>
-            <div className="mt-8 flex flex-wrap gap-3 sm:mt-9">
-              <Link href="/#sample-report" className="ledger-button">Open the sample report <ArrowRight className="size-4 shrink-0" /></Link>
-              <Link href="/report-diagnostic-starter-kit" className="ledger-button-secondary">Use the report diagnostic kit</Link>
-            </div>
-            <p className="mt-4 max-w-xl text-xs leading-5 text-[#665f56]">The sample uses demonstration data. The hosted workspace remains intentionally fail-closed until its production services are configured.</p>
-          </div>
-
-          <aside className="min-w-0 border border-[#1d1a16] bg-[#1d1a16] p-5 text-[#f6f0e5] shadow-[6px_6px_0_#2f5bea] sm:p-6 lg:shadow-[10px_10px_0_#2f5bea]">
-            <div className="flex items-start justify-between gap-4 border-b border-[#f6f0e5]/25 pb-3">
-              <span className="font-mono text-[10px] font-bold uppercase leading-4 tracking-[.16em] text-[#76e3cb]">Five-minute report teardown</span>
-              <Presentation className="mt-0.5 size-4 shrink-0 text-[#76e3cb]" />
-            </div>
-            <ol className="mt-3 divide-y divide-[#f6f0e5]/15">
-              {['Open an executive-facing claim.', 'Ask what the client needs to verify.', 'Reveal bounded supporting evidence.', 'Show the human approval boundary.', 'Agree the next report action.'].map((item, index) => (
-                <li key={item} className="flex gap-3 py-3 text-sm leading-6">
-                  <span className="font-mono text-xs text-[#76e3cb]">0{index + 1}</span>
-                  <span className="min-w-0">{item}</span>
-                </li>
-              ))}
-            </ol>
-            <p className="mt-4 border-t border-[#f6f0e5]/25 pt-4 text-xs leading-5 text-[#cec8bc]">No generic AI trick. No raw spreadsheet dump. No promise that software replaces accountable review.</p>
-          </aside>
+      <section className="relative overflow-hidden border-b border-[var(--rd-line)] bg-[var(--rd-canvas)]">
+        <div className="absolute right-0 top-0 hidden h-full w-[46%] bg-[var(--rd-surface-ink)] lg:block" aria-hidden="true" />
+        <div className="signal-wrap relative grid gap-10 py-16 lg:grid-cols-[minmax(0,1.08fr)_minmax(22rem,.92fr)] lg:items-center lg:py-24">
+          <div className="max-w-3xl"><p className="signal-label">For MSP client reporting</p><h1 className="signal-display mt-6 text-[clamp(3.25rem,6vw,6.2rem)] text-[var(--rd-ink)]">Keep the QBR strategic. <span className="text-[var(--rd-signal)]">Make proof reachable.</span></h1><p className="signal-copy mt-7">RipoDoc is a controlled evidence-delivery layer for the report your MSP already sends. It gives an approved client-facing claim a narrow way to answer the question behind it.</p><div className="mt-9 flex flex-col gap-3 sm:flex-row"><Link href="/founding-partners" className="signal-button !w-auto">Qualify a report diagnostic <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Link><Link href="/report-diagnostic-starter-kit" className="signal-button-secondary !w-auto">Use the report diagnostic kit <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link></div><p className="mt-5 max-w-xl text-xs leading-5 text-[var(--rd-ink-faint)]">The public demonstration uses sample data. The hosted workspace remains intentionally fail-closed until its production services are configured. Public resources do not accept customer report data.</p></div>
+          <aside className="relative rounded-2xl border border-white/15 bg-[var(--rd-surface-ink)] p-5 text-[var(--rd-on-ink)] shadow-[0_24px_54px_rgb(16_24_39_/_0.24)] sm:p-7"><div className="flex items-start justify-between gap-5 border-b border-white/14 pb-4"><div><p className="font-mono text-[.65rem] font-bold uppercase tracking-[.12em] text-[#9bb3ff]">Five-minute report teardown</p><p className="mt-2 text-lg font-semibold">Start with the last number a client challenged.</p></div><Presentation className="h-5 w-5 shrink-0 text-[#9bb3ff]" aria-hidden="true" /></div><ol className="mt-3 divide-y divide-white/10">{steps.map(([title, detail], index) => <li key={title} className="grid grid-cols-[2rem_1fr] gap-3 py-4"><span className="font-mono text-xs text-[#9bb3ff]">0{index + 1}</span><div><p className="text-sm font-semibold text-white">{title}</p><p className="mt-1 text-sm leading-6 text-[var(--rd-on-ink-soft)]">{detail}</p></div></li>)}</ol><p className="mt-4 border-t border-white/14 pt-4 text-xs leading-5 text-white/58">No generic AI trick. No raw spreadsheet dump. No claim that software replaces accountable review.</p></aside>
         </div>
       </section>
 
-      <section className="ledger-wrap py-14 sm:py-16 lg:py-20">
-        <div className="max-w-3xl">
-          <p className="ledger-kicker"><span /> A narrow job worth testing</p>
-          <h2 className="mt-4 font-serif text-4xl leading-none tracking-[-.045em] text-[#1d1a16] sm:text-5xl">The report is the conversation. Evidence is the answer.</h2>
-          <p className="mt-5 text-lg leading-8 text-[#4b463e]">Most reporting products help gather, chart, automate, or portalize information. RipoDoc’s hypothesis is narrower: an MSP should be able to deliver the proof behind one selected claim to the right reader without making every operational row broadly available.</p>
-        </div>
-        <div className="mt-10 grid gap-px border border-[#1d1a16] bg-[#1d1a16] lg:grid-cols-3">
-          {[
-            [FileSearch, 'A familiar client artifact', 'Keep the PDF or report narrative in front of the client.'],
-            [ScanSearch, 'A bounded proof path', 'Expose relevant support for a selected, approved claim.'],
-            [LockKeyhole, 'A deliberate delivery boundary', 'Use the configured access, expiry, and revocation controls rather than forwarding broad exports.'],
-          ].map(([Icon, title, body]) => {
-            const ItemIcon = Icon as typeof FileSearch;
-            return <article key={title as string} className="min-w-0 bg-[#fffdf8] p-6 sm:p-7"><ItemIcon className="size-5 text-[#2f5bea]" /><h3 className="mt-6 font-serif text-2xl tracking-[-.03em]">{title as string}</h3><p className="mt-3 text-sm leading-6 text-[#665f56]">{body as string}</p></article>;
-          })}
-        </div>
-      </section>
+      <section className="bg-white py-20 sm:py-28"><div className="signal-wrap grid gap-12 lg:grid-cols-[.75fr_1.25fr] lg:items-end"><div><p className="signal-label">The narrow job</p><h2 className="signal-section-title mt-5 text-5xl sm:text-6xl">The report is the conversation. Evidence is the answer.</h2></div><p className="signal-copy">Most reporting products gather, chart, automate, or portalize information. RipoDoc’s test is narrower: can an MSP deliver proof for one selected claim to the right reader without broadly forwarding every operational row?</p></div><div className="signal-wrap mt-12 grid gap-4 lg:grid-cols-3">{[[FileSearch, 'A familiar client artifact', 'Keep the PDF or report narrative in front of the client.'], [ScanSearch, 'A bounded proof path', 'Expose relevant support for one selected, approved claim.'], [LockKeyhole, 'A deliberate delivery boundary', 'Use configured access, expiry, and revocation controls instead of broad forwarding.']].map(([Icon, title, detail]) => { const ItemIcon = Icon as typeof FileSearch; return <article key={title as string} className="signal-card min-h-60 p-7"><ItemIcon className="h-5 w-5 text-[var(--rd-signal)]" aria-hidden="true" /><h3 className="mt-10 text-xl font-semibold tracking-[-.035em] text-[var(--rd-ink)]">{title as string}</h3><p className="mt-3 text-sm leading-6 text-[var(--rd-ink-soft)]">{detail as string}</p></article>; })}</div></section>
 
-      <section className="border-y border-[#1d1a16] bg-[#eee6d7]">
-        <div className="ledger-wrap py-14 sm:py-16 lg:py-20">
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,.72fr)_minmax(0,1.28fr)] lg:gap-12">
-            <div className="min-w-0"><p className="ledger-kicker"><span /> From claim to proof</p><h2 className="mt-4 font-serif text-4xl leading-none tracking-[-.045em] text-[#1d1a16]">The operating sequence</h2><p className="mt-5 text-base leading-7 text-[#4b463e]">Every step is intentionally explicit. RipoDoc does not turn unreviewed extraction or AI output into authority.</p></div>
-            <ol className="border-t border-[#1d1a16]">
-              {steps.map(([title, body], index) => <li key={title} className="grid gap-2 border-b border-[#1d1a16] py-4 md:grid-cols-[2.75rem_minmax(0,.9fr)_minmax(0,1.35fr)] md:gap-4"><span className="font-mono text-xs font-bold text-[#2f5bea]">0{index + 1}</span><strong className="min-w-0 text-sm uppercase tracking-[.1em]">{title}</strong><span className="min-w-0 text-sm leading-6 text-[#4b463e]">{body}</span></li>)}
-            </ol>
-          </div>
-        </div>
-      </section>
+      <section className="bg-[var(--rd-canvas-alt)] py-20 sm:py-28"><div className="signal-wrap grid gap-12 lg:grid-cols-[minmax(0,.72fr)_minmax(0,1.28fr)]"><div><p className="signal-label">From claim to proof</p><h2 className="signal-section-title mt-5 text-5xl sm:text-6xl">A method a buyer can inspect.</h2><p className="signal-copy mt-6">Every step is explicit. RipoDoc does not turn unreviewed extraction or AI output into authority.</p></div><ol className="signal-rail divide-y divide-[var(--rd-line)] border-y border-[var(--rd-line)]">{steps.map(([title, detail], index) => <li key={title} className="grid gap-2 px-5 py-5 md:grid-cols-[2.75rem_.9fr_1.35fr] md:gap-4"><span className="font-mono text-xs font-bold text-[var(--rd-signal)]">0{index + 1}</span><strong className="text-sm text-[var(--rd-ink)]">{title}</strong><span className="text-sm leading-6 text-[var(--rd-ink-soft)]">{detail}</span></li>)}</ol></div></section>
 
-      <section className="ledger-wrap py-14 sm:py-16 lg:py-20">
-        <div className="grid gap-6 sm:gap-8 lg:grid-cols-2 lg:gap-10">
-          <div className="min-w-0 border border-[#1d1a16] bg-[#fffdf8] p-6 sm:p-7"><p className="ledger-kicker"><span /> Built for the report, not a rip-and-replace</p><h2 className="mt-4 font-serif text-3xl leading-none tracking-[-.04em]">What RipoDoc is designed to do</h2><ul className="mt-6 space-y-3 text-sm leading-6 text-[#4b463e]">{['Make approved report claims inspectable in context.', 'Keep a review-before-publish boundary.', 'Support controlled evidence delivery rather than unrestricted forwarding.', 'Work alongside the systems that already produce operational data.', 'Offer an operator-controlled self-hosted path.'].map(item => <li key={item} className="flex gap-3"><Check className="mt-1 size-4 shrink-0 text-[#2f5bea]" />{item}</li>)}</ul></div>
-          <div className="min-w-0 border border-[#1d1a16] bg-[#1d1a16] p-6 text-[#f6f0e5] sm:p-7"><p className="font-mono text-[10px] font-bold uppercase tracking-[.16em] text-[#76e3cb]">Trust boundary</p><h2 className="mt-4 font-serif text-3xl leading-none tracking-[-.04em]">What it does not claim to do</h2><ul className="mt-6 space-y-3 text-sm leading-6 text-[#cec8bc]">{['Replace a PSA, RMM, BI tool, or general client portal.', 'Publish an AI-generated output without accountable review.', 'Turn arbitrary PDFs into perfect structured evidence.', 'Certify an MSP’s compliance, security, or healthcare posture.', 'Accept customer data through the public demonstration.'].map(item => <li key={item} className="flex gap-3"><span className="mt-2 size-1.5 shrink-0 bg-[#76e3cb]" />{item}</li>)}</ul></div>
-        </div>
-      </section>
+      <section className="bg-white py-20 sm:py-28"><div className="signal-wrap grid gap-5 lg:grid-cols-2"><article className="signal-card p-7 sm:p-9"><p className="signal-label">Designed to do</p><h2 className="signal-section-title mt-5 text-4xl">Make a real report claim inspectable.</h2><ul className="mt-8 space-y-4 text-sm leading-6 text-[var(--rd-ink-soft)]">{['Make approved report claims inspectable in context.', 'Keep a review-before-publish boundary.', 'Support controlled evidence delivery rather than unrestricted forwarding.', 'Work alongside systems that already produce operational data.', 'Offer an operator-controlled self-hosted path.'].map(item => <li key={item} className="flex gap-3"><Check className="mt-1 h-4 w-4 shrink-0 text-[var(--rd-signal)]" aria-hidden="true" />{item}</li>)}</ul></article><article className="rounded-2xl bg-[var(--rd-surface-ink)] p-7 text-[var(--rd-on-ink)] sm:p-9"><p className="font-mono text-[.65rem] font-bold uppercase tracking-[.12em] text-[#9bb3ff]">What RipoDoc does not claim to do</p><h2 className="signal-section-title mt-5 text-4xl text-white">Replace the systems that create the data.</h2><ul className="mt-8 space-y-4 text-sm leading-6 text-[var(--rd-on-ink-soft)]">{['Replace a PSA, RMM, BI tool, or general client portal.', 'Publish AI-generated output without accountable review.', 'Turn arbitrary PDFs into perfect structured evidence.', 'Certify an MSP’s compliance, security, or healthcare posture.', 'Accept customer production data through the public site.'].map(item => <li key={item} className="flex gap-3"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#9bb3ff]" aria-hidden="true" />{item}</li>)}</ul></article></div></section>
 
-      <section className="border-y border-[#1d1a16] bg-[#2f5bea] text-[#fffdf8]">
-        <div className="ledger-wrap grid gap-8 py-12 sm:gap-9 sm:py-14 lg:grid-cols-[minmax(0,1.12fr)_minmax(18rem,.88fr)] lg:items-end lg:gap-12">
-          <div className="min-w-0"><UsersRound className="size-6 text-[#76e3cb]" /><p className="mt-6 font-mono text-[10px] font-bold uppercase tracking-[.16em] text-[#cbd8ff]">Report diagnostic</p><h2 className="mt-4 max-w-3xl font-serif text-4xl leading-none tracking-[-.045em] sm:text-5xl">Bring one report question—not a vague transformation project.</h2><p className="mt-5 max-w-2xl text-base leading-7 text-[#e6ecff]">The practical next step is a report teardown: identify one claim, its source, the intended reader, and the delivery boundary. It produces the evidence needed to decide whether this is a paid problem.</p></div>
-          <div className="w-full min-w-0 max-w-md lg:justify-self-end"><Link href="/report-diagnostic-starter-kit" className="flex min-h-12 w-full items-center justify-center gap-2 border border-[#fffdf8] bg-[#fffdf8] px-5 py-3 text-center text-xs font-bold uppercase tracking-[.12em] text-[#1d1a16] hover:bg-[#76e3cb]"><ShieldCheck className="size-4 shrink-0" /> Use the starter kit</Link><p className="mt-4 text-xs leading-5 text-[#cbd8ff]">The starter kit is not a place to submit credentials, customer exports, PHI/ePHI, or other sensitive production data.</p></div>
-        </div>
-      </section>
+      <section className="bg-[var(--rd-signal)] py-20 text-white sm:py-24"><div className="signal-wrap grid gap-10 lg:grid-cols-[minmax(0,1.12fr)_minmax(18rem,.88fr)] lg:items-end"><div><UsersRound className="h-6 w-6 text-[#dbe5ff]" aria-hidden="true" /><p className="mt-6 font-mono text-[.65rem] font-bold uppercase tracking-[.12em] text-[#dbe5ff]">First 15 discovery program</p><h2 className="signal-section-title mt-5 max-w-3xl text-5xl text-white sm:text-6xl">Bring one report question, not a vague transformation project.</h2><p className="mt-6 max-w-2xl text-lg leading-8 text-[#e6ecff]">The next practical step is a structured report teardown: identify one challenged claim, its source, intended reader, and delivery boundary. It produces the evidence needed to decide whether this is a paid problem.</p></div><div><Link href="/report-diagnostic-starter-kit" className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-white px-5 text-sm font-semibold text-[var(--rd-ink)] transition hover:-translate-y-0.5 hover:bg-[var(--rd-signal-soft)]"><ShieldCheck className="h-4 w-4" aria-hidden="true" /> Use the report diagnostic starter kit</Link><p className="mt-4 text-xs leading-5 text-[#dbe5ff]">Do not include credentials, customer exports, PHI/ePHI, or other sensitive information in public resources.</p></div></div></section>
 
-      <section className="ledger-wrap py-14 sm:py-16 lg:py-20">
-        <p className="ledger-kicker"><span /> Direct answers</p><h2 className="mt-4 max-w-4xl font-serif text-4xl leading-none tracking-[-.045em] text-[#1d1a16]">Questions an MSP should ask before adding another tool.</h2>
-        <div className="mt-8 divide-y border-y border-[#1d1a16]">
-          {faq.map(({ q, a }, index) => <article key={q} className="grid gap-3 py-5 lg:grid-cols-[2.75rem_minmax(0,1fr)_minmax(0,1.25fr)] lg:gap-4"><span className="font-mono text-xs text-[#2f5bea]">0{index + 1}</span><h3 className="min-w-0 font-serif text-xl tracking-[-.025em]">{q}</h3><p className="min-w-0 text-sm leading-6 text-[#4b463e]">{a}</p></article>)}
-        </div>
-      </section>
+      <section className="bg-[var(--rd-canvas)] py-20 sm:py-28"><div className="signal-wrap"><p className="signal-label">Direct answers</p><h2 className="signal-section-title mt-5 max-w-4xl text-5xl sm:text-6xl">Questions an MSP should ask before adding another tool.</h2><div className="mt-10 divide-y divide-[var(--rd-line)] border-y border-[var(--rd-line)]">{faq.map(({ q, a }, index) => <article key={q} className="grid gap-3 py-6 lg:grid-cols-[2.75rem_minmax(0,1fr)_minmax(0,1.25fr)] lg:gap-4"><span className="font-mono text-xs text-[var(--rd-signal)]">0{index + 1}</span><h3 className="text-xl font-semibold tracking-[-.03em] text-[var(--rd-ink)]">{q}</h3><p className="text-sm leading-6 text-[var(--rd-ink-soft)]">{a}</p></article>)}</div></div></section>
     </div>
   );
 }

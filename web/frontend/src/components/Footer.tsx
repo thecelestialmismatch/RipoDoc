@@ -5,23 +5,23 @@ import { CookieSettingsButton } from '@/components/CookieSettingsButton.tsx';
 
 const productLinks = [
   { href: '/#sample-report', label: 'Interactive claim sample' },
-  { href: '/how-it-works', label: 'How the method works' },
-  { href: '/about', label: 'About RipoDoc' },
-  { href: '/for-msps', label: 'For MSPs: demo & fit' },
+  { href: '/how-it-works', label: 'Evidence method' },
+  { href: '/for-msps', label: 'For MSPs' },
   { href: '/report-evidence-readiness', label: 'Evidence-readiness check' },
   { href: '/report-diagnostic-starter-kit', label: 'Report diagnostic starter kit' },
   { href: '/guides/msp-client-reporting-qbr-metric-evidence', label: 'QBR metric evidence guide' },
-  { href: '/download', label: 'Download & self-host' },
 ] as const;
 
-const trustLinks = [
+const operatingLinks = [
   { href: '/security', label: 'Security controls' },
-  { href: '/legal', label: 'Legal status' },
+  { href: '/download', label: 'Download & self-host' },
+  { href: '/about', label: 'About RipoDoc' },
+  { href: '/founding-partners', label: 'Request a diagnostic' },
   { href: '/legal/healthcare-mode-b', label: 'Healthcare Mode B' },
-  { href: '/founding-partners', label: 'Report diagnostic' },
 ] as const;
 
 const legalLinks = [
+  { href: '/legal', label: 'Legal status' },
   { href: '/legal/privacy', label: 'Privacy information' },
   { href: '/legal/cookies', label: 'Cookie information' },
   { href: '/legal/terms', label: 'Terms status' },
@@ -31,9 +31,42 @@ const legalLinks = [
 ] as const;
 
 export function Footer() {
-  return <footer id="site-footer" className="border-t border-[#1d1a16] bg-[#1d1a16] text-[#fffdf8]">
-    <div className="mx-auto max-w-7xl px-6 py-14 lg:py-16"><div className="grid gap-12 border-b border-white/20 pb-12 lg:grid-cols-[1.25fr_0.75fr_0.75fr_0.8fr]"><div><BrandLockup showDescriptor inverse /><p className="mt-6 max-w-md text-sm leading-7 text-white/70">RipoDoc is the controlled evidence-delivery layer for MSP client reports. Keep the report familiar. Make a selected claim accountable.</p><a href="https://github.com/thecelestialmismatch/RipoDoc" target="_blank" rel="noopener noreferrer" className="mt-7 inline-flex items-center gap-2 border border-[#efd66b] bg-[#efd66b] px-3.5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.11em] text-[#1d1a16] transition hover:bg-white"><Code2 className="h-4 w-4" aria-hidden="true" /> Inspect the open-source build <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></a></div><FooterColumn title="Product index" links={productLinks} /><FooterColumn title="Trust boundary" links={trustLinks} /><FooterColumn title="Legal status" links={legalLinks} /></div><div className="flex flex-col gap-4 pt-7 text-xs text-white/55 sm:flex-row sm:items-center sm:justify-between"><p>© {new Date().getFullYear()} RipoDoc. Every reported number deserves an answer.</p><div className="flex flex-wrap items-center gap-x-4 gap-y-2"><CookieSettingsButton /><p className="inline-flex items-center gap-2"><ShieldCheck className="h-3.5 w-3.5 text-[#efd66b]" aria-hidden="true" /> Public status pages describe verified boundaries; they are not final contracts.</p></div></div></div>
-  </footer>;
+  return (
+    <footer id="site-footer" className="mt-auto bg-[var(--rd-surface-ink)] text-[var(--rd-on-ink)]">
+      <div className="signal-wrap py-12 sm:py-16 lg:py-20">
+        <div className="grid gap-12 border-b border-white/15 pb-12 lg:grid-cols-[1.28fr_.8fr_.8fr_.8fr] lg:gap-8">
+          <div>
+            <BrandLockup showDescriptor inverse />
+            <p className="mt-6 max-w-md text-sm leading-7 text-[var(--rd-on-ink-soft)]">RipoDoc is the controlled evidence-delivery layer for MSP client reports. Keep the report familiar. Give a selected claim an accountable proof path.</p>
+            <a href="https://github.com/thecelestialmismatch/RipoDoc" target="_blank" rel="noopener noreferrer" className="mt-7 inline-flex min-h-12 items-center gap-2 rounded-xl border border-white/15 bg-white px-4 text-sm font-semibold text-[var(--rd-ink)] transition hover:-translate-y-0.5 hover:bg-[var(--rd-signal-soft)] focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-white">
+              <Code2 className="h-4 w-4 text-[var(--rd-signal)]" aria-hidden="true" />
+              Inspect the open-source build
+              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+            </a>
+          </div>
+          <FooterColumn title="Evidence library" links={productLinks} />
+          <FooterColumn title="Operating paths" links={operatingLinks} />
+          <FooterColumn title="Terms & controls" links={legalLinks} />
+        </div>
+        <div className="flex flex-col gap-4 pt-7 text-xs leading-5 text-white/55 sm:flex-row sm:items-center sm:justify-between">
+          <p>© {new Date().getFullYear()} RipoDoc. Every reported number deserves an answer.</p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <CookieSettingsButton />
+            <p className="inline-flex items-center gap-2"><ShieldCheck className="h-3.5 w-3.5 text-[#9bb3ff]" aria-hidden="true" /> Public pages describe verified boundaries, not final commercial contracts.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
 }
 
-function FooterColumn({ title, links }: { readonly title: string; readonly links: readonly { readonly href: string; readonly label: string; readonly external?: boolean }[] }) { return <div><h2 className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#efd66b]">{title}</h2><ul className="mt-5 space-y-3 text-sm text-white/70">{links.map((link) => <li key={link.href}>{link.external ? <a href={link.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 transition hover:text-white">{link.label}<ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" /></a> : <Link href={link.href} className="transition hover:text-white">{link.label}</Link>}</li>)}</ul></div>; }
+function FooterColumn({ title, links }: { readonly title: string; readonly links: readonly { readonly href: string; readonly label: string }[] }) {
+  return (
+    <div>
+      <h2 className="font-mono text-[0.67rem] font-bold uppercase tracking-[0.12em] text-[#9bb3ff]">{title}</h2>
+      <ul className="mt-5 space-y-3 text-sm text-white/68">
+        {links.map((link) => <li key={link.href}><Link href={link.href} className="inline-flex items-center gap-1 transition hover:text-white focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-white">{link.label}<ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" /></Link></li>)}
+      </ul>
+    </div>
+  );
+}

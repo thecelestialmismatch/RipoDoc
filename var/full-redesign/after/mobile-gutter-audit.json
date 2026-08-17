@@ -1,0 +1,136 @@
+{
+  "baseUrl": "http://127.0.0.1:3100",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "checked": [
+    {
+      "viewport": 390,
+      "documentWidth": 390,
+      "bodyWidth": 390,
+      "horizontalScroll": false,
+      "edgeContent": [],
+      "overflow": [],
+      "route": "/"
+    },
+    {
+      "viewport": 390,
+      "documentWidth": 390,
+      "bodyWidth": 390,
+      "horizontalScroll": false,
+      "edgeContent": [],
+      "overflow": [],
+      "route": "/about"
+    },
+    {
+      "viewport": 390,
+      "documentWidth": 390,
+      "bodyWidth": 390,
+      "horizontalScroll": false,
+      "edgeContent": [],
+      "overflow": [],
+      "route": "/download"
+    },
+    {
+      "viewport": 390,
+      "documentWidth": 390,
+      "bodyWidth": 390,
+      "horizontalScroll": false,
+      "edgeContent": [],
+      "overflow": [],
+      "route": "/for-msps"
+    },
+    {
+      "viewport": 390,
+      "documentWidth": 390,
+      "bodyWidth": 390,
+      "horizontalScroll": false,
+      "edgeContent": [],
+      "overflow": [],
+      "route": "/founding-partners"
+    },
+    {
+      "viewport": 390,
+      "documentWidth": 390,
+      "bodyWidth": 390,
+      "horizontalScroll": false,
+      "edgeContent": [],
+      "overflow": [],
+      "route": "/how-it-works"
+    },
+    {
+      "viewport": 390,
+      "documentWidth": 390,
+      "bodyWidth": 390,
+      "horizontalScroll": false,
+      "edgeContent": [],
+      "overflow": [],
+      "route": "/legal"
+    },
+    {
+      "viewport": 390,
+      "documentWidth": 390,
+      "bodyWidth": 390,
+      "horizontalScroll": false,
+      "edgeContent": [],
+      "overflow": [],
+      "route": "/login"
+    },
+    {
+      "viewport": 390,
+      "documentWidth": 390,
+      "bodyWidth": 390,
+      "horizontalScroll": false,
+      "edgeContent": [],
+      "overflow": [],
+      "route": "/signup"
+    },
+    {
+      "viewport": 390,
+      "documentWidth": 390,
+      "bodyWidth": 390,
+      "horizontalScroll": false,
+      "edgeContent": [],
+      "overflow": [],
+      "route": "/forgot-password"
+    },
+    {
+      "viewport": 390,
+      "documentWidth": 390,
+      "bodyWidth": 390,
+      "horizontalScroll": false,
+      "edgeContent": [],
+      "overflow": [],
+      "route": "/report-diagnostic-starter-kit"
+    },
+    {
+      "viewport": 390,
+      "documentWidth": 390,
+      "bodyWidth": 390,
+      "horizontalScroll": false,
+      "edgeContent": [],
+      "overflow": [],
+      "route": "/report-evidence-readiness"
+    },
+    {
+      "viewport": 390,
+      "documentWidth": 390,
+      "bodyWidth": 390,
+      "horizontalScroll": false,
+      "edgeContent": [],
+      "overflow": [],
+      "route": "/security"
+    },
+    {
+      "viewport": 390,
+      "documentWidth": 390,
+      "bodyWidth": 390,
+      "horizontalScroll": false,
+      "edgeContent": [],
+      "overflow": [],
+      "route": "/upload"
+    }
+  ],
+  "passed": true
+}
