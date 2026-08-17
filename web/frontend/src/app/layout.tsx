@@ -43,7 +43,7 @@ const structuredData = [
     '@id': 'https://www.ripodoc.com/#organization',
     name: 'RipoDoc',
     url: siteUrl.toString(),
-    logo: 'https://www.ripodoc.com/ripodoc-mark.png',
+    logo: 'https://www.ripodoc.com/proof-theatre-mark.png',
     description: 'RipoDoc provides controlled evidence delivery for MSP client reports.',
     sameAs: ['https://github.com/thecelestialmismatch/RipoDoc'],
   },
@@ -80,7 +80,7 @@ const structuredData = [
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-    <body className="flex min-h-full flex-col bg-[#f6f0e5] text-[#1d1a16] [color-scheme:light]">
+    <body className="flex min-h-full flex-col bg-[#f8f0df] text-[#141111] [color-scheme:light]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
       <Navbar />
       <main className="min-w-0 flex-1">{children}</main>
