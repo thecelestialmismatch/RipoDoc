@@ -109,6 +109,9 @@ test('founding-partner conversion path is server-protected and avoids arbitrary 
   const page = await readFile(new URL('../../../web/frontend/src/app/founding-partners/page.tsx', import.meta.url), 'utf8');
   const route = await readFile(new URL('../../../web/frontend/src/app/api/founding-partners/route.ts', import.meta.url), 'utf8');
   const service = await readFile(new URL('../../../web/frontend/src/lib/founder/leads.ts', import.meta.url), 'utf8');
+  const crm = await readFile(new URL('../../../web/frontend/src/lib/founder/espocrm.ts', import.meta.url), 'utf8');
+  const crmContract = await readFile(new URL('../../../web/frontend/src/lib/founder/espocrm-contract.ts', import.meta.url), 'utf8');
+  const crmMigration = await readFile(new URL('../../../migrations/010_create_founding_partner_crm_sync.sql', import.meta.url), 'utf8');
   assert.match(page, /Turnstile/);
   assert.match(page, /name="csrf"/);
   assert.doesNotMatch(page, /name="message"/);
@@ -118,6 +121,14 @@ test('founding-partner conversion path is server-protected and avoids arbitrary 
   assert.match(service, /encryptLeadEmail/);
   assert.match(service, /founding-partner:ip/);
   assert.match(service, /ON CONFLICT \(email_hash\)/);
+  assert.match(page, /name="crmSyncConsent"/);
+  assert.match(route, /crmSyncConsent: form\.get\('crmSyncConsent'\) === 'yes'/);
+  assert.match(route, /syncConsentedLeadToEspoCrm/);
+  assert.match(service, /crm_sync_consent/);
+  assert.match(crmMigration, /founding_partner_crm_syncs/);
+  assert.match(crm, /RIPODOC_ESPOCRM_ALLOWED_HOSTS/);
+  assert.match(crm, /isBlockedCrmAddress/);
+  assert.doesNotMatch(crmContract, /evidenceToken|recipientHash|reportId|sourceRows/);
 });
 
 test('durable hosted audit and founder-evidence migration preserve a scoped operational data model', async () => {
