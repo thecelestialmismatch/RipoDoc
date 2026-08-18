@@ -11,6 +11,7 @@ process.env.RIPODOC_CONTENT_ROOT = reportsRoot;
 
 const { listPublishedManifests, saveManifest } = await import('../../../web/frontend/src/lib/evidence/store.ts');
 const { getSecurityPosture } = await import('../../../web/frontend/src/lib/evidence/security-status.ts');
+const { assessProofOperations, createEvidenceDeliveryReceipt } = await import('../../../web/frontend/src/lib/evidence/operations.ts');
 
 after(async () => rm(tempRoot, { recursive: true, force: true }));
 
@@ -89,6 +90,55 @@ test('dashboard command center remains backed by a verified tenant-scoped server
   assert.match(dashboard, /listTenantReports\(user\.tenantId\)/);
   assert.match(commandCenter, /api\/reports\//);
   assert.match(commandCenter, /href="\/download"/);
+});
+
+test('evidence delivery receipt is manifest-derived, aggregate-only, and safe for a tenant-scoped operator view', async () => {
+  const manifest: ReportManifest = {
+    ...createManifest('rpt-receipt-0001', '2026-07-02T10:00:00Z'),
+    source: {
+      system: 'PSA — ConnectWise Manage',
+      description: 'Ticket export, Q2 2026',
+      capturedAt: '2026-07-01T09:00:00Z',
+    },
+  };
+  const audit = {
+    status: 'durable' as const,
+    granted: 2,
+    denied: 1,
+    lastGrantedAt: '2026-07-03T09:30:00Z',
+    lastEventAt: '2026-07-03T10:00:00Z',
+  };
+  const receipt = createEvidenceDeliveryReceipt({
+    report: manifest,
+    snapshot: assessProofOperations(manifest),
+    audit,
+    elementId: 'tickets-resolved',
+  });
+  const serialized = JSON.stringify(receipt);
+
+  assert.deepEqual(receipt.claimReference, {
+    id: 'tickets-resolved',
+    label: 'Tickets resolved',
+    reviewer: 'Priya Raman',
+    approvedAt: '2026-07-01T10:00:00Z',
+  });
+  assert.equal(receipt.sourceDeclaration, 'PSA — ConnectWise Manage · Ticket export, Q2 2026');
+  assert.equal(receipt.recipientReference, 'Dana Whitfield · recipient configured');
+  assert.equal(receipt.audit, audit);
+  assert.equal(serialized.includes(manifest.recipient.email), false);
+  assert.equal(serialized.includes('status = closed'), false);
+  assert.equal(serialized.includes('NG-1001'), false);
+  assert.match(receipt.deliveryCondition, /Recipient proof/);
+  assert.match(receipt.expiryCondition, /per recipient-bound delivery link/);
+
+  const receiptComponent = await readFile(new URL('../../../web/frontend/src/components/dashboard/EvidenceDeliveryReceipt.tsx', import.meta.url), 'utf8');
+  const dashboard = await readFile(new URL('../../../web/frontend/src/app/dashboard/page.tsx', import.meta.url), 'utf8');
+  const workspaceReports = await readFile(new URL('../../../web/frontend/src/lib/workspace/reports.ts', import.meta.url), 'utf8');
+  assert.doesNotMatch(receiptComponent, /recipient\.email/);
+  assert.doesNotMatch(receiptComponent, /sourceQuery/);
+  assert.doesNotMatch(receiptComponent, /evidence\.table/);
+  assert.match(dashboard, /listTenantReports\(user\.tenantId\)/);
+  assert.match(workspaceReports, /WHERE tenant_id = \$1/);
 });
 
 test('retired deployment-wide administrator key is absent from safe runtime posture', async () => {
