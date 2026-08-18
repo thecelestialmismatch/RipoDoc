@@ -61,7 +61,7 @@ The full self-hosted stack and its production gate are described in the [self-ho
 
 ## Design and documentation contributions
 
-The public experience uses the **proof-canvas** visual language: a familiar document, a nearby evidence rail, and visible boundaries. New public copy should favor concrete workflow language over generic SaaS superlatives. See [DESIGN.md](../DESIGN.md) and the [public-experience baseline](../docs/01-research/public-experience-and-discovery-baseline.md).
+The public experience uses the **proof-canvas** visual language: a familiar document, a nearby evidence rail, and visible boundaries. New public copy should favor concrete workflow language over generic SaaS superlatives. See [DESIGN.md](../DESIGN.md); do not add links to private research, commercial plans, or decision records.
 
 Documentation should distinguish one of the following clearly:
 

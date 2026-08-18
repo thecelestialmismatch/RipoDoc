@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { access, readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 const root = new URL('../../../', import.meta.url);
@@ -50,6 +50,24 @@ test('public deployment applies browser hardening and private-route crawl exclus
   assert.match(proxy, /response\.headers\.set\('Content-Security-Policy', CSP\)/);
   assert.match(proxy, /response\.headers\.set\('Referrer-Policy', 'no-referrer'\)/);
   assert.match(proxy, /response\.headers\.set\('X-Permitted-Cross-Domain-Policies', 'none'\)/);
+});
+
+test('public repository excludes private operating material and protects the exclusions', async () => {
+  const [readme, ignore] = await Promise.all([
+    readProjectFile('README.md'),
+    readProjectFile('.gitignore'),
+  ]);
+  for (const ignoredPath of ['/docs/00-strategy/', '/docs/01-research/', '/docs/06-legal/', '/var/', '/IDEA.md']) {
+    assert.match(ignore, new RegExp(ignoredPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  }
+  assert.doesNotMatch(readme, /docs\/(00-strategy|01-research|06-legal)\//);
+  await Promise.all([
+    assert.rejects(access(new URL('docs/00-strategy', root))),
+    assert.rejects(access(new URL('docs/01-research', root))),
+    assert.rejects(access(new URL('docs/06-legal', root))),
+    assert.rejects(access(new URL('var', root))),
+    assert.rejects(access(new URL('IDEA.md', root))),
+  ]);
 });
 
 test('public launch mark and social preview exist with category-safe language', async () => {

@@ -427,7 +427,7 @@ test('report diagnostic starter kit provides a no-data five-question conversion 
 
 test('README uses the exact website mark and only authentic local demo assets', async () => {
   const readme = await readFile(new URL('../../../README.md', import.meta.url), 'utf8');
-  assert.match(readme, /web\/frontend\/public\/ripodoc-mark\.png/);
+  assert.match(readme, /web\/frontend\/public\/ripodoc-mark\.svg/);
   assert.match(readme, /docs\/assets\/ripodoc-claim-sample\.png/);
   assert.match(readme, /docs\/assets\/ripodoc-demo-tour\.mp4/);
   assert.match(readme, /sample data/);

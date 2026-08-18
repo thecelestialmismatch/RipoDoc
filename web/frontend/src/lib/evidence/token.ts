@@ -1,9 +1,9 @@
 /**
  * Recipient-bound evidence tokens.
  *
- * The MSPBots public link that inspired this product is an unauthenticated URL:
- * whoever holds it is authorised, forever, for everything
- * (`docs/01-research/mspbots-teardown.md`). This module is the answer to that.
+ * A public link that grants permanent access to anyone who holds it is not an
+ * appropriate evidence-delivery boundary. This module enforces a scoped,
+ * recipient-aware answer path instead.
  *
  * A token binds four things — report, version, recipient, expiry — under an
  * HMAC. It is *not* a bearer secret lookup: the claims travel in the token and
