@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">RipoDoc proof aperture mark</title>
+  <desc id="desc">A bounded red document aperture revealing an ink-black proof point.</desc>
+  <rect width="64" height="64" rx="8" fill="#E8442E"/>
+  <path d="M14 12H39L50 23V50C50 51.105 49.105 52 48 52H14C12.895 52 12 51.105 12 50V14C12 12.895 12.895 12 14 12Z" fill="#FFF9EF" stroke="#141111" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M39 12V23H50" fill="#FFB2A3" stroke="#141111" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M21 31H33" stroke="#141111" stroke-width="3" stroke-linecap="round"/>
+  <path d="M21 38H29" stroke="#141111" stroke-width="3" stroke-linecap="round"/>
+  <path d="M21 45H32" stroke="#141111" stroke-width="3" stroke-linecap="round"/>
+  <path d="M38 31.5L45 35.5V43.5L38 47.5L31 43.5V35.5L38 31.5Z" fill="#141111" stroke="#141111" stroke-width="2" stroke-linejoin="round"/>
+  <circle cx="38" cy="39.5" r="2.5" fill="#FFB2A3"/>
+</svg>

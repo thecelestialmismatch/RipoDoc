@@ -2,6 +2,9 @@
   "name": "ripodoc",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "docker/local"
+  ],
   "description": "Secure reporting delivery and evidence layer for MSPs — a normal PDF where every figure is clickable, recipient-bound and audited.",
   "type": "module",
   "engines": {
