@@ -454,4 +454,7 @@ test('footer uses an inverse RipoDoc lockup so the full wordmark remains legible
   assert.match(brandLockup, /inverse \? 'text-\[#fffdf8\]'/);
   assert.match(brandLockup, /const iconFrame = compact \? 'h-9 w-9 sm:h-10 sm:w-10' : 'h-12 w-12';/);
   assert.match(brandLockup, /className="block h-full w-full"/);
+  assert.match(footer, /<Link href="\/download"/);
+  assert.match(footer, /Review the self-hosted build/);
+  assert.doesNotMatch(footer, /github\.com\/thecelestialmismatch\/RipoDoc/);
 });
