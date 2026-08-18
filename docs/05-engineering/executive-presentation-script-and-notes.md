@@ -138,9 +138,9 @@
 
 ### Speaker Script
 
-“RipoDoc now has a stronger product story and a stronger operational boundary: 139 passing tests, zero known production dependency vulnerabilities, a safe hosted-readiness contract, durable-audit support, a secured self-hosted package, and a paid MSP proof program. The next win is not a speculative platform expansion. It is five paid MSP design partners completing three report cycles, with documented activation, outcome, continuation, and repeated integration evidence. When that gate is met, the YC and go-to-market story becomes much more compelling.”
+“RipoDoc now has a stronger product story and a stronger operational boundary: 169 passing release-gate tests, a remediated frontend production-dependency audit, a fail-closed hosted-readiness contract, durable-audit support, a secured self-hosted package, and a focused MSP proof program. The hosted workspace still requires its production services to be configured before a paid launch. The next win is not a speculative platform expansion. It is five paid MSP design partners completing three report cycles, with documented activation, outcome, continuation, and repeated integration evidence. When that gate is met, the YC and go-to-market story becomes much more compelling.”
 
 ### Speaker Notes
 
 - **Tone:** Conclusive, accountable.
-- **Key message:** The release is ready for controlled deployment; venture readiness must now be earned through customer proof.
+- **Key message:** The checked code is release-gated; a hosted paid launch still depends on configured production services, while venture readiness must be earned through customer proof.
