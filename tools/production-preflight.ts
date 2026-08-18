@@ -1,5 +1,6 @@
 import { database } from '../web/frontend/src/lib/auth/database.ts';
 import { authConfigured } from '../web/frontend/src/lib/auth/primitives.ts';
+import { leadIntakeConfigured } from '../web/frontend/src/lib/founder/lead-crypto.ts';
 
 type Check = {
   readonly name: string;
@@ -38,6 +39,7 @@ const run = async (): Promise<void> => {
   add('canonical HTTPS origin', validHttpsOrigin(), 'RIPODOC_APP_ORIGIN parses as a credential-free HTTPS origin.');
   add('evidence signing secret', (process.env.RIPODOC_EVIDENCE_SECRET?.length ?? 0) >= 32, 'RIPODOC_EVIDENCE_SECRET has the required minimum length.');
   add('durable PostgreSQL audit selection', process.env.RIPODOC_AUDIT_BACKEND?.toLowerCase() === 'postgres', 'RIPODOC_AUDIT_BACKEND is explicitly set to postgres.');
+  add('founding-partner contact encryption', leadIntakeConfigured(), 'RIPODOC_LEAD_ENCRYPTION_KEY decodes to a dedicated 32-byte base64url key.');
 
   const worker = configuredWorker();
   add('private worker configuration', Boolean(worker), 'RIPODOC_LOCAL_WORKER_URL and a 32+ character server-only worker secret are configured.');
@@ -56,6 +58,7 @@ const run = async (): Promise<void> => {
         'founding_partner_leads',
         'founding_partner_events',
         'founding_partner_outcomes',
+        'founding_partner_crm_syncs',
       ];
       const result = await pool.query<{ table_name: string }>(
         `SELECT table_name
