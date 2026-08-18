@@ -4,12 +4,18 @@ import { isIP } from 'node:net';
 import { query, transaction } from '@/lib/auth/database.ts';
 import {
   espocrmAuthorization,
-  espocrmLeadPayload,
   isBlockedCrmAddress,
   type CrmSyncLead,
 } from './espocrm-contract.ts';
+import {
+  CrmRemoteError,
+  runCrmOutboxAttempt,
+  upsertEspoCrmLead,
+  type EspoCrmRequest,
+} from './espocrm-sync-contract.ts';
 
 export { espocrmAuthorization, espocrmLeadPayload, isBlockedCrmAddress, type CrmSyncLead } from './espocrm-contract.ts';
+export { CrmRemoteError, crmFailureCode, runCrmOutboxAttempt, upsertEspoCrmLead, type CrmOutboxAttemptDependencies, type EspoCrmRequest } from './espocrm-sync-contract.ts';
 
 const REQUEST_TIMEOUT_MS = 5_000;
 const STALE_SYNC_MINUTES = 15;
@@ -19,19 +25,6 @@ interface EspoCrmConfig {
   readonly apiKey: string;
   readonly hmacSecret: string;
   readonly allowedHost: string;
-}
-
-interface EspoRecordList {
-  readonly list?: ReadonlyArray<{ readonly id?: unknown }>;
-}
-
-class CrmRemoteError extends Error {
-  public readonly status: number;
-
-  public constructor(status: number) {
-    super(`CRM request returned ${status}`);
-    this.status = status;
-  }
 }
 
 const splitHosts = (value: string | undefined): string[] =>
@@ -154,27 +147,6 @@ const markSync = async (leadId: string, result: { readonly status: 'synced'; rea
   });
 };
 
-const failureCode = (error: unknown): string =>
-  error instanceof CrmRemoteError && error.status >= 400 && error.status < 500 ? 'remote_rejected' : 'transport_failed';
-
-const remoteLeadIdFor = async (config: EspoCrmConfig, lead: CrmSyncLead): Promise<string> => {
-  const searchParams = encodeURIComponent(JSON.stringify({
-    maxSize: 1,
-    select: ['id'],
-    where: [{ type: 'equals', attribute: 'emailAddress', value: lead.email }],
-  }));
-  const existing = await requestJson<EspoRecordList>(config, 'GET', `Lead?searchParams=${searchParams}`);
-  const id = existing.list?.[0]?.id;
-  const payload = espocrmLeadPayload(lead);
-  if (typeof id === 'string' && id.length > 0) {
-    await requestJson(config, 'PUT', `Lead/${encodeURIComponent(id)}`, payload);
-    return id;
-  }
-  const created = await requestJson<{ readonly id?: unknown }>(config, 'POST', 'Lead', payload);
-  if (typeof created.id !== 'string' || created.id.length === 0) throw new Error('EspoCRM did not return a lead id.');
-  return created.id;
-};
-
 /**
  * Attempts a single server-side sync for a lead that has already supplied explicit
  * CRM consent. It is idempotent by email lookup and cannot affect public form success.
@@ -186,11 +158,12 @@ export const syncConsentedLeadToEspoCrm = async (lead: CrmSyncLead): Promise<voi
   } catch {
     return;
   }
-  if (!config || !(await claimSync(lead.leadId))) return;
-  try {
-    const remoteLeadId = await remoteLeadIdFor(config, lead);
-    await markSync(lead.leadId, { status: 'synced', remoteLeadId });
-  } catch (error) {
-    await markSync(lead.leadId, { status: 'failed', failureCode: failureCode(error) }).catch(() => undefined);
-  }
+  if (!config) return;
+
+  const request: EspoCrmRequest = (method, uri, body) => requestJson(config, method, uri, body);
+  await runCrmOutboxAttempt({
+    claim: () => claimSync(lead.leadId),
+    upsert: () => upsertEspoCrmLead(lead, request),
+    mark: (result) => markSync(lead.leadId, result),
+  });
 };
