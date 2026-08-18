@@ -8,8 +8,6 @@ import {
   CheckCircle2,
   ChevronRight,
   CircleDot,
-  Clock3,
-  Database,
   Download,
   Eye,
   FileCheck2,
@@ -19,10 +17,10 @@ import {
   ListFilter,
   Search,
   Sparkles,
-  UsersRound,
   type LucideIcon,
 } from 'lucide-react';
-import { assessProofOperations, type ProofOperationsSnapshot, type ReportAuditSummary } from '@/lib/evidence/operations.ts';
+import { EvidenceDeliveryReceipt } from '@/components/dashboard/EvidenceDeliveryReceipt.tsx';
+import { assessProofOperations, createEvidenceDeliveryReceipt, type ProofOperationsSnapshot, type ReportAuditSummary } from '@/lib/evidence/operations.ts';
 import type { ReportManifest } from '@/lib/evidence/types.ts';
 
 interface WorkspaceCommandCenterProps {
@@ -33,7 +31,6 @@ interface WorkspaceCommandCenterProps {
 }
 
 const formatDate = (value: string): string => new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value));
-const formatDateOnly = (value: string | undefined): string => value ? new Intl.DateTimeFormat('en-US', { dateStyle: 'medium' }).format(new Date(value)) : 'Not declared';
 const unavailableAudit: ReportAuditSummary = { status: 'unavailable', granted: 0, denied: 0 };
 
 export function WorkspaceCommandCenter({ user, reports, auditByReport }: WorkspaceCommandCenterProps) {
@@ -112,7 +109,7 @@ export function WorkspaceCommandCenter({ user, reports, auditByReport }: Workspa
             </button></li>;
           })}</ul>}
         </article>
-        <aside className="space-y-6">{selectedReport && selectedSnapshot ? <ProofOperationsInspector report={selectedReport} snapshot={selectedSnapshot} audit={selectedAudit} /> : <WorkspaceSetup />}<WorkspaceBoundary user={user} /></aside>
+        <aside className="space-y-6">{selectedReport && selectedSnapshot ? <ProofOperationsInspector key={selectedReport.reportId} report={selectedReport} snapshot={selectedSnapshot} audit={selectedAudit} /> : <WorkspaceSetup />}<WorkspaceBoundary user={user} /></aside>
       </section>
     </main>
   </div>;
@@ -124,22 +121,22 @@ function SummaryMetric({ icon: Icon, tone, value, label, detail, compact = false
 }
 
 function ProofOperationsInspector({ report, snapshot, audit }: { readonly report: ReportManifest; readonly snapshot: ProofOperationsSnapshot; readonly audit: ReportAuditSummary }) {
-  const totalEvents = audit.granted + audit.denied;
+  const [receiptElementId, setReceiptElementId] = useState<string | undefined>(report.elements[0]?.id);
+  const receipt = createEvidenceDeliveryReceipt({ report, snapshot, audit, elementId: receiptElementId });
+
   return <section className="overflow-hidden border border-[#141111] bg-[#fff9ef]">
     <div className="border-b border-[#141111]/15 px-6 py-5"><p className="stage-kicker text-[#b52e20]">Proof operations</p><h2 className="mt-2 text-xl font-bold">{report.title}</h2><p className="mt-1 text-sm text-[#655c55]">{report.client} <span aria-hidden="true">·</span> {report.periodLabel}</p></div>
     <div className="space-y-5 px-6 py-5">
       <div className={`border p-4 ${snapshot.state === 'ready' ? 'border-[#1f6146]/25 bg-[#d9f0dc]' : 'border-[#8c3d00]/25 bg-[#ffe2b8]'}`}><div className="flex items-center gap-2"><BadgeCheck className={`h-4 w-4 ${snapshot.state === 'ready' ? 'text-[#1f6146]' : 'text-[#8c3d00]'}`} aria-hidden="true" /><p className="text-sm font-bold">{snapshot.state === 'ready' ? 'Ready for a controlled evidence handoff' : 'Resolve declared delivery gaps'}</p></div><p className="mt-2 text-xs leading-5">This assessment checks the published manifest only. It does not certify source accuracy, compliance, or recipient behavior after viewing.</p></div>
       <dl className="space-y-4">{snapshot.coverage.map((item) => <ReadinessRow key={item.label} label={item.label} value={item.detail} state={item.state} />)}</dl>
-      <div className="border-t border-[#141111]/15 pt-5"><p className="text-xs font-bold uppercase tracking-[0.11em] text-[#857b72]">Delivery posture</p><div className="mt-3 grid gap-3 text-sm"><Fact icon={UsersRound} label="Recipient" value={snapshot.recipientLabel} /><Fact icon={Database} label="Declared source" value={snapshot.sourceLabel} /><Fact icon={Clock3} label="Source captured" value={formatDateOnly(snapshot.sourceCapturedAt)} /><Fact icon={FileCheck2} label="Report version" value={`v${report.version} · published ${formatDate(report.publishedAt)}`} /></div></div>
-      <div className="border-t border-[#141111]/15 pt-5"><p className="text-xs font-bold uppercase tracking-[0.11em] text-[#857b72]">Access activity</p>{audit.status === 'durable' ? <div className="mt-3 grid grid-cols-2 gap-3"><AuditNumber label="Granted" value={audit.granted.toString()} /><AuditNumber label="Denied" value={audit.denied.toString()} /><div className="col-span-2 text-xs leading-5 text-[#655c55]">{totalEvents === 0 ? 'No access events have been recorded for this report version yet.' : audit.lastEventAt ? `Most recent event: ${formatDate(audit.lastEventAt)}.` : 'Access activity was recorded for this report version.'} Audit summaries contain no raw recipient email, token, or evidence rows.</div></div> : <p className="mt-3 text-xs leading-5 text-[#655c55]">Durable audit summaries are unavailable in this deployment. Evidence access remains separately recorded according to the configured audit backend.</p>}</div>
+      {report.elements.length > 1 ? <label className="block border-t border-[#141111]/15 pt-5"><span className="text-xs font-bold uppercase tracking-[0.11em] text-[#857b72]">Receipt claim reference</span><select value={receiptElementId} onChange={(event) => setReceiptElementId(event.target.value)} className="mt-2 min-h-11 w-full border border-[#141111]/35 bg-[#fff9ef] px-3 py-2 text-sm font-semibold text-[#141111] outline-none focus:border-[#e8442e] focus:ring-2 focus:ring-[#e8442e]/15">{report.elements.map((element) => <option key={element.id} value={element.id}>{element.label} · {element.id}</option>)}</select></label> : null}
+      <EvidenceDeliveryReceipt receipt={receipt} />
     </div>
     <div className="grid gap-3 border-t border-[#141111]/15 p-5"><a href={`/api/reports/${encodeURIComponent(report.reportId)}`} className="inline-flex min-h-11 items-center justify-center gap-2 bg-[#141111] px-4 py-2.5 text-sm font-bold text-[#f8f0df] transition hover:bg-[#e8442e]"><Download className="h-4 w-4" aria-hidden="true" /> Download secure manifest</a><Link href="/upload" className="inline-flex min-h-11 items-center justify-center gap-2 border border-[#141111]/35 px-4 py-2.5 text-sm font-bold text-[#141111] transition hover:bg-[#f0dfcc]"><FileText className="h-4 w-4" aria-hidden="true" /> Create follow-on report</Link></div>
   </section>;
 }
 
 function ReadinessRow({ label, value, state }: { readonly label: string; readonly value: string; readonly state: 'ready' | 'attention' }) { return <div className="flex items-start gap-3"><span className={`mt-0.5 p-1 ${state === 'ready' ? 'bg-[#d9f0dc] text-[#1f6146]' : 'bg-[#ffe2b8] text-[#8c3d00]'}`}><CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" /></span><div className="min-w-0"><p className="text-xs font-bold uppercase tracking-[0.11em] text-[#857b72]">{label}</p><p className="mt-1 break-words text-sm font-semibold leading-5">{value}</p></div></div>; }
-function Fact({ icon: Icon, label, value }: { readonly icon: LucideIcon; readonly label: string; readonly value: string }) { return <div className="flex gap-2"><Icon className="mt-0.5 h-4 w-4 shrink-0 text-[#b52e20]" aria-hidden="true" /><p className="min-w-0 text-xs leading-5 text-[#655c55]"><span className="font-bold text-[#141111]">{label}:</span> {value}</p></div>; }
-function AuditNumber({ label, value }: { readonly label: string; readonly value: string }) { return <div className="border border-[#141111]/15 bg-[#f7ecdc] p-3"><p className="text-xl font-extrabold tracking-[-0.05em]">{value}</p><p className="mt-1 text-xs font-bold uppercase tracking-[0.1em] text-[#655c55]">{label}</p></div>; }
 function NoMatchingReports({ onClear }: { readonly onClear: () => void }) { return <div className="px-6 py-16 text-center"><ListFilter className="mx-auto h-7 w-7 text-[#cdbdab]" aria-hidden="true" /><h3 className="mt-4 font-bold">No matching reports.</h3><p className="mt-2 text-sm text-[#655c55]">Try a different client or remove the search term.</p><button type="button" onClick={onClear} className="mt-5 text-sm font-bold text-[#b52e20] hover:text-[#141111]">Clear filters</button></div>; }
 function EmptyRegistry() { return <div className="px-6 py-14"><div className="max-w-xl border border-dashed border-[#cdbdab] bg-[#f7ecdc] p-6"><FileText className="h-6 w-6 text-[#b52e20]" aria-hidden="true" /><h3 className="mt-4 text-lg font-bold">Publish your first evidence-aware report.</h3><p className="mt-2 text-sm leading-6 text-[#655c55]">Attach the client PDF, review every click zone, record the approval, and publish a report whose evidence can be verified without exposing a data export.</p><div className="mt-5 grid gap-3 text-sm text-[#141111] sm:grid-cols-3"><p><span className="mr-2 font-bold text-[#b52e20]">I</span>Attach</p><p><span className="mr-2 font-bold text-[#b52e20]">II</span>Approve</p><p><span className="mr-2 font-bold text-[#b52e20]">III</span>Publish</p></div><Link href="/upload" className="mt-6 inline-flex min-h-11 items-center gap-2 bg-[#141111] px-4 py-2.5 text-sm font-bold text-[#f8f0df] transition hover:bg-[#e8442e]">Start authoring <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link></div></div>; }
 function WorkspaceSetup() { return <section className="border border-[#141111] bg-[#fff9ef] p-6"><p className="stage-kicker text-[#b52e20]">First report plan</p><h2 className="mt-3 text-xl font-bold">Your operations view will grow from published evidence.</h2><p className="mt-3 text-sm leading-6 text-[#655c55]">Create one reviewed report to activate the registry, proof coverage, delivery posture, and audit-summary workflow.</p><Link href="/upload" className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#b52e20] hover:text-[#141111]">Open authoring studio <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link></section>; }
