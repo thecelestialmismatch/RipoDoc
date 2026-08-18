@@ -148,10 +148,40 @@ test('production preflight makes durable hosted dependencies explicit without se
   const preflight = await readFile(new URL('../../../tools/production-preflight.ts', import.meta.url), 'utf8');
   const health = await readFile(new URL('../../../web/frontend/src/app/api/health/route.ts', import.meta.url), 'utf8');
   assert.match(preflight, /evidence_access_audit_records/);
+  assert.match(preflight, /founding_partner_crm_syncs/);
   assert.match(preflight, /private worker reachability/);
   assert.match(preflight, /RIPODOC_AUDIT_BACKEND/);
+  assert.match(preflight, /founding-partner contact encryption/);
+  assert.match(preflight, /RIPODOC_LEAD_ENCRYPTION_KEY/);
   assert.match(health, /hostedReadiness/);
   assert.doesNotMatch(preflight, /process\.env\.[A-Z_]+\s*[,}]/);
+});
+
+test('self-hosted environment template and operations guidance preserve the complete runtime-only production gate', async () => {
+  const environmentTemplate = await readFile(new URL('../../../.env.example', import.meta.url), 'utf8');
+  const readme = await readFile(new URL('../../../README.md', import.meta.url), 'utf8');
+  const operations = await readFile(new URL('../../../docs/05-engineering/self-hosted-operations-runbook.md', import.meta.url), 'utf8');
+  for (const variable of [
+    'POSTGRES_PASSWORD',
+    'RIPODOC_AUTH_SECRET',
+    'RIPODOC_EVIDENCE_SECRET',
+    'RIPODOC_WORKER_AUTH_SECRET',
+    'RIPODOC_LEAD_ENCRYPTION_KEY',
+    'RIPODOC_APP_ORIGIN',
+    'RIPODOC_RESEND_API_KEY',
+    'RIPODOC_EMAIL_FROM',
+    'RIPODOC_TURNSTILE_SECRET',
+    'NEXT_PUBLIC_RIPODOC_TURNSTILE_SITE_KEY',
+  ]) assert.match(environmentTemplate, new RegExp(`^${variable}=`, 'm'));
+  assert.match(readme, /cp \.env\.example \.env/);
+  assert.match(readme, /node --experimental-strip-types tools\/production-preflight\.ts/);
+  assert.match(operations, /node --experimental-strip-types tools\/production-preflight\.ts/);
+});
+
+test('isolated EspoCRM template uses a versioned application image rather than a floating latest tag', async () => {
+  const template = await readFile(new URL('../../../deploy/espocrm/.env.example', import.meta.url), 'utf8');
+  assert.match(template, /^ESPOCRM_IMAGE=espocrm\/espocrm:\d+\.\d+\.\d+-apache$/m);
+  assert.doesNotMatch(template, /^ESPOCRM_IMAGE=.*:latest$/m);
 });
 
 test('founding-partner contact encryption authenticates encrypted email at rest with a dedicated key', async () => {

@@ -37,7 +37,7 @@ The operator must assign named ownership for CRM administration, backup and rest
 
 The repository ships the deployment assets at [`deploy/espocrm/`](../../deploy/espocrm/). Copy that directory to the separate CRM host; do not place it into the RipoDoc application deployment. The Compose configuration has a loopback-only web binding, an internal database network, persistent CRM and database volumes, and a separate daemon service.
 
-On the CRM host, copy the template, set permissions, replace every example secret with a high-entropy independent value, and pin image references to reviewed versions or immutable digests before production. The sample currently shows `espocrm/espocrm:latest` only as a template convenience; an operator should not treat that as an approved production pin.
+On the CRM host, copy the template, set permissions, replace every example secret with a high-entropy independent value, and pin image references to reviewed versions or immutable digests before production. The shipped template pins the current official `espocrm/espocrm:10.0.4-apache` release tag; the operator must still verify the applicable multi-architecture digest before each production deployment and review upgrade notes before changing the pin.
 
 ```bash
 cd /opt/ripodoc-espocrm
@@ -195,7 +195,7 @@ The repository’s mock-server integration suite independently verifies the same
 npm run verify
 ```
 
-At the time this guide was written, the suite contained **169 passing tests**, including five mock-server EspoCRM integration cases. The production build is part of the same command.
+At the time this guide was updated, the suite contained **171 passing tests**, including five mock-server EspoCRM integration cases. The production build is part of the same command.
 
 ## 9. Observability and operator queries
 

@@ -98,18 +98,19 @@ RipoDoc is downloadable as a complete deployment bundle—not a marketing-only r
 git clone https://github.com/thecelestialmismatch/RipoDoc.git
 cd RipoDoc
 
-# Keep these values outside the repository and out of NEXT_PUBLIC_* variables.
-export POSTGRES_PASSWORD="$(openssl rand -base64 32)"
-export RIPODOC_AUTH_SECRET="$(openssl rand -base64 32)"
-export RIPODOC_EVIDENCE_SECRET="$(openssl rand -base64 32)"
-export RIPODOC_WORKER_AUTH_SECRET="$(openssl rand -base64 32)"
-export RIPODOC_LEAD_ENCRYPTION_KEY="$(openssl rand -base64 32 | tr '+/' '-_' | tr -d '=')"
+# Copy the complete non-secret contract and set restrictive local permissions.
+cp .env.example .env
+chmod 600 .env
+# Replace every placeholder with an independent real secret or provider value.
+# Compose constructs RIPODOC_DATABASE_URL internally; do not add it to .env.
+$EDITOR .env
 
-# Also configure canonical origin, PostgreSQL URL, Resend, and Turnstile values.
-docker compose -f docker-compose.selfhost.yml up --build
+docker compose -f docker-compose.selfhost.yml config
+docker compose -f docker-compose.selfhost.yml up --build -d
 
-# Prove the durable production boundary after migrations and service configuration.
-npm run preflight:production
+# Prove the durable production boundary from the configured web container,
+# which can reach the private PostgreSQL and worker networks.
+docker compose -f docker-compose.selfhost.yml exec -T web sh -c 'cd /app && node --experimental-strip-types tools/production-preflight.ts'
 ```
 
 | Component | Responsibility | Default boundary |
@@ -144,7 +145,7 @@ Read the [security-control page](https://www.ripodoc.com/security), [authenticat
 
 ## Verify a change
 
-The current regression suite contains **169 automated tests** for evidence, identity, tenant isolation, private-worker authorization, audit integrity, release posture, public-runtime contracts, privacy-preserving telemetry, the isolated CRM boundary, and mock-server EspoCRM protocol coverage.
+The current regression suite contains **171 automated tests** for evidence, identity, tenant isolation, private-worker authorization, audit integrity, release posture, public-runtime contracts, privacy-preserving telemetry, the isolated CRM boundary, and mock-server EspoCRM protocol coverage.
 
 ```bash
 npm test              # Node built-in test runner
@@ -153,13 +154,13 @@ npm run lint          # ESLint for the frontend
 npm run verify        # typecheck + tests + production build
 ```
 
-For production-capable operation, run the separate authenticated gate:
+For production-capable self-hosted operation, run the separate authenticated gate inside the configured web container:
 
 ```bash
-npm run preflight:production
+docker compose -f docker-compose.selfhost.yml exec -T web sh -c 'cd /app && node --experimental-strip-types tools/production-preflight.ts'
 ```
 
-> A passing build is not a production authorization. `preflight:production` exists to evaluate durable storage, configuration, migrations, and private-worker reachability in the real environment.
+> A passing build is not a production authorization. Production preflight evaluates durable storage, configuration, migrations, founder-contact encryption, and private-worker reachability from the real runtime environment.
 
 ## Repository map
 
