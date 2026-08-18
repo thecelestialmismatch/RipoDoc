@@ -1,4 +1,4 @@
-import type { ReportManifest } from './types.ts';
+import { findElement, type ReportManifest } from './types.ts';
 
 export interface ReportAuditSummary {
   readonly status: 'durable' | 'unavailable';
@@ -24,6 +24,34 @@ export interface ProofOperationsSnapshot {
   readonly sourceLabel: string;
   readonly sourceCapturedAt?: string;
   readonly coverage: readonly ProofCoverageItem[];
+}
+
+/**
+ * A deliberately narrow operator record for one selected evidence reference.
+ *
+ * This contract is safe to pass to the dashboard because it does not carry the
+ * recipient address, signed-link material, source query, audit events, or
+ * supporting evidence rows. It describes declared delivery posture only.
+ */
+export interface EvidenceDeliveryReceipt {
+  readonly reportId: string;
+  readonly version: number;
+  readonly reportTitle: string;
+  readonly publishedAt: string;
+  readonly status: 'ready' | 'attention';
+  readonly claimReference: {
+    readonly id: string;
+    readonly label: string;
+    readonly reviewer: string;
+    readonly approvedAt: string;
+  } | undefined;
+  readonly recipientReference: string;
+  readonly sourceDeclaration: string;
+  readonly sourceCapturedAt?: string;
+  readonly deliveryCondition: string;
+  /** Individual expiry is enforced per signed link and intentionally is not retained in a report manifest. */
+  readonly expiryCondition: string;
+  readonly audit: ReportAuditSummary;
 }
 
 const complete = (value: string | undefined): boolean => Boolean(value?.trim());
@@ -84,5 +112,46 @@ export const assessProofOperations = (report: ReportManifest): ProofOperationsSn
         state: recipientConfigured ? 'ready' : 'attention',
       },
     ],
+  };
+};
+
+/**
+ * Create an operator-facing receipt from existing immutable report facts and a
+ * report-level audit summary. No delivery is issued here, and this function
+ * must never be expanded to include recipient addresses, signed tokens, source
+ * queries, or evidence rows.
+ */
+export const createEvidenceDeliveryReceipt = (input: {
+  readonly report: ReportManifest;
+  readonly snapshot: ProofOperationsSnapshot;
+  readonly audit: ReportAuditSummary;
+  readonly elementId?: string;
+}): EvidenceDeliveryReceipt => {
+  const element = input.elementId ? findElement(input.report, input.elementId) : input.report.elements[0];
+  const provenance = element?.evidence.provenance;
+  const source = input.report.source;
+
+  return {
+    reportId: input.report.reportId,
+    version: input.report.version,
+    reportTitle: input.report.title,
+    publishedAt: input.report.publishedAt,
+    status: input.snapshot.state,
+    claimReference: element && provenance
+      ? {
+        id: element.id,
+        label: element.label,
+        reviewer: provenance.approvedBy,
+        approvedAt: provenance.approvedAt,
+      }
+      : undefined,
+    recipientReference: input.snapshot.recipientLabel,
+    sourceDeclaration: source && complete(source.system) && complete(source.description)
+      ? `${source.system} · ${source.description}`
+      : 'Source declaration needs attention',
+    sourceCapturedAt: source?.capturedAt,
+    deliveryCondition: 'Recipient proof is required before approved evidence rows render.',
+    expiryCondition: 'Expiry is enforced per recipient-bound delivery link; the immutable report manifest does not retain individual link deadlines.',
+    audit: input.audit,
   };
 };

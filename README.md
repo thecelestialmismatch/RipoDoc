@@ -60,7 +60,7 @@ Deliver the familiar PDF
 Reader opens a controlled proof view for that specific report claim
 ```
 
-The evidence view is designed to return **only the approved rows for the requested figure** after evaluating its access condition. Evidence access events can be added to a tamper-evident hash chain for later verification.
+The evidence view is designed to return **only the approved rows for the requested figure** after evaluating its access condition. Evidence access events can be added to a tamper-evident hash chain for later verification. Operators can also review an **Evidence Delivery Receipt** for a report version and selected claim: a recipient-safe record of declared source, review, delivery, expiry posture, and aggregate durable access activity when configured. It deliberately never shows recipient email addresses, signed-link material, source queries, or supporting rows.
 
 Explore the public [interactive claim sample](https://www.ripodoc.com/#sample-report), use the no-data [evidence-readiness check](https://www.ripodoc.com/report-evidence-readiness), or read the full [RipoDoc method](https://www.ripodoc.com/how-it-works).
 
@@ -136,7 +136,7 @@ RipoDoc can optionally synchronize an **explicitly consented founding-partner co
 | Reader proof | The intended reader completes a one-time code challenge delivered to the address represented by the signed recipient hash. |
 | Least-data delivery | The evidence view returns only the approved rows behind the requested figure, rather than a customer-wide export. |
 | Revocation and expiry | Individual token identifiers can be revoked; evidence claims have an explicit expiry. |
-| Audit integrity | Evidence-access events can be written to a SHA-256 hash chain and verified offline. |
+| Audit integrity | Evidence-access events can be written to a SHA-256 hash chain and verified offline; the operator receipt uses aggregate report-level counts only when durable summaries are configured. |
 | Workspace identity | Passwords use scrypt; sessions and codes are stored as keyed hashes; state changes require same-origin and CSRF validation. |
 | Abuse resistance | Production auth actions are rate-limited and use server-verified Turnstile when configured. Generic lifecycle responses reduce account-enumeration signals. |
 | PDF authoring boundary | A private worker accepts only single-use, short-lived, tenant-bound server capabilities. |
@@ -145,7 +145,7 @@ Read the [security-control page](https://www.ripodoc.com/security), [authenticat
 
 ## Verify a change
 
-The current regression suite contains **171 automated tests** for evidence, identity, tenant isolation, private-worker authorization, audit integrity, release posture, public-runtime contracts, privacy-preserving telemetry, the isolated CRM boundary, and mock-server EspoCRM protocol coverage.
+The current regression suite contains **172 automated tests** for evidence, identity, tenant isolation, private-worker authorization, audit integrity, receipt privacy boundaries, release posture, public-runtime contracts, privacy-preserving telemetry, the isolated CRM boundary, and mock-server EspoCRM protocol coverage.
 
 ```bash
 npm test              # Node built-in test runner
@@ -189,6 +189,7 @@ RipoDoc treats public claims as part of the product boundary. The following docu
 - [Ledger Edition design decision](docs/01-research/ledger-edition-design-reference.md)
 - [Launch market, competition, and buyer-needs research](docs/01-research/launch-market-competition-and-buyer-needs.md)
 - [Six-month launch-readiness operating plan](docs/00-strategy/launch-readiness-operating-plan.md)
+- [Adversarial market and design-partner execution plan](docs/00-strategy/ripodoc-adversarial-market-execution-plan-2026-08-18.md)
 - [RipoDoc entity card and commercial constraints](docs/00-strategy/ripodoc-entity-card.md)
 - [Competitive positioning and claim register](docs/01-research/competitive-positioning-and-claim-register.md)
 - [MSP discovery and design-partner protocol](docs/01-research/msp-discovery-and-design-partner-protocol.md)
