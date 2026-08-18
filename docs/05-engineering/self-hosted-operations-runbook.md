@@ -72,8 +72,8 @@ The expected topology has no published PostgreSQL port, a web port on `${RIPODOC
 | Identity | Signup, inbox verification, login, logout | Generic responses, verified-email gate, private session, and working logout. |
 | Operations role | Sign in as a verified `owner` or `admin` | `/admin` renders only tenant-scoped, privacy-safe operational data. |
 | Authoring boundary | Use a verified tenant operator through `/upload` | Browser talks only to `/api/authoring`; unsigned/direct worker requests are rejected. |
-| Durable audit chain | `RIPODOC_AUDIT_BACKEND=postgres` is present in the Compose web service; run `npm run preflight:production` from the reviewed source with the production environment. | Preflight confirms database reachability and the durable audit schema. For a self-hosted file-chain deployment, run `npm run audit:verify -- --path <durable-log-path>`. |
-| Founding-partner intake | Open `/founding-partners` only after production preflight is ready. | Form is protected by same-origin CSRF, CAPTCHA, rate limits, encrypted contact storage, and generic responses. |
+| Durable audit chain and schema | `RIPODOC_AUDIT_BACKEND=postgres` is present in the Compose web service; run the in-container command `docker compose -f docker-compose.selfhost.yml exec -T web sh -c 'cd /app && node --experimental-strip-types tools/production-preflight.ts'`. | Preflight runs in the real configured runtime and confirms database reachability plus durable-auth, audit, founder-evidence, and CRM-outbox tables, including `founding_partner_crm_syncs`. For a self-hosted file-chain deployment, run `npm run audit:verify -- --path <durable-log-path>`. |
+| Founding-partner intake | Set a distinct valid `RIPODOC_LEAD_ENCRYPTION_KEY` and open `/founding-partners` only after production preflight is ready. | Preflight confirms contact-encryption readiness; the form is protected by same-origin CSRF, CAPTCHA, rate limits, encrypted contact storage, and generic responses. |
 
 ## 2. Routine operations and observability
 
@@ -123,8 +123,8 @@ docker compose -f docker-compose.selfhost.yml images
 npm run verify
 npm run lint
 npm audit --omit=dev
-# With the reviewed production environment loaded, verify durable dependencies.
-npm run preflight:production
+# Verify durable dependencies inside the running production web container.
+docker compose -f docker-compose.selfhost.yml exec -T web sh -c 'cd /app && node --experimental-strip-types tools/production-preflight.ts'
 
 # Apply a reviewed release.
 git pull --ff-only

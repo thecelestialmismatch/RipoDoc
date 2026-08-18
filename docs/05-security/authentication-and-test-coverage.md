@@ -24,7 +24,7 @@ Signup and recovery are enumeration-resistant: they use one generic response and
 
 ## Automated verification results
 
-The repository uses Node’s built-in test runner. The fresh release gate completed **169 tests**, with **169 passed**, **0 failed**, **0 skipped**, **0 cancelled**, and **0 pending test markers**. The complete release gate adds strict TypeScript checking and the Next.js production build through `npm run verify`.[3]
+The repository uses Node’s built-in test runner. The fresh release gate completed **171 tests**, with **171 passed**, **0 failed**, **0 skipped**, **0 cancelled**, and **0 pending test markers**. The complete release gate adds strict TypeScript checking and the Next.js production build through `npm run verify`.[3]
 
 | Coverage area | What the current regression suite proves |
 | --- | --- |
