@@ -1,80 +1,55 @@
-# RipoDoc Launch Legal and Legacy Inventory
+# RipoDoc Launch-Control and Repository Inventory
 
-**Status:** Working launch-control record — not a legal policy.
-**Prepared:** 2026-08-13
-**Purpose:** This document separates verified implementation facts from legal and commercial decisions that have not been supplied. It prevents the public site from publishing invented contractual commitments.
+**Status:** Current working record as of 2026-08-18. This is an operational inventory, not a legal policy or legal advice.
 
-> **Launch rule:** RipoDoc must not present Terms, a Privacy Policy, a Cookie Policy, a Refund/Cancellation Policy, an SLA, a DPA, an entity name, a governing-law clause, a retention promise, or a support commitment as final until the accountable business owner supplies the corresponding facts and qualified counsel reviews the jurisdiction-specific draft.
+> **Launch rule:** RipoDoc must not represent draft or status information as final Terms, a Privacy Policy, a Cookie Policy, a Refund/Cancellation Policy, an SLA, a DPA, a legal notice, certification, or a healthcare commitment until the accountable business owner supplies the corresponding facts and qualified counsel reviews the jurisdiction-specific document.
 
-## 1. Current launch assessment
+## 1. Current launch position
 
 | Area | Verified status | Launch implication |
-|---|---|---|
-| Public website | `www.ripodoc.com` is live on Vercel and serves the current public product, security, self-hosted, and founding-partner pages. | A public legal hub and correctly linked policies are currently missing. |
-| Hosted account and prospect intake | The safe health response reports `auth: not-configured`; durable identity, email, CAPTCHA, durable audit, private worker, and founding-partner intake readiness are all false in the observed production environment. | The application is correctly fail-closed. Do not represent hosted accounts or contact intake as operational until production preflight passes. |
-| Customer processing architecture | The source supports a Next.js web application, PostgreSQL-backed identity and evidence metadata, an optional private authoring worker, Resend email delivery, and Cloudflare Turnstile verification. | The public privacy notice must describe the actual configured deployment, not every optional/self-hosted code path as though it were active. |
-| Commercial terms | No legal entity, registered address, jurisdiction, price, billing system, tax treatment, cancellation rule, refund approach, SLA target, support target, or service-credit model appears in the reviewed tracked material. | These facts must be supplied before any contractual policy is published. |
-| Policy pages | No tracked privacy, cookie, terms, refund, SLA, DPA, or legal-notice page exists. | The website is not legally launch-complete. |
-| Consent management | No third-party analytics or advertising SDK import is present in the reviewed frontend source. Security cookies are issued by the application. | A Cookie Policy is still required; whether a consent banner is required depends on the final deployment, jurisdiction, and non-essential technologies. |
+| --- | --- | --- |
+| Public website | `www.ripodoc.com` is live and presents the public product, security boundary, self-hosting route, founding-partner route, and legal-status hub. | Public discovery and founder-led discovery may continue. |
+| Hosted application | The public health surface reports the deployment is intentionally fail-closed until database, identity, canonical origin, email, CAPTCHA, durable audit, private worker, and encrypted founding-partner intake are configured. | Do not represent hosted workspace accounts, report authoring, or paid hosted delivery as operational. |
+| Legal hub | Pre-launch legal-status routes exist and explicitly avoid unsupported contractual promises. | These status pages are not customer contracts and do not remove the owner/counsel gates below. |
+| Customer-processing architecture | The code supports Next.js, PostgreSQL-backed identity/audit metadata, a private worker, Resend email, Turnstile, and optional isolated EspoCRM lead sync. | Public statements must describe only the deployed configuration, selected vendors, data regions, and approved retention rules. |
+| Commercial terms | No verified owner decision records for seller identity, registered address, jurisdiction, price, billing, tax, cancellation, refund, SLA, or service credits are present. | Do not accept paid hosted customers or publish commercial promises until these are decided and reviewed. |
+| CRM integration | EspoCRM is an optional one-way connector for explicitly consented founding-partner leads only. | It must remain separate from evidence, recipient, session, report, and audit boundaries. |
 
-## 2. Verified application data map
+## 2. Verified application data and browser-storage map
 
-| Activity | Data categories visible in source | Persistence / recipient | Verified implementation boundary |
-|---|---|---|---|
-| Workspace signup and login | Name, email address, password-derived scrypt hash, privacy-hashed IP, privacy-hashed user-agent, session hash, one-time token hash, role, tenant ID, security event outcome. | PostgreSQL when database configuration is enabled. Verification email is sent through Resend when configured. | `web/frontend/src/lib/auth/service.ts`, `web/frontend/src/lib/auth/email.ts` |
-| Password reset and email verification | Email address, one-time code in email body, HMAC-hashed code, privacy-hashed IP, audit outcome. | PostgreSQL and Resend when configured. Raw codes are not put in URLs. | `web/frontend/src/lib/auth/service.ts`, `web/frontend/src/lib/auth/email.ts` |
-| Recipient proof for report evidence | Intended-recipient email and one-time code, recipient hash, evidence-link claim metadata, access result. | PostgreSQL/selected audit sink and Resend when configured. | `web/frontend/src/lib/evidence/recipient-proof.ts`, `web/frontend/src/lib/evidence/audit.ts` |
-| Founding-partner diagnostic | Contact name, company name, email, company-size band, reporting-tool band, hosting-interest band, source, privacy-hashed IP and email. | PostgreSQL only when the dedicated AES-GCM lead key and production preflight are configured. The contact email is encrypted at rest. | `web/frontend/src/lib/founder/leads.ts`, `web/frontend/src/lib/founder/lead-crypto.ts` |
-| Report evidence | Approved evidence rows, provenance, report/recipient metadata, PDF and manifest data. | Self-hosted/local content root or configured worker and database paths, depending on deployment. | `web/frontend/src/lib/evidence/`, `docker/local/server.mjs` |
-| Anti-automation | Turnstile token and requesting IP address. | Cloudflare Turnstile verification endpoint only when configured in production. | `web/frontend/src/lib/auth/captcha.ts` |
+| Activity | Data categories visible in source | Persistence / recipient | Boundary that must remain true |
+| --- | --- | --- | --- |
+| Workspace identity | Name, email, scrypt password hash, privacy-hashed IP/user-agent, opaque session/token hashes, role, tenant ID, security outcomes. | PostgreSQL when configured; verification email via Resend. | No raw passwords or one-time values in database, URLs, or logs. |
+| Evidence recipient proof | Intended-recipient email and one-time code, recipient hash, evidence-claim metadata, access result. | PostgreSQL/selected audit sink and Resend when configured. | The raw token and broad evidence export remain outside audit/status records. |
+| Founding-partner intake | Contact, company, qualification data, source, privacy-hashed IP; consent flag. | PostgreSQL only when the dedicated AES-GCM lead key and preflight are configured. | Contact email remains encrypted at rest; no customer report data is accepted in public marketing forms. |
+| Optional CRM lead sync | Expressly consented founding-partner business-contact and qualification fields. | Separate EspoCRM Lead record through outbound HTTPS only. | No report, PDF, evidence, recipient, audit, session, or secret data enters CRM. |
+| Essential cookies | `ripodoc_session` and `ripodoc_csrf`. | Browser cookie storage. | Authentication and CSRF cookies remain strictly necessary; non-essential analytics/advertising/replay/chat must not be enabled without a separate review and consent decision. |
 
-## 3. Verified cookie and browser-storage facts
+## 3. Required owner decisions before paid hosted launch
 
-| Cookie / storage | Purpose | Key attributes visible in source | Legal classification still requiring jurisdiction review |
-|---|---|---|---|
-| `ripodoc_session` | Authenticated session. | `HttpOnly`, `SameSite=Strict`, `Secure` in production, path `/`, eight-hour maximum age. | Strictly necessary authentication cookie. |
-| `ripodoc_csrf` | Double-submit CSRF defense for state-changing same-origin requests. | `SameSite=Strict`, `Secure` in production, path `/`, one-hour maximum age; readable by the form client because it is compared with submitted token. | Strictly necessary security cookie. |
-| Third-party analytics / advertising cookies | None identified from reviewed frontend package imports or source imports. | No verified runtime analytics configuration. | Reassess before adding Vercel Analytics, tag managers, advertising pixels, session replay, A/B testing, or support chat. |
+| Decision | Exact information required |
+| --- | --- |
+| Seller identity | Legal entity, trading name, registration number, registered address, support/privacy contact, B2B/consumer scope, governing law, venue. |
+| Commercial model | Price, currency, billing cadence, tax model, cancellation timing, renewal, refund approach, trial policy, payment processor, and support model. |
+| Privacy operation | Controller/processor allocation, target jurisdictions, actual data/subprocessor inventory, storage region, retention/deletion schedule, data-subject request route, transfer terms, and model-training decision. |
+| Contract terms | Acceptable use, IP/licence model, warranty posture, liability cap, indemnity, suspension/termination, DPA/security schedule, and required customer commitments. |
+| Service operation | Availability target if any, maintenance, support hours/timezone, severity definitions, response targets, incident notification, backup/recovery objective, and service-credit decision. |
+| Production architecture | Hosting owner, PostgreSQL provider/region, TLS/reverse proxy, secret store, email sender, CAPTCHA account, worker host/network, monitoring, backup/restore operator, and incident owner. |
 
-## 4. Subprocessor and deployment facts
+## 4. Current repository hygiene findings
 
-| Provider / component | What source confirms | What is still unknown and must not be asserted publicly |
-|---|---|---|
-| Vercel | The public Next.js application is deployed on Vercel. | Customer contract, storage/processing region, log retention, and enabled Vercel products. |
-| PostgreSQL provider | The application requires PostgreSQL for durable hosted identity and optional durable audit / lead records. | Provider, region, backups, encryption posture, access controls, and retention settings. |
-| Resend | The code posts email recipient address, subject, and text body to `https://api.resend.com/emails` when configured. | Account owner, region, retention, suppression-list policy, and DPA terms in use. |
-| Cloudflare Turnstile | The code submits a token and remote IP to the Turnstile verification endpoint when configured. | Account owner, region, data-processing configuration, and any additional Cloudflare services enabled. |
-| Self-hosted MSP operator | The operator may run PostgreSQL, reverse proxy, storage, backups, email service, and the private worker. | The customer-specific deployment, contractual role allocation, and subprocessor list. |
+| Candidate | Verified finding | Decision |
+| --- | --- | --- |
+| Go/WorkOS runtime (`cmd/api`, `go.mod`, `implementation_plan.md`) | No such tracked runtime files or live references exist on the current branch. The older inventory was stale. | No deletion is required. |
+| Frontend dependencies | Current declared production dependencies are `next`, `react`, `react-dom`, `pg`, and `lucide-react`; the earlier broad unused-dependency claim is stale. | Retain current dependency manifest; keep running production dependency audit. |
+| Internal presentation and research projects under `var/` | These are local/internal research or collateral artifacts. Some are not committed; some historical material may contain hypotheses that are not public claims. | Retain until an explicit archival or collateral-review decision; do not publish as current product evidence. |
+| Generated audit review images and temporary build artefacts | They are local report-production artefacts, while the user-requested final PDFs and HTML audits are versioned under `docs/01-research/ripodoc-brutal-audit-2026-08-18/`. | Do not add duplicate build artefacts to the repository. |
+| Unreferenced public scaffold assets and old public duplicate | Next.js scaffold SVGs, unused `ripodoc-logo.jpeg`, and unused `public/reports/rpt-demo-0001.pdf` had no active code, metadata, documentation, test, or deployment reference; the frontend build passed after removal. | Removed in the current cleanup release. |
 
-## 5. Mandatory business facts before policies can be published
+## 5. Non-negotiable remaining launch blockers
 
-| Policy / document | Missing facts that the business owner must provide |
-|---|---|
-| Legal notice and Terms of Service | Legal entity, trading name, registration number, registered address, contact email, B2B/consumer scope, governing law, venue, age restriction, acceptable use, IP/license model, warranty posture, liability cap, indemnity model, suspension/termination rules. |
-| Privacy Policy | Controller identity, privacy contact, countries targeted, lawful bases, data-hosting region, complete subprocessor list, retention/deletion periods, data-subject request channel, cross-border transfer mechanism, and whether customer data is used for product improvement or model training. |
-| Cookie Policy | Jurisdictions targeted, final cookie inventory, Vercel products enabled, analytics/advertising/chat tools, consent-management decision, and withdrawal mechanism. |
-| Refund/Cancellation Policy | Price, currency, billing cadence, payment processor, trial, cancellation cutoff, renewal behavior, taxes, refund exceptions, statutory consumer-rights handling, and authorized refund discretion. |
-| SLA | Covered paid plan(s), uptime target, measurement window, exclusions, maintenance notice, support hours and timezone, severity definitions, response targets, service credits, cap, and claim process. |
-| DPA / Security Addendum | Controller/processor allocation, customer instructions, permitted subprocessor chain, breach notification target, audit rights, deletion/return commitment, transfer terms, and security schedule. |
-
-## 6. Legacy-code and artifact review
-
-| Candidate | Evidence | Decision | Safe next action |
-|---|---|---|---|
-| `cmd/api/**` and `go.mod` | Last changed in the 2026-08-06 Go-backend scaffold commit. Current Node/Next.js runtime scripts, Dockerfiles, Vercel deployment, migrations, tests, and web routes do not invoke Go. The Go entry point references a separate WorkOS-based architecture. | **Confirmed obsolete parallel runtime candidate.** | Remove only together with its stale implementation-plan references after a focused cleanup commit and full Node release gate. Do not delete database migrations that the current Node runtime uses. |
-| `implementation_plan.md` | Documents a planned Go/WorkOS/Stripe system that is not the deployed Node architecture and includes capabilities not implemented in the current product. Other historical research documents cite it. | **Historical planning artifact; misleading if presented as current product documentation.** | Replace cited current-state assertions with current architecture documents, move essential history into a labelled archive or remove it in the cleanup commit. |
-| `IDEA.md` | Still cited by current market and product research. It contains historical hypotheses and pricing assumptions. | **Not unused; contains research provenance.** | Retain but mark it historical/provisional; do not treat it as live commercial terms. |
-| `var/*_deck` and security decks | Tracked presentation projects used as sales/security collateral. Some contain old hypothetical pricing or outcome claims. | **Not runtime code, but public-claim risk.** | Retain as internal collateral only until each claim has evidence and the deck is re-reviewed. |
-| Standalone legacy logo JPEGs | No verified runtime import; the live application uses `web/frontend/public/ripodoc-mark.png`. Historical docs cite some of the image names. | **Likely obsolete brand-source candidates.** | Confirm no external distribution dependency, update historical references, then remove in a dedicated asset-cleanup commit. |
-| Unused frontend dependencies | Reviewed source imports only `lucide-react`, `next`, `pg`, and `react` / `react-dom` from the declared runtime dependency list. | **Confirmed dependency-cleanup candidates pending package-lock update.** | Remove unused Radix, animation, upload/PDF/chart, class utility, and ID packages only after a lockfile update and full production build/audit. |
-
-## 7. Non-negotiable launch blockers
-
-1. The business owner has not supplied the legal identity, governing jurisdiction, commercial terms, refund decision, SLA commitments, or complete privacy/subprocessor facts.
-2. The public Vercel deployment is intentionally not configured for hosted identity, private worker, durable audit, email, production CAPTCHA, or prospect intake. Its safe health endpoint reports the incomplete state.
-3. A legal hub alone cannot cure missing operational facts. Publishing fabricated retention, uptime, refund, or jurisdiction terms would create a worse launch risk than showing a clear pre-launch state.
-4. The Go/WorkOS scaffold and its implementation plan should be removed or clearly archived in the next cleanup release, after documentation references are updated and the Node release gate passes.
-
-## 8. Required owner decision record
-
-The owner must answer the items in Section 5 in writing before legal documents are published. Until then, legal routes may show a **pre-launch legal information notice** only; they must not imply that a contract or privacy notice is complete.
+1. The owner must supply the legal, commercial, and privacy-operation facts in Section 3 before paid hosted launch.
+2. Production preflight must pass against a configured database, origin, identity/email/CAPTCHA setup, PostgreSQL audit backend, private worker, and founding-partner encryption key.
+3. Backup/restore rehearsal, monitoring, rollback, secret-rotation, and incident-response ownership must exist in the selected production environment.
+4. The product needs paid MSP design-partner evidence before broad pricing, ROI, compliance, or market-fit claims are made.
+5. Stripe/payment activation remains outside the present work until the owner completes that configuration and its commercial/legal decisions.

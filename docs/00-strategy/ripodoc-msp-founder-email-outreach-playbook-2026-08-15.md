@@ -23,7 +23,9 @@ Personalization must be based on public, relevant business information—not spe
 | One real observation | Find one public, factual detail: their reporting/QBR language, vCIO practice, client portal, growth milestone, or service model. | A specific observation earns attention without pretending you know their internal workflow. |
 | Sender identity | Use a real founder name, role, company domain, and monitored reply inbox. | Early founder outreach should feel accountable and human. |
 | Clear CTA | Ask only for a short report teardown or permission to send the one-page method. | A small, concrete decision has lower friction than a generic demo request. |
-| Opt-out path | Add a simple line such as “If this is not relevant, reply ‘no’ and I will not follow up.” | Treat disinterest as a decision, not an objection to overcome. |
+| Opt-out path | Add the approved functional no-login opt-out instruction or URL to every commercial message; a monitored reply instruction alone is not enough unless counsel approves it for the target jurisdiction. | Treat disinterest as a decision, not an objection to overcome. |
+| Sender and address | Use the approved legal/trading sender name, monitored business reply address, and valid postal address where required. | Commercial messages must accurately identify the sender and meet applicable location/contact requirements. |
+| Jurisdiction and contact basis | Record `US`, `AU`, or `do-not-send-until-reviewed` and retain the approved contact basis. | Australian commercial email requires consent; do not treat public listing alone as permission. |
 
 ## Personalization worksheet
 
@@ -37,6 +39,14 @@ Write no more than two personalized sentences per account. The message should st
 | `{{report_question}}` | A likely but optional question, framed openly | `When a client asks which tickets sit behind an SLA number…` | State that a specific client has challenged them. |
 | `{{sender_name}}` | Actual sender | `Avery` | Use a fictional founder identity. |
 | `{{calendar_or_reply_path}}` | Real scheduling page or reply inbox | `Would a 15-minute teardown next week be useful?` | Send a scheduling link as the only call to action. |
+
+## Required commercial footer
+
+Do not send any message in this playbook until the business owner has supplied, and counsel has approved where appropriate, the following complete footer:
+
+> [Founder name]; [true legal or trading sender name]; [monitored reply email]; [valid postal address]; [required commercial-message disclosure, if applicable]; and a functional no-login opt-out instruction or URL.
+
+The footer is a required substitution, not an invitation to invent missing business facts. Hold Australian outreach until a defensible consent record is confirmed for each recipient.
 
 ## Sending cadence
 
@@ -196,8 +206,10 @@ A low reply rate does not automatically mean the positioning is wrong; a generic
 
 Before sending the first 20 messages, create a small founder-reviewed account list rather than a bulk campaign. For each account, save the source URL for `{{public_observation}}`, the date the message was sent, the sequence step, and the recipient’s reply state. Review the first 10 sends manually to ensure the message still reads as a human note and that every personalization is factual.
 
-The best outcome of the campaign is not a large reply count. It is a small number of real conversations that reveal whether the report-evidence problem occurs frequently enough, carries enough risk or effort, and matters enough to justify a paid pilot.
+The best outcome of the campaign is not a large reply count. It is a small number of real conversations that reveal whether the report-evidence problem occurs frequently enough, carries enough risk or effort, and matters enough to justify a paid pilot. Before Wednesday, use the companion [Wednesday outreach readiness checklist](ripodoc-wednesday-outreach-readiness-2026-08-18.md) to confirm sender, address, opt-out, jurisdiction, consent, and suppression controls.
 
 ## References
 
 [1]: [RipoDoc — Category-Visibility and Sales Enablement Report](https://github.com/thecelestialmismatch/RipoDoc/blob/main/docs/00-strategy/ripodoc-category-visibility-sales-enablement-2026-08-15.md)
+[2]: [Federal Trade Commission — CAN-SPAM Act: A Compliance Guide for Business](https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business)
+[3]: [Australian Communications and Media Authority — Avoid sending spam](https://www.acma.gov.au/avoid-sending-spam)
