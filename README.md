@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://www.ripodoc.com"><img src="web/frontend/public/ripodoc-mark.png" width="96" alt="RipoDoc website logo — controlled evidence delivery for MSP client reports" /></a>
+  <a href="https://www.ripodoc.com"><img src="web/frontend/public/ripodoc-mark.svg" width="96" alt="RipoDoc website logo — controlled evidence delivery for MSP client reports" /></a>
 </p>
 
 # RipoDoc
@@ -145,7 +145,7 @@ Read the [security-control page](https://www.ripodoc.com/security), [authenticat
 
 ## Verify a change
 
-The current regression suite contains **172 automated tests** for evidence, identity, tenant isolation, private-worker authorization, audit integrity, receipt privacy boundaries, release posture, public-runtime contracts, privacy-preserving telemetry, the isolated CRM boundary, and mock-server EspoCRM protocol coverage.
+The current regression suite contains **176 automated tests** for evidence, identity, tenant isolation, private-worker authorization, audit integrity, receipt privacy boundaries, release posture, public-runtime contracts, privacy-preserving telemetry, the isolated CRM boundary, and mock-server EspoCRM protocol coverage.
 
 ```bash
 npm test              # Node built-in test runner
@@ -174,27 +174,14 @@ web/frontend/                         Next.js App Router product, public site, c
 tools/evidence-pdf/                   PDF generation, overlay engine, fixtures and regression tests
 docker/local/                         Private local/self-hosted PDF authoring worker
 migrations/                           PostgreSQL durable identity and evidence-record schema
-docs/01-research/                     Research, claim register, discovery protocol and public-experience baseline
 docs/05-security/                     Threat models, test coverage, advisory and supply-chain evidence
 docs/05-engineering/                  Self-hosted operations and EspoCRM integration guides
 deploy/espocrm/                       Separate EspoCRM Compose deployment and CRM integration runbook
 ```
 
-## Research, claims and healthcare boundary
+## Public claims and healthcare boundary
 
-RipoDoc treats public claims as part of the product boundary. The following documents distinguish verified implementation facts from hypotheses or decisions that need accountable owner and counsel review:
-
-- [Public experience and discovery baseline](docs/01-research/public-experience-and-discovery-baseline.md)
-- [Search-discovery and authority audit](docs/01-research/next-release-authority-audit.md)
-- [Ledger Edition design decision](docs/01-research/ledger-edition-design-reference.md)
-- [Launch market, competition, and buyer-needs research](docs/01-research/launch-market-competition-and-buyer-needs.md)
-- [Six-month launch-readiness operating plan](docs/00-strategy/launch-readiness-operating-plan.md)
-- [Adversarial market and design-partner execution plan](docs/00-strategy/ripodoc-adversarial-market-execution-plan-2026-08-18.md)
-- [RipoDoc entity card and commercial constraints](docs/00-strategy/ripodoc-entity-card.md)
-- [Competitive positioning and claim register](docs/01-research/competitive-positioning-and-claim-register.md)
-- [MSP discovery and design-partner protocol](docs/01-research/msp-discovery-and-design-partner-protocol.md)
-- [Counsel-review launch policy packet](docs/06-legal/counsel-review-launch-policy-packet.md)
-- [Healthcare Mode B statement](https://www.ripodoc.com/legal/healthcare-mode-b)
+RipoDoc publishes only product behavior, technical controls, and evaluation boundaries that can be verified in the public application or source. Commercial strategy, market analysis, outreach operations, legal-review working papers, customer/pilot decisions, and launch artefacts are maintained privately and are not part of this repository.
 
 **Healthcare Mode B** is a restricted evaluation and self-hosted posture. It is **not** HIPAA certification, a BAA, or a representation that the public RipoDoc service accepts or processes PHI/ePHI. Read the [public boundary statement](https://www.ripodoc.com/legal/healthcare-mode-b) before evaluating healthcare use cases.
 
