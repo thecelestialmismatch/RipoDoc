@@ -125,7 +125,7 @@ Read the [self-hosted operations runbook](docs/05-engineering/self-hosted-operat
 
 ### Optional: isolated sales CRM
 
-RipoDoc can optionally synchronize an **explicitly consented founding-partner contact request** to a separately deployed EspoCRM instance. The CRM is not co-hosted with RipoDoc and is not part of the evidence-delivery path. It receives only business-development fields; it never receives report content, source rows, evidence tokens, recipient proof, audit records, or application secrets. Read the [isolated EspoCRM deployment and integration runbook](deploy/espocrm/README.md) before enabling it.
+RipoDoc can optionally synchronize an **explicitly consented founding-partner contact request** to a separately deployed EspoCRM instance. The CRM is not co-hosted with RipoDoc and is not part of the evidence-delivery path. It receives only business-development fields; it never receives report content, source rows, evidence tokens, recipient proof, audit records, or application secrets. Read the [EspoCRM deployment runbook](deploy/espocrm/README.md) and the complete [EspoCRM operator and API integration guide](docs/05-engineering/espocrm-integration-guide.md) before enabling it.
 
 ## Security model at a glance
 
@@ -144,7 +144,7 @@ Read the [security-control page](https://www.ripodoc.com/security), [authenticat
 
 ## Verify a change
 
-The current regression suite contains **164 automated tests** for evidence, identity, tenant isolation, private-worker authorization, audit integrity, release posture, public-runtime contracts, privacy-preserving telemetry, and the isolated CRM boundary.
+The current regression suite contains **169 automated tests** for evidence, identity, tenant isolation, private-worker authorization, audit integrity, release posture, public-runtime contracts, privacy-preserving telemetry, the isolated CRM boundary, and mock-server EspoCRM protocol coverage.
 
 ```bash
 npm test              # Node built-in test runner
@@ -175,7 +175,7 @@ docker/local/                         Private local/self-hosted PDF authoring wo
 migrations/                           PostgreSQL durable identity and evidence-record schema
 docs/01-research/                     Research, claim register, discovery protocol and public-experience baseline
 docs/05-security/                     Threat models, test coverage, advisory and supply-chain evidence
-docs/05-engineering/                  Self-hosted operations runbook
+docs/05-engineering/                  Self-hosted operations and EspoCRM integration guides
 deploy/espocrm/                       Separate EspoCRM Compose deployment and CRM integration runbook
 ```
 
