@@ -8,6 +8,13 @@ const edgeCsrfToken = (): string => {
   return btoa(String.fromCharCode(...bytes)).replaceAll('+', '-').replaceAll('/', '_').replaceAll('=', '');
 };
 
+const scriptSources = [
+  "'self'",
+  "'unsafe-inline'",
+  ...(process.env.NODE_ENV === 'development' ? ["'unsafe-eval'"] : []),
+  'https://challenges.cloudflare.com',
+].join(' ');
+
 const CSP = [
   "default-src 'self'",
   "base-uri 'self'",
@@ -17,7 +24,7 @@ const CSP = [
   "img-src 'self' data: blob:",
   "font-src 'self' data:",
   "style-src 'self' 'unsafe-inline'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com",
+  `script-src ${scriptSources}`,
   "frame-src https://challenges.cloudflare.com",
   "connect-src 'self' https://challenges.cloudflare.com",
   "upgrade-insecure-requests",

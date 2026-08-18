@@ -1,59 +1,69 @@
 # Authentication Architecture and Test Coverage
 
 **Maintainer:** Manus AI
-**Release baseline:** Worker-hardening release branch based on PR #8, merged commit `f316e1e`
+
+**Release baseline:** Main branch after PR #36, plus locally verified CSP and dependency remediation pending this release
+
 **Validation command:** `npm run verify`
 
 ## Authentication architecture
 
-RipoDoc’s workspace identity boundary is implemented in **TypeScript** on the **Next.js 16 App Router** server runtime. The design intentionally keeps password verification, session minting, one-time code handling, rate limits, and email delivery out of browser code. Node.js `crypto` supplies `scrypt`, `randomBytes`, HMAC-SHA-256, and constant-time equality; PostgreSQL is the durable source of truth; and `pg` uses parameterized queries and explicit transactions for state transitions.[1] [2]
+RipoDoc’s workspace identity boundary is implemented in **TypeScript** on the **Next.js 16 App Router** server runtime. Password verification, session minting, one-time code handling, rate limits, and email delivery stay outside browser code. Node.js `crypto` supplies `scrypt`, `randomBytes`, HMAC-SHA-256, and constant-time equality; PostgreSQL is the durable source of truth; and `pg` uses parameterized queries and explicit transactions for state transitions.[1] [2]
 
 | Component | Responsibility | Principal source |
 | --- | --- | --- |
-| Next.js App Router and middleware | Provides server routes, request-bound cookies, redirects, CSRF cookie issuance, and global browser security headers. | [`web/frontend/src/app/api/auth/[action]/route.ts`](../../web/frontend/src/app/api/auth/[action]/route.ts), [`web/frontend/src/middleware.ts`](../../web/frontend/src/middleware.ts) |
+| Next.js App Router and request proxy | Provides server routes, request-bound cookies, redirects, CSRF cookie issuance, and global browser security headers. | [`web/frontend/src/app/api/auth/[action]/route.ts`](../../web/frontend/src/app/api/auth/[action]/route.ts), [`web/frontend/src/proxy.ts`](../../web/frontend/src/proxy.ts) |
 | Node.js `crypto` | Implements memory-hard scrypt password derivation, 32-byte random opaque values, HMAC hashing for stored secrets, and timing-safe comparison. | [`web/frontend/src/lib/auth/primitives.ts`](../../web/frontend/src/lib/auth/primitives.ts) |
-| PostgreSQL through `pg` | Stores tenant users, password hashes, sessions, one-time codes, rate-limit buckets, audit events, and tenant report records. Parameterized statements prevent value interpolation in SQL. | [`web/frontend/src/lib/auth/database.ts`](../../web/frontend/src/lib/auth/database.ts), [`migrations/008_create_auth_and_workspace.sql`](../../migrations/008_create_auth_and_workspace.sql) |
+| PostgreSQL through `pg` | Stores tenant users, password hashes, sessions, one-time codes, rate-limit buckets, audit events, tenant report records, and CRM-sync outbox state. Parameterized statements prevent value interpolation in SQL. | [`web/frontend/src/lib/auth/database.ts`](../../web/frontend/src/lib/auth/database.ts), [`migrations/008_create_auth_and_workspace.sql`](../../migrations/008_create_auth_and_workspace.sql), [`migrations/010_create_founding_partner_crm_sync.sql`](../../migrations/010_create_founding_partner_crm_sync.sql) |
 | Resend HTTPS API | Delivers verification, password-reset, and recipient-proof codes; raw codes remain in the email body and are never persisted or placed in URLs. | [`web/frontend/src/lib/auth/email.ts`](../../web/frontend/src/lib/auth/email.ts) |
 | Cloudflare Turnstile | Performs server-side production anti-automation verification before auth actions are processed. | [`web/frontend/src/lib/auth/captcha.ts`](../../web/frontend/src/lib/auth/captcha.ts) |
 
-The implementation closes the five high-priority authentication controls in the accompanying request. Signup and recovery are enumeration-resistant: they use one generic response and a response-time floor; login verifies a fixed dummy scrypt hash when the account lookup fails. Rate limits are persisted by both privacy-hashed address and privacy-hashed IP, and Turnstile is mandatory in production. Email verification is required before a user can receive a valid session. Passwords never leave the scrypt representation. Verification, reset, and recipient-proof codes are 32-byte random values, stored only as keyed HMACs, consumed atomically, and expire after 30 minutes.[1] [2]
+Signup and recovery are enumeration-resistant: they use one generic response and a response-time floor; login verifies a fixed dummy scrypt hash when account lookup fails. Rate limits are persisted by both privacy-hashed address and privacy-hashed IP, and Turnstile is mandatory in production. Email verification is required before a user can receive a valid session. Passwords never leave the scrypt representation. Verification, reset, and recipient-proof codes are 32-byte random values, stored only as keyed HMACs, consumed atomically, and expire after 30 minutes.[1] [2]
 
 > **Fail-closed hosting rule.** The hosted workspace does not accept durable account actions until PostgreSQL, the application origin, a 32-character authentication secret, Resend credentials, sender identity, and production Turnstile configuration are supplied. This avoids an insecure fallback to ephemeral filesystem state or unactioned email delivery.[2]
 
 ## Automated verification results
 
-The repository uses Node’s built-in test runner. Its production test command executes all 15 first-party test files, including a real local-worker integration test. The latest run completed **139 tests**, with **139 passed**, **0 failed**, **0 skipped**, and **0 todo**. The complete release gate adds strict TypeScript checking and the Next.js production build through `npm run verify`.[3]
+The repository uses Node’s built-in test runner. The fresh release gate completed **169 tests**, with **169 passed**, **0 failed**, **0 skipped**, **0 cancelled**, and **0 pending test markers**. The complete release gate adds strict TypeScript checking and the Next.js production build through `npm run verify`.[3]
 
-| Security coverage area | Tests | What this proves |
-| --- | ---: | --- |
-| Authentication, workspace runtime, protected dashboard/download workflow, role-bound operator posture, and founding-partner production contracts | 11 | Scrypt and opaque-token primitives work; protected runtime posture avoids secret exposure; the retired deployment-wide admin key is not surfaced; the dashboard remains backed by a verified tenant query; and the download route documents server-only worker configuration. New contracts prove same-origin/CAPTCHA-gated founding-partner intake, encrypted contact storage, durable audit migration content, and explicit production-preflight dependencies. |
-| Evidence authorization and expiry | 16 | Evidence claims are signed, recipient-hash-bound, expiry-checked, revocable, report-scoped, and recipient-safe on denial. |
-| Manifest and fixture validation | 16 | Published input is structurally validated, unsafe or duplicate element IDs are rejected, approvals are mandatory, and malformed report fields cannot reach rendering. |
-| Hash-chained audit trail | 11 | Audit history detects tampering, protects recipient identity, remains verifiable across reopen/append operations, and records access outcomes. |
-| Reviewed overlay publication workflow | 57 | Exact-PDF binding, review approvals, element mapping, placement bounds, proposal parsing, link generation, and readback are enforced. |
-| PDF construction and safe delivery | 27 | PDF serialization escapes untrusted values; external URLs must be HTTPS; unsafe rectangles and JavaScript are refused; evidence rows remain out of final PDFs. |
-| Private worker authorization and publication boundary | 1 | The worker rejects direct browser and unsigned requests, validates a server-issued tenant/scope/draft capability, prevents cross-tenant proposal access, records the server reviewer rather than trusting browser approval strings, rejects wrong-purpose publish attempts, validates PDF bytes, and yields only the digest-checked approved PDF artifact. |
-| **Total** | **139** | Complete shipped regression suite. |
+| Coverage area | What the current regression suite proves |
+| --- | --- |
+| Authentication and workspace runtime | Scrypt and opaque-token primitives work; protected runtime posture avoids secret exposure; the retired deployment-wide admin key is not surfaced; tenant query and encrypted-contact contracts remain covered. |
+| Evidence authorization and expiry | Evidence claims are signed, recipient-hash-bound, expiry-checked, revocable, report-scoped, and recipient-safe on denial. |
+| Manifest, source, and operations assessment | Published input is structurally validated, unsafe or duplicate element IDs are rejected, approvals are mandatory, and proof-operations readiness is derived from manifest facts. |
+| Hash-chained audit trail | Audit history detects tampering, protects recipient identity, remains verifiable across reopen/append operations, and records access outcomes. |
+| Reviewed overlay publication workflow | Exact-PDF binding, review approvals, element mapping, placement bounds, proposal parsing, link generation, and readback are enforced. |
+| PDF construction and safe delivery | PDF serialization escapes untrusted values; external URLs must be HTTPS; unsafe rectangles and JavaScript are refused; evidence rows remain out of final PDFs. |
+| Private worker authorization | The worker rejects direct browser and unsigned requests, validates a server-issued tenant/scope/draft capability, prevents cross-tenant proposal access, records the server reviewer, validates PDF bytes, and yields only a digest-checked approved artifact. |
+| EspoCRM consent boundary and protocol | CRM payloads exclude evidence data; loopback/private targets are blocked; HMAC authorization and least-data mapping are covered; a local mock server exercises lookup/create/update, remote rejection, timeout classification, and non-blocking outbox outcomes. |
+| Discovery and telemetry safety | IndexNow payload validation and privacy-preserving Web Vitals request validation are covered. |
 
 ## File-by-file test inventory
 
-| Test file | Tests | Security and product coverage |
-| --- | ---: | --- |
-| `tools/evidence-pdf/test/auth-primitives.test.ts` | 2 | Scrypt derivation/verification and random token or privacy-hash behavior. |
-| `tools/evidence-pdf/test/application-runtime.test.ts` | 9 | Valid manifest discovery, secret-safe security posture, regression protection against exposing the retired deployment-wide admin key, server-only self-hosted download guidance, dashboard tenant-query contract coverage, protected founding-partner intake contract, durable audit/founder-evidence schema contract, production-preflight contract, and authenticated encrypted-contact round trip. |
-| `tools/evidence-pdf/test/audit.test.ts` | 11 | Hash chaining, tamper detection, concurrent appends, restart behavior, structured sink, and no raw recipient email in audit records. |
-| `tools/evidence-pdf/test/demo-fixture.test.ts` | 3 | Shipped fixture validity and production-ready evidence source structure. |
-| `tools/evidence-pdf/test/link-expiry.test.ts` | 4 | Time-bound claim expiry, control behavior, and denial semantics. |
-| `tools/evidence-pdf/test/manifest.test.ts` | 13 | Schema validation, approvals, IDs, timestamps, recipients, reports, rows, and charts. |
-| `tools/evidence-pdf/test/overlay-locate.test.ts` | 11 | Deterministic placement discovery and bounded candidate zones. |
-| `tools/evidence-pdf/test/overlay-plan.test.ts` | 8 | Approval gates, unknown/missing placements, page bounds, exact-PDF binding, round trips, and malformed plan rejection. |
-| `tools/evidence-pdf/test/overlay-reader.test.ts` | 18 | Reading generated overlays without expanding the authorized link surface. |
-| `tools/evidence-pdf/test/overlay-sample.test.ts` | 6 | Sample overlay generation and reviewed source-report fidelity. |
-| `tools/evidence-pdf/test/overlay-writer.test.ts` | 14 | Safe annotation writing, coordinates, links, and document integrity. |
-| `tools/evidence-pdf/test/pdf.test.ts` | 18 | PDF escaping, link annotations, HTTPS requirement, zero-area refusal, loopback restriction, deterministic output, and xref integrity. |
-| `tools/evidence-pdf/test/report.test.ts` | 9 | Complete report links, on-page geometry, zero embedded evidence rows, no JavaScript, secure origin enforcement, and URL encoding. |
-| `tools/evidence-pdf/test/token.test.ts` | 12 | HMAC claim integrity, recipient privacy binding, wrong-secret/tamper refusal, revocation, report scope, malformed tokens, and recipient-safe errors. |
-| `docker/local/server.test.mjs` | 1 | End-to-end private-worker flow covering direct-browser rejection, missing authorization, invalid PDF rejection, tenant isolation, capability scope enforcement, server-bound review attribution, safe failures, publication, and PDF download. |
+The current release command executes **19 TypeScript test files** plus **one private-worker Node integration test file**. Test count is reported from the executed release gate rather than manually summed from this inventory, because individual test files can evolve independently.
+
+| Test file | Security and product coverage |
+| --- | --- |
+| `application-runtime.test.ts` | Valid manifest discovery, secret-safe posture, retired admin-key regression protection, self-hosted guidance, dashboard tenant-query contract, founding-partner intake, durable audit schema, preflight dependencies, and encrypted-contact round trip. |
+| `audit.test.ts` | Hash chaining, tamper detection, concurrent appends, restart behavior, structured sink, and no raw recipient email in audit records. |
+| `auth-primitives.test.ts` | Scrypt derivation/verification and random token or privacy-hash behavior. |
+| `demo-fixture.test.ts` | Shipped fixture validity and evidence source structure. |
+| `espocrm-mock-integration.test.ts` | Local HTTP mock-server coverage of HMAC authorization, lookup/create/update, rejection retry, timeout, and unclaimed outbox behavior. |
+| `espocrm.test.ts` | CRM address blocking, HMAC authorization shape, and least-data payload mapping. |
+| `indexnow.test.ts` | Discovery payload validation and safe submission contract. |
+| `link-expiry.test.ts` | Time-bound claim expiry, control behavior, and denial semantics. |
+| `manifest.test.ts` | Schema validation, approvals, IDs, timestamps, recipients, reports, rows, and charts. |
+| `operations.test.ts` | Manifest-derived proof-operations assessment and bounded readiness findings. |
+| `overlay-locate.test.ts` | Deterministic placement discovery and bounded candidate zones. |
+| `overlay-plan.test.ts` | Approval gates, unknown/missing placements, page bounds, exact-PDF binding, round trips, and malformed-plan rejection. |
+| `overlay-reader.test.ts` | Reading generated overlays without expanding the authorized link surface. |
+| `overlay-sample.test.ts` | Sample overlay generation and reviewed source-report fidelity. |
+| `overlay-writer.test.ts` | Safe annotation writing, coordinates, links, and document integrity. |
+| `pdf.test.ts` | PDF escaping, link annotations, HTTPS requirement, zero-area refusal, loopback restriction, deterministic output, and xref integrity. |
+| `report.test.ts` | Complete report links, on-page geometry, zero embedded evidence rows, no JavaScript, secure origin enforcement, and URL encoding. |
+| `token.test.ts` | HMAC claim integrity, recipient privacy binding, wrong-secret/tamper refusal, revocation, report scope, malformed tokens, and recipient-safe errors. |
+| `web-vitals.test.ts` | Anonymous Web Vitals request validation and field bounds. |
+| `docker/local/server.test.mjs` | End-to-end private-worker flow covering direct-browser rejection, missing authorization, invalid PDF rejection, tenant isolation, capability scope enforcement, server-bound review attribution, safe failures, publication, and PDF download. |
 
 ## Running the release gate
 
@@ -65,7 +75,9 @@ npm run build:web
 npm run verify
 ```
 
-The canonical `verify` command runs `typecheck`, then the 139-test suite, then the production frontend build. It should be the minimum pre-merge gate for any change that affects authorization, user identity, evidence claims, manifests, audit behavior, PDF rendering, worker ingress, private operations access, or the protected dashboard/download workflow.[3]
+The canonical `verify` command runs strict type checking, the **169-test** suite, and the production frontend build. It is the minimum pre-merge gate for a change that affects authorization, identity, evidence claims, manifests, audit behavior, PDF rendering, worker ingress, private operations, CRM boundaries, telemetry, or protected dashboard/download workflows.[3]
+
+> **Scope limit.** Passing tests prove the checked contract. They do not establish that the public hosted environment has all production configuration, that a real customer has completed the workflow, that a real EspoCRM tenant has been configured, or that an independent security assessment has occurred.
 
 ## References
 
