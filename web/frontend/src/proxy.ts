@@ -39,6 +39,7 @@ export function proxy(request: NextRequest) {
   response.headers.set('X-Frame-Options', 'DENY');
   response.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
   response.headers.set('Cross-Origin-Resource-Policy', 'same-origin');
+  response.headers.set('X-Permitted-Cross-Domain-Policies', 'none');
   if (request.nextUrl.pathname.startsWith(TOKENIZED_EVIDENCE_PREFIX)) {
     response.headers.set('X-Robots-Tag', PRIVATE_ROBOTS_POLICY);
   }
