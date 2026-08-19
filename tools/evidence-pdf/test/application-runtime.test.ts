@@ -364,6 +364,7 @@ test('discovery and authentication boundaries explicitly separate indexable publ
   assert.match(sitemap, /const lastSignificantUpdate = new Date\(\)/);
   assert.match(sitemap, /\/about/);
   assert.match(sitemap, /\/report-diagnostic-starter-kit/);
+  assert.match(sitemap, /\/monte-carlo-scenario-lab/);
   assert.match(sitemap, /\/guides\/msp-client-reporting-qbr-metric-evidence/);
   assert.match(about, /RipoDoc is controlled evidence delivery for MSP client reports/);
   assert.match(about, /AboutPage/);
@@ -539,4 +540,35 @@ test('public brand lockups preserve the approved mark and Clear Proof light/dark
   assert.match(footer, /Explore self-hosting/);
   assert.doesNotMatch(footer, /github\.com\/thecelestialmismatch\/RipoDoc/);
   assert.doesNotMatch(footer, /Final curtain/);
+});
+
+
+test('Monte Carlo Scenario Lab remains a seeded browser-only public fixture tool with live controls and explicit boundaries', async () => {
+  const [page, lab, nav, footer, styles] = await Promise.all([
+    readFile(new URL('../../../web/frontend/src/app/monte-carlo-scenario-lab/page.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../../../web/frontend/src/components/marketing/MonteCarloScenarioLab.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../../../web/frontend/src/components/Navbar.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../../../web/frontend/src/components/Footer.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../../../web/frontend/src/app/globals.css', import.meta.url), 'utf8'),
+  ]);
+  assert.match(page, /MonteCarloScenarioLab/);
+  assert.match(page, /Monte Carlo Scenario Lab/);
+  assert.match(page, /canonical: '\/monte-carlo-scenario-lab'/);
+  assert.match(lab, /mulberry32/);
+  assert.match(lab, /const PATH_OPTIONS = \[1000, 2500, 5000, 10000\]/);
+  assert.match(lab, /seeded browser engine/);
+  assert.match(lab, /LIVE PERCENTILE ENVELOPE/);
+  assert.match(lab, /P10–P90 fixture-path output/);
+  assert.match(lab, /END-HORIZON SENSITIVITY/);
+  assert.match(lab, /Export current scenario/);
+  assert.match(lab, /All computation stays in this browser/);
+  assert.match(lab, /not customer data, a prediction, a probability of real-world performance/);
+  assert.match(lab, /role="img"/);
+  assert.match(lab, /aria-live="polite"/);
+  assert.doesNotMatch(lab, /fetch\(|\/api\/|process\.env|github\.com\/thecelestialmismatch\/RipoDoc/);
+  assert.match(nav, /href: '\/monte-carlo-scenario-lab', label: 'Scenario lab'/);
+  assert.match(footer, /href: '\/monte-carlo-scenario-lab', label: 'Monte Carlo Scenario Lab'/);
+  assert.match(styles, /\.scenario-lab \{/);
+  assert.match(styles, /\.scenario-controls \{/);
+  assert.match(styles, /@media \(max-width:980px\)/);
 });

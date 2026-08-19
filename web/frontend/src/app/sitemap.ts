@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: baseUrl, lastModified: lastSignificantUpdate, changeFrequency: 'weekly', priority: 1 },
     { url: `${baseUrl}/how-it-works`, lastModified: lastSignificantUpdate, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${baseUrl}/for-msps`, lastModified: lastSignificantUpdate, changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${baseUrl}/monte-carlo-scenario-lab`, lastModified: lastSignificantUpdate, changeFrequency: 'monthly', priority: 0.85 },
     { url: `${baseUrl}/report-evidence-readiness`, lastModified: lastSignificantUpdate, changeFrequency: 'monthly', priority: 0.85 },
     { url: `${baseUrl}/report-diagnostic-starter-kit`, lastModified: lastSignificantUpdate, changeFrequency: 'monthly', priority: 0.85 },
     { url: `${baseUrl}/guides/msp-client-reporting-qbr-metric-evidence`, lastModified: lastSignificantUpdate, changeFrequency: 'monthly', priority: 0.9 },
