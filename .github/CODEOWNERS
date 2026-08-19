@@ -1,0 +1,5 @@
+# Every change to this security-sensitive evidence-delivery system has a clear
+# accountable review owner. Branch protection is unavailable on the current
+# private-repository tier, so this file documents the required ownership path
+# for collaborators and future policy upgrades.
+* @thecelestialmismatch
