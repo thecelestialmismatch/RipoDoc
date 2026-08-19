@@ -401,9 +401,9 @@ test('MSP launch page keeps explicit responsive ratios and page-level overflow p
   assert.match(page, /lg:grid-cols-\[minmax\(0,\.72fr\)_minmax\(0,1\.28fr\)\]/);
   assert.match(page, /lg:grid-cols-\[minmax\(0,1\.12fr\)_minmax\(18rem,\.88fr\)\]/);
   assert.match(page, /lg:grid-cols-3/);
-  assert.match(styles, /\.ledger-page \{ min-width: 0; overflow-x: clip; \}/);
-  assert.match(styles, /\.ledger-wrap \{ box-sizing: border-box; margin-inline: auto; max-width: 84rem; padding-inline: 1\.25rem; width: 100%; \}/);
-  assert.match(styles, /@media \(min-width: 1024px\) \{\n  \.ledger-wrap \{ padding-inline: 2rem; \}/);
+  assert.match(styles, /\.stage-page, \.ledger-page \{ background: var\(--background\); min-width: 0; overflow-x: clip; \}/);
+  assert.match(styles, /\.stage-wrap, \.ledger-wrap \{ box-sizing: border-box; margin-inline: auto; max-width: 76rem; padding-inline: 1\.25rem; width: 100%; \}/);
+  assert.match(styles, /@media \(min-width: 900px\) \{ \.clear-wrap, \.stage-wrap, \.ledger-wrap \{ padding-inline: 2rem; \}/);
 });
 
 test('shared application shell and self-host page preserve the sitewide mobile gutter boundary', async () => {
@@ -480,14 +480,15 @@ test('homepage keeps the interactive proof fixture out of the critical response 
   assert.match(fixture, /<SampleReport manifest=\{manifest\} \/>/);
 });
 
-test('homepage red surfaces keep normal body and CTA detail text above the measured contrast threshold', async () => {
+test('from-scratch homepage keeps the clarity-first proof path and safe sample boundary', async () => {
   const home = await readFile(new URL('../../../web/frontend/src/app/page.tsx', import.meta.url), 'utf8');
 
-  assert.doesNotMatch(home, /text-\[#f8f0df\]\/88/);
-  assert.doesNotMatch(home, /text-\[#f8f0df\]\/86/);
-  assert.doesNotMatch(home, /text-\[#f8f0df\]\/82/);
-  assert.doesNotMatch(home, /highlight \? 'text-\[#f8f0df\]\/78'/);
-  assert.match(home, /text-\[#141111\]/);
+  assert.match(home, /clear-page/);
+  assert.match(home, /Make every report claim/);
+  assert.match(home, /clear-proof-preview/);
+  assert.match(home, /clear-sample-section/);
+  assert.match(home, /The public site never asks you to upload a client report/);
+  assert.doesNotMatch(home, /Final curtain|Act II|The old scene/);
 });
 
 test('repository governance defines an accountable owner and recurring dependency maintenance', async () => {
@@ -501,17 +502,18 @@ test('repository governance defines an accountable owner and recurring dependenc
   assert.match(dependabot, /interval: weekly/);
 });
 
-test('public brand lockups preserve dark-surface legibility and red-surface accessible contrast', async () => {
+test('public brand lockups preserve the approved mark and Clear Proof light/dark surface treatment', async () => {
   const footer = await readFile(new URL('../../../web/frontend/src/components/Footer.tsx', import.meta.url), 'utf8');
   const brandLockup = await readFile(new URL('../../../web/frontend/src/components/BrandLockup.tsx', import.meta.url), 'utf8');
 
   assert.match(footer, /<BrandLockup showDescriptor inverse \/>/);
   assert.match(brandLockup, /readonly inverse\?: boolean/);
   assert.match(brandLockup, /readonly onAccent\?: boolean/);
-  assert.match(brandLockup, /onAccent \? 'text-\[#141111\]' : 'text-\[#fffdf8\]'/);
+  assert.match(brandLockup, /onAccent \? 'text-\[#0f1b2d\]' : 'text-\[#ffffff\]'/);
   assert.match(brandLockup, /const iconFrame = compact \? 'h-9 w-9 sm:h-10 sm:w-10' : 'h-12 w-12';/);
   assert.match(brandLockup, /className="block h-full w-full object-contain"/);
   assert.match(footer, /<Link href="\/download"/);
-  assert.match(footer, /Review the self-hosted build/);
+  assert.match(footer, /Explore self-hosting/);
   assert.doesNotMatch(footer, /github\.com\/thecelestialmismatch\/RipoDoc/);
+  assert.doesNotMatch(footer, /Final curtain/);
 });
