@@ -205,7 +205,8 @@ test('production preflight makes durable hosted dependencies explicit without se
   assert.match(preflight, /RIPODOC_AUDIT_BACKEND/);
   assert.match(preflight, /founding-partner contact encryption/);
   assert.match(preflight, /RIPODOC_LEAD_ENCRYPTION_KEY/);
-  assert.match(health, /hostedReadiness/);
+  assert.match(health, /status: 'ok'/);
+  assert.doesNotMatch(health, /hostedReadiness|authConfigured|getSecurityPosture|process\.env/);
   assert.doesNotMatch(preflight, /process\.env\.[A-Z_]+\s*[,}]/);
 });
 
