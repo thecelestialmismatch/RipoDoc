@@ -490,6 +490,17 @@ test('homepage red surfaces keep normal body and CTA detail text above the measu
   assert.match(home, /text-\[#141111\]/);
 });
 
+test('repository governance defines an accountable owner and recurring dependency maintenance', async () => {
+  const owners = await readFile(new URL('../../../.github/CODEOWNERS', import.meta.url), 'utf8');
+  const dependabot = await readFile(new URL('../../../.github/dependabot.yml', import.meta.url), 'utf8');
+
+  assert.match(owners, /^\* @thecelestialmismatch/m);
+  assert.match(dependabot, /package-ecosystem: npm/);
+  assert.match(dependabot, /directory: "\/web\/frontend"/);
+  assert.match(dependabot, /package-ecosystem: github-actions/);
+  assert.match(dependabot, /interval: weekly/);
+});
+
 test('public brand lockups preserve dark-surface legibility and red-surface accessible contrast', async () => {
   const footer = await readFile(new URL('../../../web/frontend/src/components/Footer.tsx', import.meta.url), 'utf8');
   const brandLockup = await readFile(new URL('../../../web/frontend/src/components/BrandLockup.tsx', import.meta.url), 'utf8');
