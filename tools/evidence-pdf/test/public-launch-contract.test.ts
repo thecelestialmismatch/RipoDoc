@@ -19,7 +19,7 @@ test('public launch homepage names the MSP report problem, category, boundary an
 test('global launch metadata preserves canonical entity and brand signals', async () => {
   const layout = await readProjectFile('web/frontend/src/app/layout.tsx');
   assert.match(layout, /Controlled evidence delivery for MSP client reports/);
-  assert.match(layout, /ripodoc-mark\.svg/);
+  assert.match(layout, /ripodoc-mark\.png/);
   assert.match(layout, /'@type': 'Organization'/);
   assert.match(layout, /'@type': 'SoftwareApplication'/);
   assert.match(layout, /applicationSubCategory: 'Evidence delivery for MSP client reports'/);
@@ -71,12 +71,8 @@ test('public repository excludes private operating material and protects the exc
 });
 
 test('public launch mark and social preview exist with category-safe language', async () => {
-  const [mark, socialPreview] = await Promise.all([
-    readProjectFile('web/frontend/public/ripodoc-mark.svg'),
-    readProjectFile('web/frontend/src/app/opengraph-image.tsx'),
-  ]);
-  assert.match(mark, /<svg/);
-  assert.match(mark, /RipoDoc proof aperture mark/);
+  const socialPreview = await readProjectFile('web/frontend/src/app/opengraph-image.tsx');
+  await assert.doesNotReject(access(new URL('web/frontend/public/ripodoc-mark.png', root)));
   assert.match(socialPreview, /give them proof—not a data chase/);
   assert.match(socialPreview, /Controlled evidence delivery for MSP client reports/);
 });

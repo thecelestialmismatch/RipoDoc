@@ -76,11 +76,13 @@ test('security posture exposes safe configuration indicators rather than sensiti
   assert.equal(JSON.stringify(posture).includes('revoked-1'), false);
 });
 
-test('downloadable self-hosted route documents server-only worker configuration and the reviewed source bundle', async () => {
+test('self-hosting route documents server-only worker configuration without exposing private source access', async () => {
   const source = await readFile(new URL('../../../web/frontend/src/app/download/page.tsx', import.meta.url), 'utf8');
   assert.match(source, /RIPODOC_WORKER_AUTH_SECRET/);
   assert.match(source, /docker-compose\.selfhost\.yml/);
-  assert.match(source, /archive\/refs\/heads\/main\.zip/);
+  assert.match(source, /href="\/founding-partners"/);
+  assert.doesNotMatch(source, /github\.com\/thecelestialmismatch\/RipoDoc/);
+  assert.doesNotMatch(source, /archive\/refs\/heads\/main\.zip/);
 });
 
 test('dashboard command center remains backed by a verified tenant-scoped server query', async () => {
@@ -453,7 +455,7 @@ test('footer uses an inverse RipoDoc lockup so the full wordmark remains legible
   assert.match(brandLockup, /readonly inverse\?: boolean/);
   assert.match(brandLockup, /inverse \? 'text-\[#fffdf8\]'/);
   assert.match(brandLockup, /const iconFrame = compact \? 'h-9 w-9 sm:h-10 sm:w-10' : 'h-12 w-12';/);
-  assert.match(brandLockup, /className="block h-full w-full"/);
+  assert.match(brandLockup, /className="block h-full w-full object-contain"/);
   assert.match(footer, /<Link href="\/download"/);
   assert.match(footer, /Review the self-hosted build/);
   assert.doesNotMatch(footer, /github\.com\/thecelestialmismatch\/RipoDoc/);
