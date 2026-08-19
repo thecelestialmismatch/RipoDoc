@@ -82,7 +82,7 @@ const structuredData = [
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-    <body className="flex min-h-full flex-col bg-[#f8f0df] text-[#141111] [color-scheme:light]">
+    <body className="flex min-h-full flex-col bg-[#09101a] text-[#f2f3ef] [color-scheme:dark]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
       <Navbar />
       <main className="min-w-0 flex-1">{children}</main>
