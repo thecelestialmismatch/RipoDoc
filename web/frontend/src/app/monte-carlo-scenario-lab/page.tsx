@@ -3,7 +3,7 @@ import { MonteCarloScenarioLab } from '@/components/marketing/MonteCarloScenario
 
 export const metadata: Metadata = {
   title: 'Monte Carlo Scenario Lab',
-  description: 'Interact with RipoDoc public demonstration fixtures through a transparent, browser-based Monte Carlo scenario lab with live percentile and sensitivity views.',
+  description: 'Compare two RipoDoc public demonstration-fixture Monte Carlo runs, inspect live percentile overlays, and apply transparent historical market-stress labels without customer data or predictive claims.',
   alternates: { canonical: '/monte-carlo-scenario-lab' },
 };
 
