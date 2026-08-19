@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { ArrowUpRight, Menu, Radar, X } from 'lucide-react';
 import { BrandLockup } from '@/components/BrandLockup.tsx';
 
-const NAV_LINKS = [{ href: '/how-it-works', label: 'Proof route' }, { href: '/for-msps', label: 'MSP system' }, { href: '/security', label: 'Trust architecture' }, { href: '/download', label: 'Self-host' }, { href: '/report-evidence-readiness', label: 'Readiness check' }] as const;
+const NAV_LINKS = [{ href: '/how-it-works', label: 'Proof route' }, { href: '/for-msps', label: 'MSP system' }, { href: '/security', label: 'Trust architecture' }, { href: '/monte-carlo-scenario-lab', label: 'Scenario lab' }, { href: '/download', label: 'Self-host' }, { href: '/report-evidence-readiness', label: 'Readiness check' }] as const;
 const isActive = (pathname: string, href: string) => pathname === href || (href !== '/' && pathname.startsWith(href));
 
 export function Navbar() {
