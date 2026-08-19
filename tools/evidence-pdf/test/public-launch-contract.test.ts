@@ -5,16 +5,22 @@ import test from 'node:test';
 const root = new URL('../../../', import.meta.url);
 const readProjectFile = async (relativePath: string): Promise<string> => readFile(new URL(relativePath, root), 'utf8');
 
-test('public launch homepage names the MSP report problem, clarity-first category, boundary and diagnostic CTA', async () => {
-  const home = await readProjectFile('web/frontend/src/app/page.tsx');
-  assert.match(home, /Make every report claim/);
-  assert.match(home, /RipoDoc lets MSPs give clients the exact approved evidence/);
-  assert.match(home, /without sending a broader export or another portal login/);
-  assert.match(home, /See a live example/);
+test('public launch homepage names the controlled-proof category, fixture boundary and diagnostic CTA', async () => {
+  const [home, controlRoom, proofDesk] = await Promise.all([
+    readProjectFile('web/frontend/src/app/page.tsx'),
+    readProjectFile('web/frontend/src/components/marketing/EvidenceControlRoom.tsx'),
+    readProjectFile('web/frontend/src/components/marketing/FixtureReportDesk.tsx'),
+  ]);
+  assert.match(home, /EvidenceControlRoom/);
+  assert.match(home, /FixtureReportDesk/);
+  assert.match(controlRoom, /When a report claim is challenged/);
+  assert.match(controlRoom, /material report statement inspectable/);
+  assert.match(home, /RipoDoc is deliberately narrow/);
+  assert.match(proofDesk, /Safe public fixture/);
+  assert.match(proofDesk, /hover \/ select data/);
+  assert.match(home, /fixture data only/i);
   assert.match(home, /Open a report diagnostic/);
-  assert.match(home, /Keep the tools that build your report/);
-  assert.match(home, /It does not ask you to replace the PSA, RMM, BI, QBR, documentation, or portal systems/);
-  assert.match(home, /The public site never asks you to upload a client report/);
+  assert.match(home, /No client report uploads/);
 });
 
 test('global launch metadata preserves canonical entity and brand signals', async () => {
@@ -28,7 +34,7 @@ test('global launch metadata preserves canonical entity and brand signals', asyn
 
 test('launch navigation exposes the customer, security, technical and diagnostic paths', async () => {
   const navigation = await readProjectFile('web/frontend/src/components/Navbar.tsx');
-  for (const requiredLabel of ['How it works', 'For MSPs', 'Security', 'Self-host', 'Open a report diagnostic']) {
+  for (const requiredLabel of ['Proof route', 'MSP system', 'Trust architecture', 'Self-host', 'Readiness check', 'Open a report diagnostic']) {
     assert.match(navigation, new RegExp(requiredLabel));
   }
   assert.match(navigation, /href="\/founding-partners"/);

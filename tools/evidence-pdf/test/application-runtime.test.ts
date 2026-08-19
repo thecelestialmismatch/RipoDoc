@@ -76,13 +76,15 @@ test('security posture exposes safe configuration indicators rather than sensiti
   assert.equal(JSON.stringify(posture).includes('revoked-1'), false);
 });
 
-test('self-hosting route documents server-only worker configuration without exposing private source access', async () => {
+test('self-hosting route documents operator fit without exposing private source or configuration detail', async () => {
   const source = await readFile(new URL('../../../web/frontend/src/app/download/page.tsx', import.meta.url), 'utf8');
-  assert.match(source, /RIPODOC_WORKER_AUTH_SECRET/);
-  assert.match(source, /docker-compose\.selfhost\.yml/);
-  assert.match(source, /href="\/founding-partners"/);
+  assert.match(source, /SELF-HOST \/ OPERATOR CONTROL/);
+  assert.match(source, /href: '\/founding-partners'/);
+  assert.match(source, /does not expose private source locations/);
   assert.doesNotMatch(source, /github\.com\/thecelestialmismatch\/RipoDoc/);
   assert.doesNotMatch(source, /archive\/refs\/heads\/main\.zip/);
+  assert.doesNotMatch(source, /RIPODOC_[A-Z_]+/);
+  assert.doesNotMatch(source, /docker-compose\.selfhost\.yml/);
 });
 
 test('dashboard command center remains backed by a verified tenant-scoped server query', async () => {
@@ -377,44 +379,51 @@ test('discovery and authentication boundaries explicitly separate indexable publ
   assert.match(indexNowWorkflow, /environment == 'Production'/);
   assert.match(indexNowWorkflow, /tools\/discovery\/submit-indexnow\.mjs/);
   assert.equal(indexNowKey.trim(), 'f0cf1c91d611e53368f14a952ee0551092ce9922f9866ded9fea39f468a97e92');
-  assert.match(footer, /QBR metric evidence guide/);
+  assert.match(footer, /QBR evidence guide/);
   assert.match(guide, /MSP client reporting: when a QBR metric needs evidence/);
   assert.match(guide, /FAQPage/);
-  assert.match(guide, /fixture data, not a customer deployment/i);
-  assert.match(guide, /not a replacement for a PSA, RMM, BI platform, general client portal/i);
+  assert.match(guide, /sample uses fixtures, not a customer deployment/i);
+  assert.match(guide, /does not replace a PSA, RMM, BI platform, general client portal/i);
 });
 
-test('MSP launch page preserves RipoDoc’s narrow evidence-delivery boundary and sample-data warning', async () => {
-  const page = await readFile(new URL('../../../web/frontend/src/app/for-msps/page.tsx', import.meta.url), 'utf8');
-  assert.match(page, /controlled evidence-delivery layer/);
-  assert.match(page, /does not claim to do/);
-  assert.match(page, /The public demonstration uses sample data/);
-  assert.match(page, /not a blanket compliance certification/);
-  assert.match(page, /Use the report diagnostic kit/);
-  assert.match(page, /\/report-diagnostic-starter-kit/);
+test('MSP route preserves RipoDoc’s narrow controlled-evidence boundary and no-data discovery path', async () => {
+  const [page, frame] = await Promise.all([
+    readFile(new URL('../../../web/frontend/src/app/for-msps/page.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../../../web/frontend/src/components/marketing/DenseRouteFrame.tsx', import.meta.url), 'utf8'),
+  ]);
+  assert.match(page, /DenseRouteFrame/);
+  assert.match(page, /controlled delivery path/);
+  assert.match(page, /not compete to own/);
+  assert.match(page, /no-data readiness check/);
+  assert.match(page, /\/report-evidence-readiness/);
+  assert.match(frame, /does not turn the public site into an authoring surface/);
 });
 
-test('MSP launch page keeps explicit responsive ratios and page-level overflow protection', async () => {
-  const page = await readFile(new URL('../../../web/frontend/src/app/for-msps/page.tsx', import.meta.url), 'utf8');
-  const styles = await readFile(new URL('../../../web/frontend/src/app/globals.css', import.meta.url), 'utf8');
-  assert.match(page, /lg:grid-cols-\[minmax\(0,1\.08fr\)_minmax\(22rem,\.92fr\)\]/);
-  assert.match(page, /lg:grid-cols-\[minmax\(0,\.72fr\)_minmax\(0,1\.28fr\)\]/);
-  assert.match(page, /lg:grid-cols-\[minmax\(0,1\.12fr\)_minmax\(18rem,\.88fr\)\]/);
-  assert.match(page, /lg:grid-cols-3/);
-  assert.match(styles, /\.stage-page, \.ledger-page \{ background: var\(--background\); min-width: 0; overflow-x: clip; \}/);
-  assert.match(styles, /\.stage-wrap, \.ledger-wrap \{ box-sizing: border-box; margin-inline: auto; max-width: 76rem; padding-inline: 1\.25rem; width: 100%; \}/);
-  assert.match(styles, /@media \(min-width: 900px\) \{ \.clear-wrap, \.stage-wrap, \.ledger-wrap \{ padding-inline: 2rem; \}/);
+test('dense route frame keeps live 3D scene, semantic controls, and responsive layout protection', async () => {
+  const [page, frame, styles] = await Promise.all([
+    readFile(new URL('../../../web/frontend/src/app/for-msps/page.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../../../web/frontend/src/components/marketing/DenseRouteFrame.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../../../web/frontend/src/app/globals.css', import.meta.url), 'utf8'),
+  ]);
+  assert.match(page, /DenseRouteFrame scenario="executive"/);
+  assert.match(frame, /ProofTopology3D/);
+  assert.match(frame, /aria-label="Product proof sequence"/);
+  assert.match(frame, /Live 3D product topology with visible, semantic proof controls/);
+  assert.match(styles, /\.dense-route \{/);
+  assert.match(styles, /@media \(max-width:640px\)/);
+  assert.match(styles, /@media \(min-width:980px\)/);
 });
 
-test('shared application shell and self-host page preserve the sitewide mobile gutter boundary', async () => {
+test('shared application shell and self-host route preserve the dense mobile-safe operator boundary', async () => {
   const layout = await readFile(new URL('../../../web/frontend/src/app/layout.tsx', import.meta.url), 'utf8');
   const download = await readFile(new URL('../../../web/frontend/src/app/download/page.tsx', import.meta.url), 'utf8');
   assert.match(layout, /<main className="min-w-0 flex-1">/);
-  assert.match(download, /ledger-page ledger-field/);
-  assert.match(download, /ledger-wrap grid gap-12/);
-  assert.match(download, /minmax\(0,1fr\)_minmax\(0,\.98fr\)/);
-  assert.match(download, /max-w-full overflow-x-auto/);
-  assert.match(download, /<code className="block min-w-max">/);
+  assert.match(download, /DenseRouteFrame/);
+  assert.match(download, /OPERATOR OWNERSHIP REQUIRED/);
+  assert.match(download, /does not expose private source locations/);
+  assert.match(download, /deployment-fit diagnostic/);
+  assert.doesNotMatch(download, /github\.com\/thecelestialmismatch\/RipoDoc/);
+  assert.doesNotMatch(download, /RIPODOC_[A-Z_]+/);
 });
 
 test('report diagnostic starter kit provides a no-data five-question conversion resource', async () => {
@@ -425,7 +434,7 @@ test('report diagnostic starter kit provides a no-data five-question conversion 
   assert.match(kit, /Name the claim/);
   assert.match(kit, /Do not paste client names, credentials, report files/);
   assert.match(partners, /Use the starter kit/);
-  assert.match(footer, /Report diagnostic starter kit/);
+  assert.match(footer, /Diagnostic starter kit/);
 });
 
 test('README uses the approved mark, authentic demo assets, and the permissioned-source boundary', async () => {
@@ -467,28 +476,28 @@ test('authoring begins only inside a verified workspace and preserves the approv
   assert.match(auth, /destination\(request, postLoginPath, 'ok'\)/);
 });
 
-test('homepage keeps the interactive proof fixture out of the critical response path', async () => {
-  const home = await readFile(new URL('../../../web/frontend/src/app/page.tsx', import.meta.url), 'utf8');
-  const deferred = await readFile(new URL('../../../web/frontend/src/components/marketing/DeferredSampleReport.tsx', import.meta.url), 'utf8');
-  const fixture = await readFile(new URL('../../../web/frontend/src/components/marketing/SampleReportFixture.tsx', import.meta.url), 'utf8');
-
-  assert.match(home, /<DeferredSampleReport \/>/);
+test('homepage exposes a safe rich fixture desk with visible hover and click inspection behavior', async () => {
+  const [home, desk] = await Promise.all([
+    readFile(new URL('../../../web/frontend/src/app/page.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../../../web/frontend/src/components/marketing/FixtureReportDesk.tsx', import.meta.url), 'utf8'),
+  ]);
+  assert.match(home, /<FixtureReportDesk \/>/);
   assert.doesNotMatch(home, /loadManifest|SampleReport manifest/);
-  assert.match(deferred, /dynamic\(/);
-  assert.match(deferred, /IntersectionObserver/);
-  assert.match(fixture, /rpt-demo-0001\.json/);
-  assert.match(fixture, /<SampleReport manifest=\{manifest\} \/>/);
+  assert.match(desk, /onMouseEnter/);
+  assert.match(desk, /onClick/);
+  assert.match(desk, /PROOF DELIVERY RECEIPT/);
+  assert.match(desk, /illustrative product fixture/);
 });
 
-test('from-scratch homepage keeps the clarity-first proof path and safe sample boundary', async () => {
+test('dense homepage keeps the real-time product canvas and safe sample boundary', async () => {
   const home = await readFile(new URL('../../../web/frontend/src/app/page.tsx', import.meta.url), 'utf8');
 
-  assert.match(home, /clear-page/);
-  assert.match(home, /Make every report claim/);
-  assert.match(home, /clear-proof-preview/);
-  assert.match(home, /clear-sample-section/);
-  assert.match(home, /The public site never asks you to upload a client report/);
-  assert.doesNotMatch(home, /Final curtain|Act II|The old scene/);
+  assert.match(home, /dense-page/);
+  assert.match(home, /EvidenceControlRoom/);
+  assert.match(home, /FixtureReportDesk/);
+  assert.match(home, /No client report uploads/);
+  assert.match(home, /No private repository access/);
+  assert.doesNotMatch(home, /Final curtain|Act II|The old scene|clear-page/);
 });
 
 test('repository governance defines an accountable owner and recurring dependency maintenance', async () => {
