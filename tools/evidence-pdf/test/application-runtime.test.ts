@@ -448,13 +448,44 @@ test('interactive sample keeps evidence vertically composed through tablet width
   assert.match(grid, /break-words/);
 });
 
-test('footer uses an inverse RipoDoc lockup so the full wordmark remains legible on the dark surface', async () => {
+test('authoring begins only inside a verified workspace and preserves the approved post-login return path', async () => {
+  const upload = await readFile(new URL('../../../web/frontend/src/app/upload/page.tsx', import.meta.url), 'utf8');
+  const workspace = await readFile(new URL('../../../web/frontend/src/components/authoring/UploadWorkspace.tsx', import.meta.url), 'utf8');
+  const login = await readFile(new URL('../../../web/frontend/src/app/login/page.tsx', import.meta.url), 'utf8');
+  const auth = await readFile(new URL('../../../web/frontend/src/app/api/auth/[action]/route.ts', import.meta.url), 'utf8');
+
+  assert.match(upload, /currentSessionUser/);
+  assert.match(upload, /redirect\('\/login\?next=\/upload'\)/);
+  assert.match(upload, /UploadWorkspace/);
+  assert.doesNotMatch(upload, /'use client'/);
+  assert.match(workspace, /'use client'/);
+  assert.match(login, /const safeNext = .*value === '\/upload'/);
+  assert.match(login, /name="next"/);
+  assert.match(auth, /const safePostLoginPath = .*value === '\/upload'/);
+  assert.match(auth, /destination\(request, postLoginPath, 'ok'\)/);
+});
+
+test('homepage keeps the interactive proof fixture out of the critical response path', async () => {
+  const home = await readFile(new URL('../../../web/frontend/src/app/page.tsx', import.meta.url), 'utf8');
+  const deferred = await readFile(new URL('../../../web/frontend/src/components/marketing/DeferredSampleReport.tsx', import.meta.url), 'utf8');
+  const fixture = await readFile(new URL('../../../web/frontend/src/components/marketing/SampleReportFixture.tsx', import.meta.url), 'utf8');
+
+  assert.match(home, /<DeferredSampleReport \/>/);
+  assert.doesNotMatch(home, /loadManifest|SampleReport manifest/);
+  assert.match(deferred, /dynamic\(/);
+  assert.match(deferred, /IntersectionObserver/);
+  assert.match(fixture, /rpt-demo-0001\.json/);
+  assert.match(fixture, /<SampleReport manifest=\{manifest\} \/>/);
+});
+
+test('public brand lockups preserve dark-surface legibility and red-surface accessible contrast', async () => {
   const footer = await readFile(new URL('../../../web/frontend/src/components/Footer.tsx', import.meta.url), 'utf8');
   const brandLockup = await readFile(new URL('../../../web/frontend/src/components/BrandLockup.tsx', import.meta.url), 'utf8');
 
   assert.match(footer, /<BrandLockup showDescriptor inverse \/>/);
   assert.match(brandLockup, /readonly inverse\?: boolean/);
-  assert.match(brandLockup, /inverse \? 'text-\[#fffdf8\]'/);
+  assert.match(brandLockup, /readonly onAccent\?: boolean/);
+  assert.match(brandLockup, /onAccent \? 'text-\[#141111\]' : 'text-\[#fffdf8\]'/);
   assert.match(brandLockup, /const iconFrame = compact \? 'h-9 w-9 sm:h-10 sm:w-10' : 'h-12 w-12';/);
   assert.match(brandLockup, /className="block h-full w-full object-contain"/);
   assert.match(footer, /<Link href="\/download"/);

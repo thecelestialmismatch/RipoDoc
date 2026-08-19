@@ -4,6 +4,7 @@ interface BrandLockupProps {
   readonly compact?: boolean;
   readonly showDescriptor?: boolean;
   readonly inverse?: boolean;
+  readonly onAccent?: boolean;
   readonly className?: string;
 }
 
@@ -14,11 +15,11 @@ interface BrandLockupProps {
  * percentage-sized image from inheriting an unconstrained flex height in
  * navigation while preserving the full lockup on footer and product surfaces.
  */
-export function BrandLockup({ compact = false, showDescriptor = false, inverse = false, className = '' }: BrandLockupProps) {
+export function BrandLockup({ compact = false, showDescriptor = false, inverse = false, onAccent = false, className = '' }: BrandLockupProps) {
   const iconSize = compact ? 40 : 48;
   const iconFrame = compact ? 'h-9 w-9 sm:h-10 sm:w-10' : 'h-12 w-12';
-  const wordTone = inverse ? 'text-[#fffdf8]' : 'text-[#141111]';
-  const mottoTone = inverse ? 'text-[#ffb2a3]' : 'text-[#b52e20]';
+  const wordTone = inverse ? onAccent ? 'text-[#141111]' : 'text-[#fffdf8]' : 'text-[#141111]';
+  const mottoTone = inverse ? onAccent ? 'text-[#141111]' : 'text-[#ffb2a3]' : 'text-[#b52e20]';
   const wordSize = compact ? 'text-[1.06rem] sm:text-[1.12rem]' : 'text-[1.35rem]';
   const mottoSize = compact ? 'text-[0.47rem] sm:text-[0.5rem]' : 'text-[0.54rem]';
 
