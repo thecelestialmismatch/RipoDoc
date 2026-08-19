@@ -487,6 +487,20 @@ test('homepage exposes a safe rich fixture desk with visible hover and click ins
   assert.match(desk, /onClick/);
   assert.match(desk, /PROOF DELIVERY RECEIPT/);
   assert.match(desk, /illustrative product fixture/);
+  assert.match(desk, /INTERACTIVE PROOF OBSERVATORY/);
+  assert.match(desk, /Resolution volume/);
+  assert.match(desk, /Service continuity/);
+  assert.match(desk, /Evidence composition/);
+  assert.match(desk, /Review activity heatmap/);
+  assert.match(desk, /Exception concentration/);
+  assert.match(desk, /Delivery readiness/);
+  assert.match(desk, /BAR \/ VOLUME/);
+  assert.match(desk, /LINE \/ TREND/);
+  assert.match(desk, /PIE \/ MIX/);
+  assert.match(desk, /HEATMAP \/ TIMING/);
+  assert.match(desk, /COMPARE \/ DOMAIN/);
+  assert.match(desk, /RING \/ READINESS/);
+  assert.match(desk, /independent dataset/);
 });
 
 test('dense homepage keeps the real-time product canvas and safe sample boundary', async () => {
