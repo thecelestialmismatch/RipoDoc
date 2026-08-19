@@ -478,6 +478,16 @@ test('homepage keeps the interactive proof fixture out of the critical response 
   assert.match(fixture, /<SampleReport manifest=\{manifest\} \/>/);
 });
 
+test('homepage red surfaces keep normal body and CTA detail text above the measured contrast threshold', async () => {
+  const home = await readFile(new URL('../../../web/frontend/src/app/page.tsx', import.meta.url), 'utf8');
+
+  assert.doesNotMatch(home, /text-\[#f8f0df\]\/88/);
+  assert.doesNotMatch(home, /text-\[#f8f0df\]\/86/);
+  assert.doesNotMatch(home, /text-\[#f8f0df\]\/82/);
+  assert.doesNotMatch(home, /highlight \? 'text-\[#f8f0df\]\/78'/);
+  assert.match(home, /text-\[#141111\]/);
+});
+
 test('public brand lockups preserve dark-surface legibility and red-surface accessible contrast', async () => {
   const footer = await readFile(new URL('../../../web/frontend/src/components/Footer.tsx', import.meta.url), 'utf8');
   const brandLockup = await readFile(new URL('../../../web/frontend/src/components/BrandLockup.tsx', import.meta.url), 'utf8');
