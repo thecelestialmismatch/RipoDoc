@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   category: 'Business software',
   keywords: ['MSP reporting', 'client reports', 'evidence delivery', 'PDF evidence', 'QBR reporting', 'report audit trail', 'self-hosted MSP software'],
   alternates: { canonical: '/' },
-  icons: { icon: '/ripodoc-mark.svg', shortcut: '/ripodoc-mark.svg', apple: '/ripodoc-mark.svg' },
+  icons: { icon: '/ripodoc-mark.png', shortcut: '/ripodoc-mark.png', apple: '/ripodoc-mark.png' },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1, 'max-video-preview': -1 } },
   openGraph: {
     type: 'website',
@@ -45,7 +45,7 @@ const structuredData = [
     '@id': 'https://www.ripodoc.com/#organization',
     name: 'RipoDoc',
     url: siteUrl.toString(),
-    logo: 'https://www.ripodoc.com/ripodoc-mark.svg',
+    logo: 'https://www.ripodoc.com/ripodoc-mark.png',
     description: 'RipoDoc provides controlled evidence delivery for MSP client reports.',
     sameAs: ['/founding-partners'],
   },

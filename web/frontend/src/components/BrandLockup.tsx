@@ -24,7 +24,7 @@ export function BrandLockup({ compact = false, showDescriptor = false, inverse =
 
   return <span className={`inline-flex max-w-full items-center ${compact ? 'gap-2.5' : 'gap-3'} ${className}`}>
     <span className={`grid shrink-0 place-items-center ${iconFrame}`} aria-hidden="true">
-      <Image src="/ripodoc-mark.svg" alt="" width={iconSize} height={iconSize} className="block h-full w-full" priority />
+      <Image src="/ripodoc-mark.png" alt="" width={iconSize} height={iconSize} className="block h-full w-full object-contain" priority />
     </span>
     <span className="min-w-0 leading-none">
       <span className={`block whitespace-nowrap font-extrabold tracking-[-0.08em] ${wordSize} ${wordTone}`}>RipoDoc</span>
