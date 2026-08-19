@@ -21,7 +21,7 @@ export function Navbar() {
 
   return <header className="sticky top-0 z-50 border-b border-[#f8f0df]/45 bg-[#e8442e] text-[#f8f0df]">
     <div className="mx-4 grid min-h-[76px] grid-cols-[1fr_auto] sm:mx-0 lg:grid-cols-[330px_1fr_250px]">
-      <Link href="/" className="flex min-w-0 items-center border-r border-[#f8f0df]/45 px-5 py-3 transition-colors hover:bg-[#d83d29] sm:px-6" onClick={() => setMobileOpen(false)} aria-label="RipoDoc home"><BrandLockup compact inverse /></Link>
+      <Link href="/" className="flex min-w-0 items-center border-r border-[#f8f0df]/45 px-5 py-3 transition-colors hover:bg-[#d83d29] sm:px-6" onClick={() => setMobileOpen(false)}><BrandLockup compact inverse onAccent /></Link>
       <nav className="hidden items-stretch justify-center lg:flex" aria-label="Primary navigation">
         {NAV_LINKS.map((link) => <Link key={link.href} href={link.href} className={`flex items-center border-r border-[#f8f0df]/45 px-5 font-mono text-[10px] font-bold uppercase tracking-[0.11em] transition-colors ${isActive(pathname, link.href) ? 'bg-[#f8f0df] text-[#141111]' : 'text-[#f8f0df] hover:bg-[#d83d29]'}`}>{link.label}</Link>)}
       </nav>

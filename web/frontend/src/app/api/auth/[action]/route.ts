@@ -9,13 +9,15 @@ export const dynamic = 'force-dynamic';
 
 interface RouteContext { readonly params: Promise<{ readonly action: string }>; }
 
-const destination = (request: Request, path: string, status: string): NextResponse => {
+const destination = (request: Request, path: string, status: string, next?: '/upload'): NextResponse => {
   const url = new URL(path, request.url);
   url.searchParams.set('status', status);
+  if (next) url.searchParams.set('next', next);
   return NextResponse.redirect(url, { status: 303 });
 };
 
 const unavailable = (request: Request): NextResponse => destination(request, '/login', 'unavailable');
+const safePostLoginPath = (value: FormDataEntryValue | null): '/dashboard' | '/upload' => value === '/upload' ? '/upload' : '/dashboard';
 
 export async function POST(request: Request, { params }: RouteContext): Promise<Response> {
   const { action } = await params;
@@ -33,8 +35,9 @@ export async function POST(request: Request, { params }: RouteContext): Promise<
   }
   if (action === 'login') {
     const result = await authenticate({ email: String(form.get('email') ?? ''), password: String(form.get('password') ?? ''), ip, userAgent: request.headers.get('user-agent') ?? 'unknown' });
-    if (!result) return destination(request, '/login', 'invalid');
-    return setAuthCookies(destination(request, '/dashboard', 'ok'), result.rawSession, csrfToken());
+    const postLoginPath = safePostLoginPath(form.get('next'));
+    if (!result) return destination(request, '/login', 'invalid', postLoginPath === '/upload' ? postLoginPath : undefined);
+    return setAuthCookies(destination(request, postLoginPath, 'ok'), result.rawSession, csrfToken());
   }
   if (action === 'forgot-password') {
     await requestPasswordReset({ email: String(form.get('email') ?? ''), ip });
