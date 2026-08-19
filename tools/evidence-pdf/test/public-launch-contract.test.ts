@@ -5,15 +5,16 @@ import test from 'node:test';
 const root = new URL('../../../', import.meta.url);
 const readProjectFile = async (relativePath: string): Promise<string> => readFile(new URL(relativePath, root), 'utf8');
 
-test('public launch homepage names the MSP report problem, category, boundary and diagnostic CTA', async () => {
+test('public launch homepage names the MSP report problem, clarity-first category, boundary and diagnostic CTA', async () => {
   const home = await readProjectFile('web/frontend/src/app/page.tsx');
-  assert.match(home, /When a client asks where a QBR figure came from/);
-  assert.match(home, /Controlled evidence delivery for MSP client reports/);
-  assert.match(home, /without replacing the systems that create your operational data/);
-  assert.match(home, /See the proof experience/);
+  assert.match(home, /Make every report claim/);
+  assert.match(home, /RipoDoc lets MSPs give clients the exact approved evidence/);
+  assert.match(home, /without sending a broader export or another portal login/);
+  assert.match(home, /See a live example/);
   assert.match(home, /Open a report diagnostic/);
-  assert.match(home, /Keep the reporting stack/);
-  assert.match(home, /RipoDoc is not a new system of record, generic BI layer, or QBR deck builder/);
+  assert.match(home, /Keep the tools that build your report/);
+  assert.match(home, /It does not ask you to replace the PSA, RMM, BI, QBR, documentation, or portal systems/);
+  assert.match(home, /The public site never asks you to upload a client report/);
 });
 
 test('global launch metadata preserves canonical entity and brand signals', async () => {
@@ -27,7 +28,7 @@ test('global launch metadata preserves canonical entity and brand signals', asyn
 
 test('launch navigation exposes the customer, security, technical and diagnostic paths', async () => {
   const navigation = await readProjectFile('web/frontend/src/components/Navbar.tsx');
-  for (const requiredLabel of ['How it works', 'For MSPs', 'Security boundary', 'Self-host', 'Open a report diagnostic']) {
+  for (const requiredLabel of ['How it works', 'For MSPs', 'Security', 'Self-host', 'Open a report diagnostic']) {
     assert.match(navigation, new RegExp(requiredLabel));
   }
   assert.match(navigation, /href="\/founding-partners"/);

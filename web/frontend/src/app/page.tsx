@@ -1,65 +1,177 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowDownRight, ArrowRight, ArrowUpRight, FileCheck2, FileText, Fingerprint, Layers3, ScanSearch, type LucideIcon } from 'lucide-react';
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Check,
+  Clock3,
+  FileCheck2,
+  FileSearch,
+  LockKeyhole,
+  Send,
+  ShieldCheck,
+  UsersRound,
+  type LucideIcon,
+} from 'lucide-react';
 import { DeferredSampleReport } from '@/components/marketing/DeferredSampleReport.tsx';
 
 export const metadata: Metadata = {
-  title: 'RipoDoc — controlled evidence delivery for MSP client reports',
-  description: 'RipoDoc helps managed service providers keep client reports familiar while connecting approved claims to narrow, recipient-aware, expiring evidence.',
+  title: 'RipoDoc — make every report claim answerable',
+  description: 'RipoDoc helps MSP teams deliver the exact approved evidence behind a client report claim—reviewed, recipient-aware, time-bound, and revocable.',
   alternates: { canonical: '/' },
-  openGraph: { title: 'RipoDoc — controlled evidence delivery for MSP client reports', description: 'The proof is in the report: a selected claim can have a controlled answer.', url: '/' },
+  openGraph: {
+    title: 'RipoDoc — make every report claim answerable',
+    description: 'Give a client the approved evidence behind a report claim without sending a broader export or another portal login.',
+    url: '/',
+  },
 };
 
 const DEMO_FIGURE_COUNT = 6;
 const DEMO_EVIDENCE_ROW_COUNT = 450;
-const recordFields: readonly { readonly number: string; readonly title: string; readonly detail: string; readonly icon: LucideIcon }[] = [
-  { number: '01', title: 'Claim', detail: 'A report sentence precise enough for a client to question.', icon: FileText },
-  { number: '02', title: 'Source', detail: 'The reviewed structured data or mapping that gives the claim meaning.', icon: Layers3 },
-  { number: '03', title: 'Scope', detail: 'Only the approved detail that supports this one statement.', icon: ScanSearch },
-  { number: '04', title: 'Reader', detail: 'A deliberate recipient condition—not a generic forwarded link.', icon: Fingerprint },
-  { number: '05', title: 'Review', detail: 'An accountable decision before the evidence path is published.', icon: FileCheck2 },
+
+const steps: readonly { readonly number: string; readonly title: string; readonly detail: string; readonly icon: LucideIcon }[] = [
+  { number: '01', title: 'Choose the claim', detail: 'Start with the report figure a client actually needs explained.', icon: FileSearch },
+  { number: '02', title: 'Approve the evidence', detail: 'Review the supporting rows, source, scope, reader, and expiry before anything is shared.', icon: FileCheck2 },
+  { number: '03', title: 'Deliver a controlled answer', detail: 'The reader opens the approved proof view—not a larger export or a new portal.', icon: Send },
+] as const;
+
+const controls: readonly { readonly title: string; readonly detail: string; readonly icon: LucideIcon }[] = [
+  { title: 'Only the needed evidence', detail: 'A proof view is scoped to one approved claim, rather than an entire customer dataset.', icon: FileSearch },
+  { title: 'A deliberate reader', detail: 'Access can be bound to the intended recipient instead of relying on a forwarded link.', icon: UsersRound },
+  { title: 'A visible decision window', detail: 'Evidence can expire or be revoked when the report moment has passed.', icon: Clock3 },
+  { title: 'A receipt you can inspect', detail: 'The delivery record keeps source, review, scope, and access posture visible.', icon: ShieldCheck },
 ] as const;
 
 export default function Home() {
-  return <div className="stage-page bg-[#f8f0df] text-[#141111]">
-    <section className="relative isolate overflow-hidden border-b border-[#141111]/35 bg-[#e8442e] text-[#f8f0df]">
-      <div className="pointer-events-none absolute inset-x-0 top-5 whitespace-nowrap text-[clamp(9rem,21vw,25rem)] font-extrabold leading-none tracking-[-0.14em] text-transparent [-webkit-text-stroke:1px_rgba(248,240,223,0.55)]" aria-hidden="true">PROOF</div>
-      <div className="relative mx-auto grid min-h-[42rem] max-w-7xl gap-10 px-5 pb-0 pt-12 sm:px-6 lg:grid-cols-[0.96fr_0.86fr] lg:px-8 lg:pt-16">
-        <div className="relative z-10 flex flex-col justify-between pb-12 lg:pb-16">
-          <div><p className="stage-kicker text-[#141111]">For MSP client-report teams</p><h1 className="stage-display mt-9 max-w-4xl text-[clamp(3.7rem,6.35vw,7.15rem)]">When a client asks where a QBR figure came from,<span className="block text-[#141111]">give them proof—not a data chase.</span></h1><p className="mt-8 max-w-xl text-lg leading-8 text-[#141111]"><strong className="text-[#141111]">Controlled evidence delivery for MSP client reports.</strong> RipoDoc connects one approved report claim to a reviewed source, a bounded evidence view, and a deliberate reader handoff—without replacing the systems that create your operational data.</p></div>
-          <div className="mt-10 flex flex-wrap gap-3"><Link href="#sample-report" className="stage-button stage-button-cream">See the proof experience <ArrowDownRight className="h-4 w-4" aria-hidden="true" /></Link><Link href="/founding-partners" className="inline-flex min-h-12 items-center gap-2 border-b-2 border-[#141111] px-1 text-sm font-bold text-[#141111]">Open a report diagnostic <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link></div>
+  return <main className="clear-page">
+    <section className="clear-hero">
+      <div className="clear-wrap clear-hero-grid">
+        <div className="clear-hero-copy">
+          <p className="clear-eyebrow"><span aria-hidden="true" /> Evidence delivery for MSP report teams</p>
+          <h1>Make every report claim <span>answerable.</span></h1>
+          <p className="clear-lede">RipoDoc lets MSPs give clients the exact approved evidence behind a QBR, monthly, security, or executive report claim—without sending a broader export or another portal login.</p>
+          <div className="clear-actions">
+            <Link href="#sample-report" className="clear-button clear-button-primary">See a live example <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link>
+            <Link href="/founding-partners" className="clear-text-link">Open a report diagnostic <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Link>
+          </div>
+          <p className="clear-hero-note"><LockKeyhole className="h-4 w-4" aria-hidden="true" /> Your reporting stack stays in place. RipoDoc controls the proof handoff after a claim needs an answer.</p>
         </div>
-        <div className="relative z-10 mt-0 flex items-end lg:mt-8">
-          <div className="relative w-full overflow-hidden border border-[#141111] bg-[#141111] px-5 pb-7 pt-5 text-[#f8f0df] shadow-[12px_12px_0_rgba(20,17,17,0.24)] sm:px-7 sm:pb-8 sm:pt-6">
-            <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-[#e8442e] [clip-path:polygon(0_0,100%_7%,72%_50%,100%_93%,0_100%)]" aria-hidden="true" /><div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-[#e8442e] [clip-path:polygon(0_7%,100%_0,100%_100%,0_93%,28%_50%)]" aria-hidden="true" />
-            <div className="relative border-b border-[#f8f0df]/35 pb-4"><div className="flex items-center justify-between gap-4 font-mono text-[9px] font-bold uppercase tracking-[0.14em]"><span>Scene 02 / evidence reveal</span><span>QBR fixture</span></div></div>
-            <div className="relative mt-10 max-w-md"><h2 className="stage-display text-5xl sm:text-6xl">Not another portal.<br />Not a broader export.</h2><p className="mt-5 max-w-sm text-sm leading-6 text-[#f8f0df]/72">Just the approved evidence a report claim needs, revealed in context and under review.</p><Link href="/how-it-works" className="mt-7 inline-flex bg-[#f8f0df] px-4 py-3 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-[#141111] transition hover:bg-[#ff9b88]">Inspect the method <ArrowUpRight className="ml-2 h-3.5 w-3.5" aria-hidden="true" /></Link></div>
-            <div className="pointer-events-none absolute -bottom-36 -right-24 h-[30rem] w-[30rem] rounded-full border border-[#f8f0df]/30 shadow-[0_0_0_64px_rgba(248,240,223,0.03),0_0_0_128px_rgba(248,240,223,0.025)]" aria-hidden="true" />
+        <ProofPreview />
+      </div>
+    </section>
+
+    <section className="clear-proof-strip" aria-label="What RipoDoc controls">
+      <div className="clear-wrap clear-proof-strip-grid">
+        <p><Check className="h-4 w-4" aria-hidden="true" /> Approved claim</p>
+        <p><Check className="h-4 w-4" aria-hidden="true" /> Scoped evidence</p>
+        <p><Check className="h-4 w-4" aria-hidden="true" /> Named delivery boundary</p>
+        <p><Check className="h-4 w-4" aria-hidden="true" /> Reviewable receipt</p>
+      </div>
+    </section>
+
+    <section className="clear-section clear-section-intro">
+      <div className="clear-wrap clear-split-heading">
+        <div>
+          <p className="clear-eyebrow clear-eyebrow-blue"><span aria-hidden="true" /> Simple by design</p>
+          <h2>A client question should not start a data chase.</h2>
+        </div>
+        <p>When a client asks where a report figure came from, the answer is often a bigger spreadsheet, another system login, or a meeting. RipoDoc keeps the report familiar and makes the supporting proof deliberate.</p>
+      </div>
+      <div className="clear-wrap clear-step-grid">
+        {steps.map((step) => <StepCard key={step.number} {...step} />)}
+      </div>
+    </section>
+
+    <section id="sample-report" className="clear-section clear-sample-section">
+      <div className="clear-wrap">
+        <div className="clear-sample-heading">
+          <div>
+            <p className="clear-eyebrow clear-eyebrow-blue"><span aria-hidden="true" /> Try the proof path</p>
+            <h2>Open one report figure. See the approved answer behind it.</h2>
+          </div>
+          <p>This is safe fixture data. The interactive sample keeps supporting rows out of the PDF and opens only the evidence approved for the selected figure.</p>
+        </div>
+        <div className="clear-sample-layout">
+          <aside className="clear-sample-guide">
+            <p className="clear-small-label">What this example demonstrates</p>
+            <ul>
+              <li><Check className="h-4 w-4" aria-hidden="true" /> A familiar report stays concise.</li>
+              <li><Check className="h-4 w-4" aria-hidden="true" /> A selected claim opens a narrow evidence view.</li>
+              <li><Check className="h-4 w-4" aria-hidden="true" /> Delivery remains governed by review and access conditions.</li>
+            </ul>
+            <div className="clear-fixture-stats" aria-label="Sample fixture statistics">
+              <div><strong>{DEMO_FIGURE_COUNT}</strong><span>approved figures</span></div>
+              <div><strong>{DEMO_EVIDENCE_ROW_COUNT}</strong><span>fixture rows</span></div>
+              <div><strong>0</strong><span>rows in PDF</span></div>
+            </div>
+          </aside>
+          <div className="clear-sample-frame">
+            <div className="clear-sample-frame-head"><div><p className="clear-small-label">RipoDoc sample report</p><p>Select a figure to open its approved evidence.</p></div><span>Fixture data</span></div>
+            <DeferredSampleReport />
           </div>
         </div>
       </div>
     </section>
 
-    <section className="border-b border-[#141111] bg-[#141111] text-[#f8f0df]"><div className="mx-auto grid max-w-7xl sm:grid-cols-4"><ProgramChip number="I" label="Report" detail="The claim appears." /><ProgramChip number="II" label="Evidence" detail="The source is selected." active /><ProgramChip number="III" label="Delivery" detail="The reader is named." /><ProgramChip number="IV" label="Control" detail="The decision remains visible." /></div></section>
+    <section className="clear-section clear-fit-section">
+      <div className="clear-wrap clear-split-heading">
+        <div>
+          <p className="clear-eyebrow clear-eyebrow-blue"><span aria-hidden="true" /> Fits your stack</p>
+          <h2>Keep the tools that build your report.</h2>
+        </div>
+        <p>RipoDoc begins after a report claim needs an answer. It does not ask you to replace the PSA, RMM, BI, QBR, documentation, or portal systems your team already uses.</p>
+      </div>
+      <div className="clear-wrap clear-fit-grid">
+        <article><p className="clear-small-label">Your existing systems</p><h3>Build the report.</h3><p>PSA, RMM, BI, QBR, portal, and documentation tools continue to create the operational context.</p></article>
+        <article className="clear-fit-highlight"><p className="clear-small-label">RipoDoc</p><h3>Controls the proof handoff.</h3><p>One approved claim connects to a reviewed source, a narrow evidence view, and a deliberate reader condition.</p></article>
+        <article><p className="clear-small-label">Your client</p><h3>Gets a clear answer.</h3><p>The report stays readable. The supporting evidence is there when it is needed, and no broader export is assumed.</p></article>
+      </div>
+    </section>
 
-    <main>
-      <section className="border-b border-[#141111]/30 bg-[#f8f0df] py-20 lg:py-28"><div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8"><div className="grid gap-12 lg:grid-cols-[0.78fr_1.22fr] lg:items-end"><div><p className="stage-kicker text-[#b52e20]">The premise</p><h2 className="stage-display mt-5 text-5xl sm:text-6xl">A concise report should not trigger a broad data chase.</h2></div><p className="max-w-2xl text-lg leading-8 text-[#655c55]">A strong QBR remains readable for an executive. The evidence behind a challenged claim should still be accurate, reviewable, and available at the moment of need—without forcing the reader into another client portal.</p></div><div className="mt-14 grid border-t border-[#141111] lg:grid-cols-2"><article className="border-b border-[#141111] py-8 pr-0 lg:border-r lg:py-12 lg:pr-12"><span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-[#b52e20]">The old scene</span><h3 className="mt-6 text-3xl font-extrabold tracking-[-0.06em]">A number, a follow-up, then a broader export than anyone needed.</h3><p className="mt-5 max-w-xl text-sm leading-7 text-[#655c55]">The conversation leaves the report. The evidence arrives later. The reader gets more operational data than the original question required.</p></article><article className="border-b border-[#141111] bg-[#141111] px-6 py-8 text-[#f8f0df] lg:-mb-px lg:-mr-px lg:px-12 lg:py-12"><span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-[#ff9b88]">The RipoDoc scene</span><h3 className="mt-6 text-3xl font-extrabold tracking-[-0.06em]">A selected claim, reviewed evidence, and a visible delivery boundary.</h3><p className="mt-5 max-w-xl text-sm leading-7 text-[#f8f0df]/72">The report stays familiar. The proof path stays narrow. The reader sees details deliberately approved for that statement.</p></article></div></div></section>
+    <section className="clear-section clear-controls-section">
+      <div className="clear-wrap clear-controls-grid">
+        <div className="clear-controls-copy"><p className="clear-eyebrow clear-eyebrow-mint"><span aria-hidden="true" /> A boundary people can understand</p><h2>Proof is more useful when its rules are visible.</h2><p>RipoDoc makes the decision around evidence inspectable: what claim is being answered, what source supports it, what detail is in scope, who may see it, and when access should stop.</p><Link href="/security" className="clear-text-link clear-text-link-light">Read the security boundary <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link></div>
+        <div className="clear-control-card-grid">{controls.map((control) => <ControlCard key={control.title} {...control} />)}</div>
+      </div>
+    </section>
 
-      <section className="border-b border-[#141111] bg-[#f0dfcc] py-20 lg:py-28"><div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8"><div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-end"><div><p className="stage-kicker text-[#b52e20]">Act II / what opens behind the claim</p><h2 className="stage-display mt-5 text-5xl sm:text-6xl">Five decisions make a proof view accountable.</h2></div><p className="max-w-2xl text-lg leading-8 text-[#655c55]">This is not a compliance score. It is the operating discipline behind every controlled evidence reveal: name the claim, source, scope, reader, and reviewer before the client sees the answer.</p></div><div className="mt-12 grid border border-[#141111] bg-[#141111] sm:grid-cols-2 lg:grid-cols-5">{recordFields.map((field) => <RecordField key={field.number} {...field} />)}</div></div></section>
+    <section className="clear-section clear-audience-section">
+      <div className="clear-wrap">
+        <div className="clear-centered-heading"><p className="clear-eyebrow clear-eyebrow-blue"><span aria-hidden="true" /> Built for the report moment</p><h2>Useful to the people who have to stand behind the number.</h2></div>
+        <div className="clear-audience-grid">
+          <AudienceCard title="MSP owners" detail="Show the work behind a value, risk, or performance claim without adding a new client portal." />
+          <AudienceCard title="vCIO and client-success teams" detail="Keep the conversation in the report while making a challenged figure easy to answer." />
+          <AudienceCard title="Security and reporting leads" detail="Deliver supporting evidence with a clear scope, reader condition, and review trail." />
+        </div>
+      </div>
+    </section>
 
-      <section id="sample-report" className="scroll-mt-20 border-b border-[#141111] bg-[#e8442e] py-20 text-[#f8f0df] lg:py-28"><div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8"><div className="grid gap-12 lg:grid-cols-[0.7fr_1.3fr] lg:items-start"><div><p className="stage-kicker text-[#141111]">Scene 02 / try the reveal</p><h2 className="stage-display mt-5 text-5xl sm:text-6xl">Open a report line. See the answer behind it.</h2><p className="mt-7 max-w-xl text-base leading-7 text-[#141111]">This interactive fixture keeps rows out of the PDF and lets you inspect the approved evidence boundary for a selected report figure.</p><div className="mt-8 grid grid-cols-3 gap-px border border-[#f8f0df]/35 bg-[#f8f0df]/35"><HeroFact value={DEMO_FIGURE_COUNT.toString()} label="approved figures" /><HeroFact value={DEMO_EVIDENCE_ROW_COUNT.toString()} label="fixture rows" /><HeroFact value="0" label="rows in PDF" /></div><p className="mt-6 border-l-2 border-[#141111] pl-4 text-xs leading-5 text-[#141111]">Fixture data only. A production view remains governed by an approved manifest, named recipient, and current access condition.</p></div><div className="relative overflow-hidden border border-[#141111] bg-[#fff9ef] p-3 text-[#141111] shadow-[10px_10px_0_rgba(20,17,17,0.3)] sm:p-5"><div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#141111]/30 pb-4"><div><p className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-[#b52e20]">RipoDoc sample report</p><p className="mt-1 text-sm font-bold">Select a report figure. Open its evidence scene.</p></div><span className="border border-[#141111] px-2 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.12em]">Fixture data</span></div><div className="mt-4"><DeferredSampleReport /></div></div></div></div></section>
+    <section className="clear-final-cta">
+      <div className="clear-wrap clear-final-cta-inner">
+        <div><p className="clear-eyebrow clear-eyebrow-blue"><span aria-hidden="true" /> Start with one report moment</p><h2>See whether a real client question has a better answer.</h2><p>The public site never asks you to upload a client report. Bring the scenario, not the data.</p></div>
+        <div className="clear-final-actions"><Link href="/founding-partners" className="clear-button clear-button-primary">Open a report diagnostic <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Link><Link href="/download" className="clear-text-link">Explore self-hosting <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link></div>
+      </div>
+    </section>
+  </main>;
+}
 
-      <section className="border-b border-[#141111] bg-[#fff9ef] py-20 lg:py-28"><div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8"><div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-end"><div><p className="stage-kicker text-[#b52e20]">Where RipoDoc fits</p><h2 className="stage-display mt-5 text-5xl sm:text-6xl">Keep the reporting stack.<br />Control the proof handoff.</h2></div><p className="max-w-2xl text-lg leading-8 text-[#655c55]">Your PSA, RMM, BI, QBR, or portal system can keep doing the job it already does. RipoDoc begins after one approved report claim needs an answer: the source is selected, the detail is bounded, and the reader is deliberate.</p></div><div className="mt-12 grid border border-[#141111] md:grid-cols-3"><article className="border-b border-[#141111] p-6 md:border-b-0 md:border-r"><span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-[#b52e20]">Before the report</span><h3 className="mt-8 text-2xl font-extrabold tracking-[-0.055em]">Keep your existing systems.</h3><p className="mt-4 text-sm leading-7 text-[#655c55]">RipoDoc is not a new system of record, generic BI layer, or QBR deck builder.</p></article><article className="border-b border-[#141111] bg-[#141111] p-6 text-[#f8f0df] md:border-b-0 md:border-r"><span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-[#ff9b88]">In the report moment</span><h3 className="mt-8 text-2xl font-extrabold tracking-[-0.055em]">Make one claim answerable.</h3><p className="mt-4 text-sm leading-7 text-[#f8f0df]/72">Connect a selected figure to approved supporting detail without handing over a broader export.</p></article><article className="p-6"><span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-[#b52e20]">After the question</span><h3 className="mt-8 text-2xl font-extrabold tracking-[-0.055em]">Keep the boundary inspectable.</h3><p className="mt-4 text-sm leading-7 text-[#655c55]">The intended workflow carries a source, scope, reader condition, review decision, and current access boundary.</p></article></div></div></section>
-
-      <section className="border-b border-[#141111] bg-[#f8f0df] py-20 lg:py-28"><div className="mx-auto grid max-w-7xl gap-12 px-5 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8 lg:items-center"><div><p className="stage-kicker text-[#b52e20]">The boundary stays visible</p><h2 className="stage-display mt-5 text-5xl sm:text-6xl">Trust comes from a path a buyer can inspect.</h2><p className="mt-7 max-w-xl text-lg leading-8 text-[#655c55]">RipoDoc does not compete to become your RMM, PSA, BI system, or general-purpose client portal. It is the evidence-delivery layer for the exact report moment that needs an answer.</p><Link href="/how-it-works" className="mt-8 inline-flex items-center gap-2 border-b-2 border-[#e8442e] pb-1 text-sm font-bold">Read the method in full <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link></div><div className="grid border-y border-[#141111]/30"><BoundaryRow title="No data-portal theatre" detail="RipoDoc does not ask every client to live in another dashboard just to question one number in one report." /><BoundaryRow title="No magic PDF extraction" detail="A defensible proof path begins with a reviewed structured source or mapping—not an arbitrary visual chart." /><BoundaryRow title="No permanent forwarding problem" detail="Evidence access is designed around an approved reader, a decision window, and the ability to revoke." /></div></div></section>
-
-      <section className="bg-[#141111] py-20 text-[#f8f0df] lg:py-28"><div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-6 lg:grid-cols-[1fr_0.9fr] lg:px-8 lg:items-center"><div><p className="stage-kicker text-[#ff9b88]">Final curtain / choose the next scene</p><h2 className="stage-display mt-5 text-5xl sm:text-6xl">From report to reality.</h2><p className="mt-6 max-w-2xl text-base leading-7 text-[#f8f0df]/72">Inspect the method, run the self-hosted stack, or bring a live reporting workflow to a focused diagnostic. The public site does not collect customer report data.</p></div><div className="grid gap-3"><RouteCard href="/download" label="For operators" title="Run it on your terms" detail="Inspect the self-hosted deployment path, architecture, and operating prerequisites." /><RouteCard href="/founding-partners" label="For MSP teams" title="Open a report diagnostic" detail="Explore whether a real client-report moment has an evidence-delivery wedge." highlight /></div></div></section>
-    </main>
+function ProofPreview() {
+  return <div className="clear-proof-preview" aria-label="Example controlled evidence delivery">
+    <div className="clear-proof-preview-top"><span>Client report</span><span>QBR · Fixture</span></div>
+    <div className="clear-claim-card"><p className="clear-small-label">Selected report claim</p><h2>Patch compliance reached <strong>98.6%</strong>.</h2><p>Client Operations Review · June 2026</p></div>
+    <div className="clear-proof-path"><div><span className="clear-path-dot clear-path-dot-blue" /><div><strong>Evidence approved</strong><p>450 reviewed fixture rows support this figure.</p></div></div><div><span className="clear-path-dot clear-path-dot-mint" /><div><strong>Reader boundary set</strong><p>Access is named, time-bound, and revocable.</p></div></div><div><span className="clear-path-dot clear-path-dot-ink" /><div><strong>Receipt available</strong><p>Delivery posture remains visible after the report is sent.</p></div></div></div>
+    <Link href="#sample-report" className="clear-proof-preview-link">Inspect the sample <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link>
   </div>;
 }
 
-function ProgramChip({ number, label, detail, active = false }: { readonly number: string; readonly label: string; readonly detail: string; readonly active?: boolean }) { return <div className={`min-h-28 border-b border-[#f8f0df]/25 p-5 sm:border-b-0 sm:border-r ${active ? 'bg-[#f8f0df] text-[#141111]' : ''}`}><span className="font-mono text-[10px] font-bold tracking-[0.15em]">ACT {number} / {label}</span><p className={`mt-3 text-sm ${active ? 'text-[#655c55]' : 'text-[#f8f0df]/65'}`}>{detail}</p></div>; }
-function HeroFact({ value, label }: { readonly value: string; readonly label: string }) { return <div className="bg-[#141111] px-4 py-4 text-[#f8f0df]"><p className="font-mono text-2xl font-bold tracking-[-0.08em]">{value}</p><p className="mt-1 text-[9px] font-bold uppercase leading-4 tracking-[0.1em] text-[#f8f0df]/60">{label}</p></div>; }
-function RecordField({ number, title, detail, icon: Icon }: { readonly number: string; readonly title: string; readonly detail: string; readonly icon: LucideIcon }) { return <article className="min-h-64 border-b border-[#141111] bg-[#fff9ef] p-6 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0"><div className="flex items-start justify-between gap-3"><span className="font-mono text-xs font-bold tracking-[0.14em] text-[#b52e20]">{number}</span><Icon className="h-4 w-4 text-[#e8442e]" aria-hidden="true" /></div><h3 className="mt-12 text-xl font-bold tracking-[-0.04em]">{title}</h3><p className="mt-3 text-sm leading-6 text-[#655c55]">{detail}</p></article>; }
-function BoundaryRow({ title, detail }: { readonly title: string; readonly detail: string }) { return <article className="grid gap-3 border-b border-[#141111]/30 py-6 last:border-b-0 sm:grid-cols-[0.7fr_1.3fr] sm:gap-7"><h3 className="text-lg font-bold tracking-[-0.03em]">{title}</h3><p className="text-sm leading-7 text-[#655c55]">{detail}</p></article>; }
-function RouteCard({ href, label, title, detail, highlight = false }: { readonly href: string; readonly label: string; readonly title: string; readonly detail: string; readonly highlight?: boolean }) { return <Link href={href} className={`group block border p-5 transition hover:-translate-y-0.5 ${highlight ? 'border-[#e8442e] bg-[#e8442e] text-[#f8f0df] hover:bg-[#d83d29]' : 'border-[#f8f0df]/30 bg-[#f8f0df] text-[#141111] hover:bg-[#ff9b88]'}`}><span className={`font-mono text-[10px] font-bold uppercase tracking-[0.15em] ${highlight ? 'text-[#141111]' : 'text-[#b52e20]'}`}>{label}</span><span className="mt-3 flex items-center justify-between gap-4 text-xl font-bold tracking-[-0.035em]">{title}<ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" aria-hidden="true" /></span><span className={`mt-2 block text-sm leading-6 ${highlight ? 'text-[#141111]' : 'text-[#655c55]'}`}>{detail}</span></Link>; }
+function StepCard({ number, title, detail, icon: Icon }: { readonly number: string; readonly title: string; readonly detail: string; readonly icon: LucideIcon }) {
+  return <article className="clear-step-card"><div className="clear-card-top"><span>{number}</span><Icon className="h-5 w-5" aria-hidden="true" /></div><h3>{title}</h3><p>{detail}</p></article>;
+}
+
+function ControlCard({ title, detail, icon: Icon }: { readonly title: string; readonly detail: string; readonly icon: LucideIcon }) {
+  return <article><Icon className="h-5 w-5" aria-hidden="true" /><h3>{title}</h3><p>{detail}</p></article>;
+}
+
+function AudienceCard({ title, detail }: { readonly title: string; readonly detail: string }) {
+  return <article className="clear-audience-card"><span aria-hidden="true" /><h3>{title}</h3><p>{detail}</p><Link href="/for-msps">Explore MSP fit <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link></article>;
+}
