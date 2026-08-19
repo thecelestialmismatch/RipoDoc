@@ -428,12 +428,14 @@ test('report diagnostic starter kit provides a no-data five-question conversion 
   assert.match(footer, /Report diagnostic starter kit/);
 });
 
-test('README uses the exact website mark and only authentic local demo assets', async () => {
+test('README uses the approved mark, authentic demo assets, and the permissioned-source boundary', async () => {
   const readme = await readFile(new URL('../../../README.md', import.meta.url), 'utf8');
-  assert.match(readme, /web\/frontend\/public\/ripodoc-mark\.svg/);
+  assert.match(readme, /web\/frontend\/public\/ripodoc-mark\.png/);
   assert.match(readme, /docs\/assets\/ripodoc-claim-sample\.png/);
   assert.match(readme, /docs\/assets\/ripodoc-demo-tour\.mp4/);
-  assert.match(readme, /sample data/);
+  assert.match(readme, /shipped fixture data/);
+  assert.match(readme, /Source access is intentionally permissioned/);
+  assert.doesNotMatch(readme, /github\.com\/thecelestialmismatch\/RipoDoc/);
 });
 
 
