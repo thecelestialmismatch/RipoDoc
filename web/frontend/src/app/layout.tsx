@@ -47,7 +47,7 @@ const structuredData = [
     url: siteUrl.toString(),
     logo: 'https://www.ripodoc.com/ripodoc-mark.svg',
     description: 'RipoDoc provides controlled evidence delivery for MSP client reports.',
-    sameAs: ['https://github.com/thecelestialmismatch/RipoDoc'],
+    sameAs: ['/founding-partners'],
   },
   {
     '@context': 'https://schema.org',

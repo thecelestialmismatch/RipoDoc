@@ -61,7 +61,7 @@ export default function AboutPage() {
             <Link href="/how-it-works" className="inline-flex min-h-11 items-center justify-center gap-2 border border-[#1d1a16] bg-[#1d1a16] px-5 py-3 text-sm font-bold text-[#fffdf8] shadow-[4px_4px_0_#d9503b] transition hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none">
               Read the method <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
-            <a href="https://github.com/thecelestialmismatch/RipoDoc" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center justify-center gap-2 border border-[#1d1a16] bg-[#fffdf8] px-5 py-3 text-sm font-bold text-[#1d1a16] transition hover:bg-[#efd66b]">
+            <a href="/founding-partners" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center justify-center gap-2 border border-[#1d1a16] bg-[#fffdf8] px-5 py-3 text-sm font-bold text-[#1d1a16] transition hover:bg-[#efd66b]">
               <Code2 className="size-4" aria-hidden="true" /> Inspect the open-source build
             </a>
           </div>

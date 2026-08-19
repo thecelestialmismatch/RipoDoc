@@ -18,7 +18,7 @@ RipoDoc helps Managed Service Providers keep the familiar client PDF while conne
 - [Security controls](https://www.ripodoc.com/security): Public, runtime-safe control posture and self-hosted operating boundary.
 - [Self-host RipoDoc](https://www.ripodoc.com/download): Source bundle, deployment outline, production preflight, and operator path.
 - [Legal status](https://www.ripodoc.com/legal): Published legal-status information and explicit remaining approval decisions.
-- [Open-source repository](https://github.com/thecelestialmismatch/RipoDoc): Implementation, tests, security policy, contribution guide, operator documentation, and research.
+- [Open-source repository](/founding-partners): Implementation, tests, security policy, contribution guide, operator documentation, and research.
 
 ## Important product boundaries
 
