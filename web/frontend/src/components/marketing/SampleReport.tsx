@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowRight, FileText, LockKeyhole, X } from 'lucide-react';
+import { ArrowRight, CheckCircle2, FileText, LockKeyhole, ReceiptText, X } from 'lucide-react';
 import { EvidenceGrid } from '@/components/evidence/EvidenceGrid.tsx';
 import type { ReportElement, ReportManifest } from '@/lib/evidence/types.ts';
 
@@ -104,6 +104,7 @@ export function SampleReport({ manifest }: { readonly manifest: ReportManifest }
               <p className="mt-1 font-mono text-[10px] leading-4 text-[#141111] break-words">{active.evidence.provenance.sourceSystem} — {active.evidence.provenance.sourceQuery}</p>
             </div>
             <div className="mt-3"><EvidenceGrid table={active.evidence.table} exportName={`sample-${active.id}`} canExport /></div>
+            <ProofDeliveryReceipt element={active} reportTitle={manifest.title} />
             <p className="mt-3 text-[10px] text-[#857b72]">Approved by {active.evidence.provenance.approvedBy} · {active.evidence.provenance.approvedAt.slice(0, 10)} · sample data</p>
           </div>
         ) : (
@@ -116,6 +117,13 @@ export function SampleReport({ manifest }: { readonly manifest: ReportManifest }
       </section>
     </div>
   );
+}
+
+function ProofDeliveryReceipt({ element, reportTitle }: { readonly element: ReportElement; readonly reportTitle: string }) {
+  return <section aria-label="Sample proof delivery receipt" className="mt-4 overflow-hidden border border-[#141111] bg-[#302b24] p-3 shadow-[3px_3px_0_rgba(20,17,17,0.18)]">
+    <div className="flex items-center justify-between gap-3 border-b border-white/15 pb-2 text-[#f8f0df]"><span className="inline-flex items-center gap-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.12em]"><ReceiptText className="h-3.5 w-3.5 text-[#ffb2a3]" aria-hidden="true" /> Proof delivery receipt</span><CheckCircle2 className="h-4 w-4 text-[#9ad6a3]" aria-hidden="true" /></div>
+    <div className="mt-3 bg-[#fff9ef] px-3 py-3 font-mono text-[10px] leading-4 text-[#141111] [clip-path:polygon(0_0,100%_0,100%_calc(100%_-_4px),98%_100%,96%_calc(100%_-_4px),94%_100%,92%_calc(100%_-_4px),90%_100%,88%_calc(100%_-_4px),86%_100%,84%_calc(100%_-_4px),82%_100%,80%_calc(100%_-_4px),78%_100%,76%_calc(100%_-_4px),74%_100%,72%_calc(100%_-_4px),70%_100%,68%_calc(100%_-_4px),66%_100%,64%_calc(100%_-_4px),62%_100%,60%_calc(100%_-_4px),58%_100%,56%_calc(100%_-_4px),54%_100%,52%_calc(100%_-_4px),50%_100%,48%_calc(100%_-_4px),46%_100%,44%_calc(100%_-_4px),42%_100%,40%_calc(100%_-_4px),38%_100%,36%_calc(100%_-_4px),34%_100%,32%_calc(100%_-_4px),30%_100%,28%_calc(100%_-_4px),26%_100%,24%_calc(100%_-_4px),22%_100%,20%_calc(100%_-_4px),18%_100%,16%_calc(100%_-_4px),14%_100%,12%_calc(100%_-_4px),10%_100%,8%_calc(100%_-_4px),6%_100%,4%_calc(100%_-_4px),2%_100%,0_calc(100%_-_4px))]"><p className="font-bold">DELIVERY CONFIRMED · SAMPLE</p><p className="mt-2">REPORT: {reportTitle}</p><p>CLAIM: {element.label}</p><p>SCOPE: APPROVED FIXTURE ROWS ONLY</p><p>REVIEW: {element.evidence.provenance.approvedBy}</p><p>READER: DEMONSTRATION BOUNDARY</p><p className="mt-2 border-t border-dashed border-[#141111]/35 pt-2 text-[#655c55]">No recipient data, token, source query, or customer report data is recorded here.</p></div>
+  </section>;
 }
 
 function MouseCue() {
