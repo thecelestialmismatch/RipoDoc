@@ -16,7 +16,7 @@ permissions:
 jobs:
   evidence-composer-zero-egress:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 18
     steps:
       - name: Check out the pull request revision
         uses: actions/checkout@v4
@@ -40,15 +40,37 @@ jobs:
           npm ci
           npm --prefix web/frontend ci
 
-      - name: Run production-mode zero-egress audit
+      - name: Run CLI contract and fail-closed simulation tests
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+        run: npm run test:zero-egress-cli
+
+      - name: Run production-mode zero-egress baseline
         env:
           NEXT_TELEMETRY_DISABLED: '1'
         run: npm run audit:zero-egress:ci
+
+      - name: Prove production-mode fail-closed interception matrix
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+        run: |
+          mkdir -p build/zero-egress-audit/simulations
+          for kind in external-cdn external-api same-origin-api; do
+            set +e
+            npm run audit:zero-egress -- --mode production --simulate "$kind" --out "build/zero-egress-audit/simulations/${kind}.json"
+            status=$?
+            set -e
+            test "$status" -eq 1
+            grep -q '"outcome": "expected-failure"' "build/zero-egress-audit/simulations/${kind}.json"
+            grep -q '"locallyAborted": true' "build/zero-egress-audit/simulations/${kind}.json"
+            grep -q '"observedMatches": 1' "build/zero-egress-audit/simulations/${kind}.json"
+            grep -q '"simulationValidated": true' "build/zero-egress-audit/simulations/${kind}.json"
+          done
 
       - name: Upload zero-egress evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: evidence-composer-zero-egress
-          path: build/zero-egress-audit/evidence-composer.json
+          path: build/zero-egress-audit/**/*.json
           if-no-files-found: warn

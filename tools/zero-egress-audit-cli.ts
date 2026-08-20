@@ -4,16 +4,23 @@ import { dirname, resolve } from 'node:path';
 import { chromium, type Browser, type Page, type Request } from 'playwright-core';
 
 type Mode = 'development' | 'production';
+type SimulationKind = 'none' | 'external-cdn' | 'external-api' | 'same-origin-api';
 type RequestClass = 'off-origin' | 'same-origin-api' | 'same-origin-asset';
 type CapturedRequest = { readonly method: string; readonly resourceType: string; readonly url: string; readonly class: RequestClass };
 type StorageCounts = { readonly local: number; readonly session: number };
-type Options = { readonly root: string; readonly out: string; readonly port: number; readonly mode: Mode; readonly chromiumPath: string; readonly help: boolean };
+type Options = { readonly root: string; readonly out: string; readonly port: number; readonly mode: Mode; readonly chromiumPath: string; readonly simulation: SimulationKind; readonly help: boolean };
 type StaticCheck = { readonly name: string; readonly passed: boolean; readonly detail: string };
+type SimulationSpec = { readonly kind: Exclude<SimulationKind, 'none'>; readonly target: string; readonly method: 'GET' | 'POST'; readonly expectedClass: Exclude<RequestClass, 'same-origin-asset'> };
+type SimulationEvidence = SimulationSpec & { readonly locallyAborted: boolean; readonly observedMatches: number };
+type MutableSimulationState = SimulationSpec & { locallyAborted: boolean; observedMatches: number };
+type TraceResult = { readonly requests: readonly CapturedRequest[]; readonly storage: StorageCounts; readonly simulation?: SimulationEvidence };
+type AuditOutcome = 'passed' | 'expected-failure' | 'failed';
 type AuditArtifact = {
-  readonly schemaVersion: 1;
+  readonly schemaVersion: 2;
   readonly tool: 'ripodoc-zero-egress-audit';
   readonly target: 'Evidence Composer local PDF intake and draft workflow';
   readonly mode: Mode;
+  readonly outcome: AuditOutcome;
   readonly origin: string;
   readonly startedAt: string;
   readonly completedAt: string;
@@ -26,6 +33,8 @@ type AuditArtifact = {
   readonly browserStorage?: StorageCounts;
   readonly zeroExternalAttempts: boolean;
   readonly zeroBrowserPersistence: boolean;
+  readonly simulation?: SimulationEvidence;
+  readonly simulationValidated: boolean;
   readonly requests: readonly CapturedRequest[];
 };
 
@@ -40,16 +49,25 @@ Options:
   --root <directory>               Repository root (default: current directory).
   --port <number>                  Temporary local port (default: 3221).
   --chromium <path>                Chromium executable (default: /usr/bin/chromium).
+  --simulate <kind>                Local-only expected-failure probe: external-cdn,
+                                   external-api, or same-origin-api.
   --help                           Show this help text.
 
 Exit codes:
-  0  All static, runtime, storage, and production-harness checks passed.
-  1  Audit failure; a JSON artifact is still written when --out is available.
+  0  Baseline audit passed with no forbidden request attempt.
+  1  Audit failed, or a validated simulation intentionally proved fail-closed behavior.
   2  Invalid command-line arguments.
+
+Simulation safety:
+  A simulated URL is intercepted and aborted by local browser automation before
+  transport. External probes use reserved .invalid hosts; no real external host,
+  application API endpoint, document byte, or evidence record is contacted.
 
 The trace begins immediately before fixture PDF selection and ends after the local,
 source-linked draft is visible. Off-origin and same-origin /api/ requests are
 forbidden; same-origin static assets are disclosed separately.`;
+
+const simulationKinds = new Set<SimulationKind>(['none', 'external-cdn', 'external-api', 'same-origin-api']);
 
 const parseOptions = (args: readonly string[]): Options => {
   let root = process.cwd();
@@ -57,6 +75,7 @@ const parseOptions = (args: readonly string[]): Options => {
   let port = 3221;
   let mode: Mode = 'production';
   let chromiumPath = '/usr/bin/chromium';
+  let simulation: SimulationKind = 'none';
   let help = false;
   for (let index = 0; index < args.length; index += 1) {
     const argument = args[index];
@@ -68,16 +87,24 @@ const parseOptions = (args: readonly string[]): Options => {
     if (argument === '--port' && value && /^\d+$/.test(value)) { port = Number(value); index += 1; continue; }
     if (argument === '--mode' && (value === 'production' || value === 'development')) { mode = value; index += 1; continue; }
     if (argument === '--chromium' && value) { chromiumPath = resolve(value); index += 1; continue; }
+    if (argument === '--simulate' && value && simulationKinds.has(value as SimulationKind)) { simulation = value as SimulationKind; index += 1; continue; }
     throw new Error(`Unsupported or incomplete option: ${argument}`);
   }
   if (port < 1024 || port > 65535) throw new Error('--port must be between 1024 and 65535.');
-  return { root, out: out || resolve(root, 'build/zero-egress-audit/evidence-composer.json'), port, mode, chromiumPath, help };
+  return { root, out: out || resolve(root, 'build/zero-egress-audit/evidence-composer.json'), port, mode, chromiumPath, simulation, help };
 };
 
 const requestClass = (origin: string, url: string): RequestClass => !url.startsWith(origin) ? 'off-origin' : url.includes('/api/') ? 'same-origin-api' : 'same-origin-asset';
 const emptyCounts = (): Record<RequestClass, number> => ({ 'off-origin': 0, 'same-origin-api': 0, 'same-origin-asset': 0 });
 const delay = async (milliseconds: number) => new Promise<void>((resolveDelay) => setTimeout(resolveDelay, milliseconds));
 const errorText = (cause: unknown) => cause instanceof Error ? cause.message : String(cause);
+
+const simulationSpec = (kind: SimulationKind, origin: string): SimulationSpec | undefined => {
+  if (kind === 'external-cdn') return { kind, target: 'https://ripodoc-pdf-worker-fallback.invalid/pdf.worker.min.mjs', method: 'GET', expectedClass: 'off-origin' };
+  if (kind === 'external-api') return { kind, target: 'https://ripodoc-telemetry-fallback.invalid/v1/ingest', method: 'POST', expectedClass: 'off-origin' };
+  if (kind === 'same-origin-api') return { kind, target: `${origin}/api/telemetry/web-vitals`, method: 'POST', expectedClass: 'same-origin-api' };
+  return undefined;
+};
 
 const fixturePdf = (text: string) => {
   const content = `BT /F1 12 Tf 48 720 Td (${text.replace(/[()\\]/g, '\\$&')}) Tj ET`;
@@ -144,28 +171,49 @@ const staticChecks = async (root: string): Promise<readonly StaticCheck[]> => {
   ];
 };
 
-const traceComposer = async (browser: Browser, origin: string): Promise<{ readonly requests: readonly CapturedRequest[]; readonly storage: StorageCounts }> => {
-  const page: Page = await browser.newPage();
+const runSimulation = async (page: Page, state: MutableSimulationState) => {
+  await page.evaluate(`(async () => { try { await fetch(${JSON.stringify(state.target)}, { method: ${JSON.stringify(state.method)}, ...( ${JSON.stringify(state.method)} === 'POST' ? { body: 'ripodoc-zero-egress-sentinel' } : {}) }); } catch { /* Route abort is expected. */ } })()`);
+  await page.waitForTimeout(100);
+};
+
+const traceComposer = async (browser: Browser, origin: string, kind: SimulationKind): Promise<TraceResult> => {
+  // This isolated audit context bypasses CSP only so a sentinel external request reaches
+  // the local Playwright route. The route aborts it before transport; production CSP is
+  // neither changed nor relied upon as the sole test signal.
+  const context = await browser.newContext({ bypassCSP: true });
+  const page: Page = await context.newPage();
   const requests: CapturedRequest[] = [];
+  const spec = simulationSpec(kind, origin);
+  const simulation: MutableSimulationState | undefined = spec ? { ...spec, locallyAborted: false, observedMatches: 0 } : undefined;
   let capture = false;
   page.on('request', (request: Request) => {
     if (!capture) return;
     const url = request.url();
-    requests.push({ method: request.method(), resourceType: request.resourceType(), url, class: requestClass(origin, url) });
+    const classification = requestClass(origin, url);
+    requests.push({ method: request.method(), resourceType: request.resourceType(), url, class: classification });
+    if (simulation && url === simulation.target) simulation.observedMatches += 1;
   });
+  if (simulation) {
+    await page.route('**/*', async (route) => {
+      if (route.request().url() !== simulation.target) { await route.continue(); return; }
+      simulation.locallyAborted = true;
+      await route.abort('blockedbyclient');
+    });
+  }
   try {
     await page.goto(`${origin}/e2e-composer-harness`, { waitUntil: 'domcontentloaded' });
     await page.waitForLoadState('networkidle', { timeout: 10_000 }).catch(() => undefined);
     await page.waitForTimeout(250);
     capture = true;
+    if (simulation) await runSimulation(page, simulation);
     await page.locator('#local-evidence-pdf').setInputFiles({ name: 'zero-egress-fixture.pdf', mimeType: 'application/pdf', buffer: fixturePdf('1. Do you have an approved incident response process?') });
     await page.getByText(/candidate questions found and matched against/i).waitFor();
     await page.getByText('Build local drafts').click();
     await page.getByRole('heading', { name: 'Do you have an approved incident response process?' }).waitFor();
     const storage = await page.evaluate<StorageCounts>('({ local: localStorage.length, session: sessionStorage.length })');
-    return { requests, storage };
+    return { requests, storage, ...(simulation ? { simulation: { ...simulation } } : {}) };
   } finally {
-    await page.close();
+    await context.close();
   }
 };
 
@@ -182,6 +230,7 @@ const run = async (options: Options) => {
   let checks: readonly StaticCheck[] = [];
   let requests: readonly CapturedRequest[] = [];
   let storage: StorageCounts | undefined;
+  let simulation: SimulationEvidence | undefined;
   let guardStatus: number | undefined;
   let failure: string | undefined;
   try {
@@ -191,9 +240,10 @@ const run = async (options: Options) => {
     const started = await startServer(options, true);
     testServer = started.server;
     browser = await chromium.launch({ executablePath: options.chromiumPath, headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
-    const trace = await traceComposer(browser, started.origin);
+    const trace = await traceComposer(browser, started.origin, options.simulation);
     requests = trace.requests;
     storage = trace.storage;
+    simulation = trace.simulation;
     await browser.close(); browser = undefined;
     stopProcessGroup(testServer); testServer = undefined;
     await delay(250);
@@ -210,18 +260,23 @@ const run = async (options: Options) => {
   }
   const counts = emptyCounts();
   for (const request of requests) counts[request.class] += 1;
-  const zeroExternalAttempts = counts['off-origin'] === 0 && counts['same-origin-api'] === 0;
+  const forbiddenRequests = counts['off-origin'] + counts['same-origin-api'];
+  const zeroExternalAttempts = forbiddenRequests === 0;
   const zeroBrowserPersistence = storage?.local === 0 && storage?.session === 0;
-  const passed = !failure && checks.every((check) => check.passed) && zeroExternalAttempts && zeroBrowserPersistence && guardStatus === 404;
+  const environmentValid = !failure && checks.every((check) => check.passed) && zeroBrowserPersistence && guardStatus === 404;
+  const simulationValidated = simulation ? environmentValid && simulation.locallyAborted && simulation.observedMatches === 1 && forbiddenRequests === 1 && counts[simulation.expectedClass] === 1 : false;
+  const baselinePassed = environmentValid && zeroExternalAttempts;
+  const outcome: AuditOutcome = options.simulation === 'none' ? (baselinePassed ? 'passed' : 'failed') : (simulationValidated ? 'expected-failure' : 'failed');
   const artifact: AuditArtifact = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     tool: 'ripodoc-zero-egress-audit',
     target: 'Evidence Composer local PDF intake and draft workflow',
     mode: options.mode,
+    outcome,
     origin: `http://localhost:${options.port}`,
     startedAt,
     completedAt: new Date().toISOString(),
-    passed,
+    passed: outcome === 'passed',
     ...(failure ? { failure } : {}),
     staticChecks: checks,
     ...(guardStatus === undefined ? {} : { productionHarnessStatus: guardStatus }),
@@ -230,13 +285,16 @@ const run = async (options: Options) => {
     ...(storage ? { browserStorage: storage } : {}),
     zeroExternalAttempts,
     zeroBrowserPersistence,
+    ...(simulation ? { simulation } : {}),
+    simulationValidated,
     requests,
   };
   await writeArtifact(options.out, artifact);
-  const summary = `zero-egress-audit ${passed ? 'PASS' : 'FAIL'} | requests=${artifact.totalRequests} off-origin=${counts['off-origin']} api=${counts['same-origin-api']} assets=${counts['same-origin-asset']} storage=${storage ? `${storage.local}/${storage.session}` : 'unavailable'} guard=${guardStatus ?? 'unavailable'} artifact=${options.out}`;
-  if (passed) { console.log(summary); return; }
+  const summary = `zero-egress-audit ${outcome.toUpperCase()} | simulation=${options.simulation} requests=${artifact.totalRequests} off-origin=${counts['off-origin']} api=${counts['same-origin-api']} assets=${counts['same-origin-asset']} storage=${storage ? `${storage.local}/${storage.session}` : 'unavailable'} guard=${guardStatus ?? 'unavailable'} artifact=${options.out}`;
+  if (outcome === 'passed') { console.log(summary); return; }
   console.error(summary);
   if (failure) console.error(`failure: ${failure}`);
+  if (outcome === 'expected-failure') console.error(`simulation: ${simulation?.kind} was aborted locally and observed as ${simulation?.expectedClass}; fail-closed exit required.`);
   process.exitCode = 1;
 };
 
