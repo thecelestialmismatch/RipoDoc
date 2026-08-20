@@ -1,0 +1,54 @@
+name: Verify browser-local zero egress
+
+on:
+  pull_request:
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tools/**'
+      - 'web/frontend/**'
+      - '.github/workflows/zero-egress-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  evidence-composer-zero-egress:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Check out the pull request revision
+        uses: actions/checkout@v4
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            web/frontend/package-lock.json
+
+      - name: Install Chromium for local browser verification
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes chromium
+
+      - name: Install locked dependencies
+        run: |
+          npm ci
+          npm --prefix web/frontend ci
+
+      - name: Run production-mode zero-egress audit
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+        run: npm run audit:zero-egress:ci
+
+      - name: Upload zero-egress evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidence-composer-zero-egress
+          path: build/zero-egress-audit/evidence-composer.json
+          if-no-files-found: warn
