@@ -25,11 +25,15 @@
     "overlay:sample": "npm run overlay -- --pdf tools/evidence-pdf/fixtures/sample-customer-report.pdf --manifest tools/evidence-pdf/fixtures/demo-report.json --placements tools/evidence-pdf/fixtures/sample-customer-report.placements.json --out build/sample-customer-report.clickable.pdf --origin https://ripodoc.com --ttl-days 14",
     "audit:verify": "node --experimental-strip-types tools/audit-log/verify-cli.ts",
     "preflight:production": "node --experimental-strip-types tools/production-preflight.ts",
+    "test:e2e": "node --test --experimental-strip-types tools/evidence-pdf/test/scenario-lab-and-composer.e2e.test.ts",
     "indexnow:submit": "node tools/discovery/submit-indexnow.mjs",
-    "verify": "npm run typecheck && npm test && npm run build:web",
+    "verify": "npm run typecheck && npm test && npm run build:web && npm run test:e2e",
     "docker:build": "docker compose build",
     "docker:run": "docker compose up",
     "docker:stop": "docker compose down",
     "dev:local-server": "node docker/local/server.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.62.1"
   }
 }

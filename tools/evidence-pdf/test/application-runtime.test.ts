@@ -595,12 +595,15 @@ test('Monte Carlo Scenario Lab remains a seeded browser-only public fixture tool
 
 
 test('Evidence Composer is an authenticated dashboard capability with a strict browser-local document boundary', async () => {
-  const [dashboard, composer, parser, matcher, exporter] = await Promise.all([
+  const [dashboard, composer, parser, matcher, exporter, telemetry, proxy, harness] = await Promise.all([
     readFile(new URL('../../../web/frontend/src/components/dashboard/WorkspaceCommandCenter.tsx', import.meta.url), 'utf8'),
     readFile(new URL('../../../web/frontend/src/components/dashboard/LocalEvidenceComposer.tsx', import.meta.url), 'utf8'),
     readFile(new URL('../../../web/frontend/src/lib/composer/local-pdf.ts', import.meta.url), 'utf8'),
     readFile(new URL('../../../web/frontend/src/lib/composer/local-evidence.ts', import.meta.url), 'utf8'),
     readFile(new URL('../../../web/frontend/src/lib/composer/local-composer-pdf.ts', import.meta.url), 'utf8'),
+    readFile(new URL('../../../web/frontend/src/components/telemetry/WebVitalsReporter.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../../../web/frontend/src/proxy.ts', import.meta.url), 'utf8'),
+    readFile(new URL('../../../web/frontend/src/app/e2e-composer-harness/page.tsx', import.meta.url), 'utf8'),
   ]);
   assert.match(dashboard, /<LocalEvidenceComposer reports=\{reports\} \/>/);
   assert.match(dashboard, /href="#evidence-composer"/);
@@ -613,10 +616,16 @@ test('Evidence Composer is an authenticated dashboard capability with a strict b
   assert.match(parser, /LOCAL_COMPOSER_MAX_BYTES/);
   assert.match(parser, /LOCAL_COMPOSER_MAX_PAGES/);
   assert.match(parser, /bytes\.fill\(0\)/);
+  assert.match(parser, /useWorkerFetch: false/);
+  assert.match(parser, /pdf\.worker\.min\.mjs/);
   assert.match(parser, /does not send image-only or scanned PDFs to cloud OCR/);
   assert.match(matcher, /approvedSourcesFromReports/);
   assert.match(matcher, /No approved evidence record/);
   assert.match(matcher, /Approval blocked/);
   assert.match(exporter, /LOCAL-ONLY EVIDENCE COMPOSER/);
-  for (const source of [composer, parser, matcher, exporter]) assert.doesNotMatch(source, /fetch\(|\/api\/|process\.env|localStorage|sessionStorage|indexedDB|github\.com\/thecelestialmismatch\/RipoDoc/);
+  for (const source of [composer, parser, matcher, exporter]) assert.doesNotMatch(source, /fetch\(|\/api\/|process\.env|localStorage|sessionStorage|indexedDB|XMLHttpRequest|WebSocket|EventSource|sendBeacon|github\.com\/thecelestialmismatch\/RipoDoc/);
+  assert.match(telemetry, /pathname\.startsWith\('\/dashboard'\)/);
+  assert.match(telemetry, /Never\n    \/\/ emit app-shell telemetry while a user is in the authenticated dashboard/);
+  assert.match(proxy, /connect-src 'self' https:\/\/challenges\.cloudflare\.com/);
+  assert.match(harness, /RIPODOC_E2E_TEST_MODE !== 'true'/);
 });

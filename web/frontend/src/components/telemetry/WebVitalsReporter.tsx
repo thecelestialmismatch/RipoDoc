@@ -1,5 +1,6 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import { useReportWebVitals } from 'next/web-vitals';
 
 const enabled = process.env.NEXT_PUBLIC_RIPODOC_WEB_VITALS_ENABLED === 'true';
@@ -11,8 +12,11 @@ const ratings = new Set(['good', 'needs-improvement', 'poor']);
  * recipient data, report URLs, tokens, and raw user-agent strings.
  */
 export function WebVitalsReporter() {
+  const pathname = usePathname();
   useReportWebVitals((metric) => {
-    if (!enabled || !allowed.has(metric.name) || !ratings.has(metric.rating)) return;
+    // Private workspace routes may render locally handled document material. Never
+    // emit app-shell telemetry while a user is in the authenticated dashboard.
+    if (pathname.startsWith('/dashboard') || !enabled || !allowed.has(metric.name) || !ratings.has(metric.rating)) return;
     const body = JSON.stringify({ name: metric.name, value: metric.value, rating: metric.rating, navigationType: metric.navigationType ?? 'navigate' });
     if (navigator.sendBeacon) {
       navigator.sendBeacon('/api/telemetry/web-vitals', new Blob([body], { type: 'application/json' }));
