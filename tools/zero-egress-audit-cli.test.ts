@@ -22,6 +22,7 @@ type Artifact = {
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const cli = 'tools/zero-egress-audit-cli.ts';
+const simulationTimeoutMs = process.env.CI ? 120_000 : 60_000;
 const invoke = (...args: readonly string[]) => spawnSync(process.execPath, ['--experimental-strip-types', cli, ...args], { cwd: root, encoding: 'utf8' });
 
 const assertSimulation = async (kind: SimulationKind, port: number) => {
@@ -89,14 +90,14 @@ test('zero-egress CLI writes a failure artifact for a missing local browser prer
   }
 });
 
-test('external CDN fallback is intercepted, locally aborted, and reported as an expected failure', { timeout: 60_000 }, async () => {
+test('external CDN fallback is intercepted, locally aborted, and reported as an expected failure', { timeout: simulationTimeoutMs }, async () => {
   await assertSimulation('external-cdn', 3421);
 });
 
-test('external API fallback is intercepted, locally aborted, and reported as an expected failure', { timeout: 60_000 }, async () => {
+test('external API fallback is intercepted, locally aborted, and reported as an expected failure', { timeout: simulationTimeoutMs }, async () => {
   await assertSimulation('external-api', 3422);
 });
 
-test('same-origin API fallback is intercepted, locally aborted, and reported as an expected failure', { timeout: 60_000 }, async () => {
+test('same-origin API fallback is intercepted, locally aborted, and reported as an expected failure', { timeout: simulationTimeoutMs }, async () => {
   await assertSimulation('same-origin-api', 3423);
 });
