@@ -1,6 +1,6 @@
-# Standalone EspoCRM sales-operations runtime for RipoDoc.
+# Standalone RipoDoc CRM sales-operations runtime for RipoDoc.
 # Do not merge this Compose project into RipoDoc's application Compose file or networks.
-# Terminate TLS on a separately managed reverse proxy that forwards only to 127.0.0.1:${ESPOCRM_BIND_PORT}.
+# Terminate TLS on a separately managed reverse proxy that forwards only to 127.0.0.1:${CRM_BIND_PORT}.
 
 name: ripodoc-crm
 
@@ -10,13 +10,13 @@ services:
     restart: unless-stopped
     env_file: .env
     environment:
-      MARIADB_DATABASE: ${ESPOCRM_DATABASE_NAME}
-      MARIADB_USER: ${ESPOCRM_DATABASE_USER}
-      MARIADB_PASSWORD: ${ESPOCRM_DATABASE_PASSWORD}
-      MARIADB_ROOT_PASSWORD: ${ESPOCRM_DATABASE_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${CRM_DATABASE_NAME}
+      MARIADB_USER: ${CRM_DATABASE_USER}
+      MARIADB_PASSWORD: ${CRM_DATABASE_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${CRM_DATABASE_ROOT_PASSWORD}
     command: ['--skip-name-resolve']
     volumes:
-      - espocrm-db:/var/lib/mysql
+      - crm-db:/var/lib/mysql
     networks:
       - crm-internal
     healthcheck:
@@ -26,24 +26,24 @@ services:
       retries: 5
       start_period: 20s
 
-  espocrm:
-    image: ${ESPOCRM_IMAGE}
+  crm:
+    image: ${CRM_IMAGE}
     restart: unless-stopped
     env_file: .env
     environment:
-      ESPOCRM_DATABASE_HOST: database
-      ESPOCRM_DATABASE_NAME: ${ESPOCRM_DATABASE_NAME}
-      ESPOCRM_DATABASE_USER: ${ESPOCRM_DATABASE_USER}
-      ESPOCRM_DATABASE_PASSWORD: ${ESPOCRM_DATABASE_PASSWORD}
-      ESPOCRM_ADMIN_USERNAME: ${ESPOCRM_ADMIN_USERNAME}
-      ESPOCRM_ADMIN_PASSWORD: ${ESPOCRM_ADMIN_PASSWORD}
-      ESPOCRM_SITE_URL: ${ESPOCRM_SITE_URL}
+      CRM_DATABASE_HOST: database
+      CRM_DATABASE_NAME: ${CRM_DATABASE_NAME}
+      CRM_DATABASE_USER: ${CRM_DATABASE_USER}
+      CRM_DATABASE_PASSWORD: ${CRM_DATABASE_PASSWORD}
+      CRM_ADMIN_USERNAME: ${CRM_ADMIN_USERNAME}
+      CRM_ADMIN_PASSWORD: ${CRM_ADMIN_PASSWORD}
+      CRM_SITE_URL: ${CRM_SITE_URL}
     volumes:
-      - espocrm-data:/var/www/html/data
-      - espocrm-custom:/var/www/html/custom
-      - espocrm-custom-client:/var/www/html/client/custom
+      - crm-data:/var/www/html/data
+      - crm-custom:/var/www/html/custom
+      - crm-custom-client:/var/www/html/client/custom
     ports:
-      - '127.0.0.1:${ESPOCRM_BIND_PORT}:80'
+      - '127.0.0.1:${CRM_BIND_PORT}:80'
     networks:
       - crm-internal
       - crm-edge
@@ -60,18 +60,18 @@ services:
       start_period: 40s
 
   daemon:
-    image: ${ESPOCRM_IMAGE}
+    image: ${CRM_IMAGE}
     restart: unless-stopped
     env_file: .env
     volumes:
-      - espocrm-data:/var/www/html/data
-      - espocrm-custom:/var/www/html/custom
-      - espocrm-custom-client:/var/www/html/client/custom
+      - crm-data:/var/www/html/data
+      - crm-custom:/var/www/html/custom
+      - crm-custom-client:/var/www/html/client/custom
     entrypoint: docker-daemon.sh
     networks:
       - crm-internal
     depends_on:
-      espocrm:
+      crm:
         condition: service_healthy
     security_opt:
       - no-new-privileges:true
@@ -88,7 +88,7 @@ networks:
   crm-edge:
 
 volumes:
-  espocrm-db:
-  espocrm-data:
-  espocrm-custom:
-  espocrm-custom-client:
+  crm-db:
+  crm-data:
+  crm-custom:
+  crm-custom-client:

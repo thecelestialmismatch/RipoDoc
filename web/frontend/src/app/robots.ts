@@ -32,7 +32,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: privatePaths,
       },
       {
-        // OpenAI documents this crawler as the policy control for ChatGPT Search.
+        // AI crawler operator documents this crawler as the policy control for AI search Search.
         // The explicit rule supplements (rather than changes) the wildcard allow.
         userAgent: 'OAI-SearchBot',
         allow: publicDiscoveryPaths,

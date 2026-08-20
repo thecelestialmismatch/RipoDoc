@@ -15,12 +15,12 @@ RipoDoc’s workspace identity boundary is implemented in **TypeScript** on the 
 | Next.js App Router and request proxy | Provides server routes, request-bound cookies, redirects, CSRF cookie issuance, and global browser security headers. | [`web/frontend/src/app/api/auth/[action]/route.ts`](../../web/frontend/src/app/api/auth/[action]/route.ts), [`web/frontend/src/proxy.ts`](../../web/frontend/src/proxy.ts) |
 | Node.js `crypto` | Implements memory-hard scrypt password derivation, 32-byte random opaque values, HMAC hashing for stored secrets, and timing-safe comparison. | [`web/frontend/src/lib/auth/primitives.ts`](../../web/frontend/src/lib/auth/primitives.ts) |
 | PostgreSQL through `pg` | Stores tenant users, password hashes, sessions, one-time codes, rate-limit buckets, audit events, tenant report records, and CRM-sync outbox state. Parameterized statements prevent value interpolation in SQL. | [`web/frontend/src/lib/auth/database.ts`](../../web/frontend/src/lib/auth/database.ts), [`migrations/008_create_auth_and_workspace.sql`](../../migrations/008_create_auth_and_workspace.sql), [`migrations/010_create_founding_partner_crm_sync.sql`](../../migrations/010_create_founding_partner_crm_sync.sql) |
-| Resend HTTPS API | Delivers verification, password-reset, and recipient-proof codes; raw codes remain in the email body and are never persisted or placed in URLs. | [`web/frontend/src/lib/auth/email.ts`](../../web/frontend/src/lib/auth/email.ts) |
-| Cloudflare Turnstile | Performs server-side production anti-automation verification before auth actions are processed. | [`web/frontend/src/lib/auth/captcha.ts`](../../web/frontend/src/lib/auth/captcha.ts) |
+| email service HTTPS API | Delivers verification, password-reset, and recipient-proof codes; raw codes remain in the email body and are never persisted or placed in URLs. | [`web/frontend/src/lib/auth/email.ts`](../../web/frontend/src/lib/auth/email.ts) |
+| Cloudflare challenge service | Performs server-side production anti-automation verification before auth actions are processed. | [`web/frontend/src/lib/auth/captcha.ts`](../../web/frontend/src/lib/auth/captcha.ts) |
 
-Signup and recovery are enumeration-resistant: they use one generic response and a response-time floor; login verifies a fixed dummy scrypt hash when account lookup fails. Rate limits are persisted by both privacy-hashed address and privacy-hashed IP, and Turnstile is mandatory in production. Email verification is required before a user can receive a valid session. Passwords never leave the scrypt representation. Verification, reset, and recipient-proof codes are 32-byte random values, stored only as keyed HMACs, consumed atomically, and expire after 30 minutes.[1] [2]
+Signup and recovery are enumeration-resistant: they use one generic response and a response-time floor; login verifies a fixed dummy scrypt hash when account lookup fails. Rate limits are persisted by both privacy-hashed address and privacy-hashed IP, and challenge service is mandatory in production. Email verification is required before a user can receive a valid session. Passwords never leave the scrypt representation. Verification, reset, and recipient-proof codes are 32-byte random values, stored only as keyed HMACs, consumed atomically, and expire after 30 minutes.[1] [2]
 
-> **Fail-closed hosting rule.** The hosted workspace does not accept durable account actions until PostgreSQL, the application origin, a 32-character authentication secret, Resend credentials, sender identity, and production Turnstile configuration are supplied. This avoids an insecure fallback to ephemeral filesystem state or unactioned email delivery.[2]
+> **Fail-closed hosting rule.** The hosted workspace does not accept durable account actions until PostgreSQL, the application origin, a 32-character authentication secret, email service credentials, sender identity, and production challenge service configuration are supplied. This avoids an insecure fallback to ephemeral filesystem state or unactioned email delivery.[2]
 
 ## Automated verification results
 
@@ -35,7 +35,7 @@ The repository uses Node’s built-in test runner. The fresh release gate comple
 | Reviewed overlay publication workflow | Exact-PDF binding, review approvals, element mapping, placement bounds, proposal parsing, link generation, and readback are enforced. |
 | PDF construction and safe delivery | PDF serialization escapes untrusted values; external URLs must be HTTPS; unsafe rectangles and JavaScript are refused; evidence rows remain out of final PDFs. |
 | Private worker authorization | The worker rejects direct browser and unsigned requests, validates a server-issued tenant/scope/draft capability, prevents cross-tenant proposal access, records the server reviewer, validates PDF bytes, and yields only a digest-checked approved artifact. |
-| EspoCRM consent boundary and protocol | CRM payloads exclude evidence data; loopback/private targets are blocked; HMAC authorization and least-data mapping are covered; a local mock server exercises lookup/create/update, remote rejection, timeout classification, and non-blocking outbox outcomes. |
+| RipoDoc CRM consent boundary and protocol | CRM payloads exclude evidence data; loopback/private targets are blocked; HMAC authorization and least-data mapping are covered; a local mock server exercises lookup/create/update, remote rejection, timeout classification, and non-blocking outbox outcomes. |
 | Discovery and telemetry safety | IndexNow payload validation and privacy-preserving Web Vitals request validation are covered. |
 
 ## File-by-file test inventory
@@ -48,8 +48,8 @@ The current release command executes **19 TypeScript test files** plus **one pri
 | `audit.test.ts` | Hash chaining, tamper detection, concurrent appends, restart behavior, structured sink, and no raw recipient email in audit records. |
 | `auth-primitives.test.ts` | Scrypt derivation/verification and random token or privacy-hash behavior. |
 | `demo-fixture.test.ts` | Shipped fixture validity and evidence source structure. |
-| `espocrm-mock-integration.test.ts` | Local HTTP mock-server coverage of HMAC authorization, lookup/create/update, rejection retry, timeout, and unclaimed outbox behavior. |
-| `espocrm.test.ts` | CRM address blocking, HMAC authorization shape, and least-data payload mapping. |
+| `crm-mock-integration.test.ts` | Local HTTP mock-server coverage of HMAC authorization, lookup/create/update, rejection retry, timeout, and unclaimed outbox behavior. |
+| `crm.test.ts` | CRM address blocking, HMAC authorization shape, and least-data payload mapping. |
 | `indexnow.test.ts` | Discovery payload validation and safe submission contract. |
 | `link-expiry.test.ts` | Time-bound claim expiry, control behavior, and denial semantics. |
 | `manifest.test.ts` | Schema validation, approvals, IDs, timestamps, recipients, reports, rows, and charts. |
@@ -77,7 +77,7 @@ npm run verify
 
 The canonical `verify` command runs strict type checking, the **169-test** suite, and the production frontend build. It is the minimum pre-merge gate for a change that affects authorization, identity, evidence claims, manifests, audit behavior, PDF rendering, worker ingress, private operations, CRM boundaries, telemetry, or protected dashboard/download workflows.[3]
 
-> **Scope limit.** Passing tests prove the checked contract. They do not establish that the public hosted environment has all production configuration, that a real customer has completed the workflow, that a real EspoCRM tenant has been configured, or that an independent security assessment has occurred.
+> **Scope limit.** Passing tests prove the checked contract. They do not establish that the public hosted environment has all production configuration, that a real customer has completed the workflow, that a real RipoDoc CRM tenant has been configured, or that an independent security assessment has occurred.
 
 ## References
 

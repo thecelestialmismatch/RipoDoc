@@ -2,14 +2,14 @@ import assert from 'node:assert/strict';
 import { once } from 'node:events';
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import test from 'node:test';
-import { espocrmAuthorization, type CrmSyncLead } from '../../../web/frontend/src/lib/founder/espocrm-contract.ts';
+import { crmAuthorization, type CrmSyncLead } from '../../../web/frontend/src/lib/founder/crm-contract.ts';
 import {
   CrmRemoteError,
   runCrmOutboxAttempt,
-  upsertEspoCrmLead,
-  type EspoCrmMethod,
-  type EspoCrmRequest,
-} from '../../../web/frontend/src/lib/founder/espocrm-sync-contract.ts';
+  upsertCrmLead,
+  type CrmMethod,
+  type CrmRequest,
+} from '../../../web/frontend/src/lib/founder/crm-sync-contract.ts';
 
 const apiKey = 'mock-api-key-that-is-long-enough';
 const hmacSecret = 'mock-hmac-secret-that-is-long-enough-for-integration-tests';
@@ -55,14 +55,14 @@ const startMockEspo = async (handler: (request: IncomingMessage, response: Serve
   server.listen(0, '127.0.0.1');
   await once(server, 'listening');
   const address = server.address();
-  if (!address || typeof address === 'string') throw new Error('Mock EspoCRM did not bind to TCP.');
+  if (!address || typeof address === 'string') throw new Error('Mock RipoDoc CRM did not bind to TCP.');
   return {
     origin: `http://127.0.0.1:${address.port}`,
     close: async () => new Promise((resolve, reject) => server.close((error) => error ? reject(error) : resolve())),
   };
 };
 
-const mockTransport = (origin: string, timeoutMs = 250): EspoCrmRequest => async <T>(method: EspoCrmMethod, uri: string, body?: unknown): Promise<T> => {
+const mockTransport = (origin: string, timeoutMs = 250): CrmRequest => async <T>(method: CrmMethod, uri: string, body?: unknown): Promise<T> => {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
   try {
@@ -71,7 +71,7 @@ const mockTransport = (origin: string, timeoutMs = 250): EspoCrmRequest => async
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'X-Hmac-Authorization': espocrmAuthorization(method, uri, apiKey, hmacSecret),
+        'X-Hmac-Authorization': crmAuthorization(method, uri, apiKey, hmacSecret),
       },
       body: body === undefined ? undefined : JSON.stringify(body),
       signal: controller.signal,
@@ -87,10 +87,10 @@ const mockTransport = (origin: string, timeoutMs = 250): EspoCrmRequest => async
 const stringHeader = (value: string | string[] | undefined): string | undefined => Array.isArray(value) ? value[0] : value;
 
 const assertAuthorized = (request: RecordedRequest): void => {
-  assert.equal(request.authorization, espocrmAuthorization(request.method, request.uri, apiKey, hmacSecret));
+  assert.equal(request.authorization, crmAuthorization(request.method, request.uri, apiKey, hmacSecret));
 };
 
-test('mock EspoCRM integration looks up then creates one least-data Lead with valid HMAC authorization', async () => {
+test('mock RipoDoc CRM integration looks up then creates one least-data Lead with valid HMAC authorization', async () => {
   const requests: RecordedRequest[] = [];
   const mock = await startMockEspo(async (request, response) => {
     const uri = request.url?.replace('/api/v1/', '') ?? '';
@@ -107,7 +107,7 @@ test('mock EspoCRM integration looks up then creates one least-data Lead with va
     return json(response, 405, {});
   });
   try {
-    const remoteLeadId = await upsertEspoCrmLead(consentedLead, mockTransport(mock.origin));
+    const remoteLeadId = await upsertCrmLead(consentedLead, mockTransport(mock.origin));
     assert.equal(remoteLeadId, 'lead-created-1');
     assert.equal(requests.length, 2);
     assert.equal(requests[0]?.method, 'GET');
@@ -135,7 +135,7 @@ test('mock EspoCRM integration looks up then creates one least-data Lead with va
   }
 });
 
-test('mock EspoCRM integration updates the existing Lead rather than creating a duplicate', async () => {
+test('mock RipoDoc CRM integration updates the existing Lead rather than creating a duplicate', async () => {
   const requests: RecordedRequest[] = [];
   const mock = await startMockEspo(async (request, response) => {
     const uri = request.url?.replace('/api/v1/', '') ?? '';
@@ -152,7 +152,7 @@ test('mock EspoCRM integration updates the existing Lead rather than creating a 
     return json(response, 405, {});
   });
   try {
-    const remoteLeadId = await upsertEspoCrmLead(consentedLead, mockTransport(mock.origin));
+    const remoteLeadId = await upsertCrmLead(consentedLead, mockTransport(mock.origin));
     assert.equal(remoteLeadId, 'lead existing');
     assert.deepEqual(requests.map((request) => [request.method, request.uri]), [
       ['GET', requests[0]?.uri],
@@ -179,12 +179,12 @@ test('a remote rejection is non-blocking, marked failed, and can be retried to a
     const request = mockTransport(mock.origin);
     const first = await runCrmOutboxAttempt({
       claim: async () => true,
-      upsert: () => upsertEspoCrmLead(consentedLead, request),
+      upsert: () => upsertCrmLead(consentedLead, request),
       mark: async (result) => { marks.push(result); },
     });
     const second = await runCrmOutboxAttempt({
       claim: async () => true,
-      upsert: () => upsertEspoCrmLead(consentedLead, request),
+      upsert: () => upsertCrmLead(consentedLead, request),
       mark: async (result) => { marks.push(result); },
     });
     assert.equal(first, 'failed');
@@ -207,7 +207,7 @@ test('a mock timeout produces a transport failure without throwing through the o
   try {
     const result = await runCrmOutboxAttempt({
       claim: async () => true,
-      upsert: () => upsertEspoCrmLead(consentedLead, mockTransport(mock.origin, 10)),
+      upsert: () => upsertCrmLead(consentedLead, mockTransport(mock.origin, 10)),
       mark: async (outcome) => { marks.push(outcome); },
     });
     assert.equal(result, 'failed');

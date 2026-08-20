@@ -37,8 +37,8 @@ export const isBlockedCrmAddress = (address: string): boolean => {
   return true;
 };
 
-/** Official EspoCRM HMAC authorization format, scoped to one API request URI. */
-export const espocrmAuthorization = (method: string, uri: string, apiKey: string, hmacSecret: string): string => {
+/** Official RipoDoc CRM HMAC authorization format, scoped to one API request URI. */
+export const crmAuthorization = (method: string, uri: string, apiKey: string, hmacSecret: string): string => {
   const signature = createHmac('sha256', hmacSecret).update(`${method.toUpperCase()} /${uri}`).digest('hex');
   return Buffer.from(`${apiKey}:${signature}`, 'utf8').toString('base64');
 };
@@ -50,8 +50,8 @@ const safeName = (name: string): { readonly firstName?: string; readonly lastNam
   return firstName ? { firstName, lastName } : { lastName };
 };
 
-/** Maps only explicitly consented business-development fields to standard EspoCRM Lead attributes. */
-export const espocrmLeadPayload = (lead: CrmSyncLead): Readonly<Record<string, string>> => {
+/** Maps only explicitly consented business-development fields to standard RipoDoc CRM Lead attributes. */
+export const crmLeadPayload = (lead: CrmSyncLead): Readonly<Record<string, string>> => {
   const name = safeName(lead.contactName);
   return {
     ...name,

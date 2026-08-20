@@ -86,12 +86,12 @@ Once you have the design read (Section 0) and dials (Section 1), pick the right 
 ### 2.A When to reach for a real design system (use official packages)
 | Brief reads as… | Reach for | Why |
 |---|---|---|
-| Microsoft / enterprise SaaS / dashboards | `@fluentui/react-components` or `@fluentui/web-components` | Official Fluent UI, Microsoft tokens, accessibility done |
-| Google-ish UI, Material-flavored product | `@material/web` + Material 3 tokens | Official, theme-able via Material Theming |
+| enterprise / enterprise SaaS / dashboards | `@fluentui/react-components` or `@fluentui/web-components` | Official enterprise component system, enterprise tokens, accessibility done |
+| material-inspired UI, Material-flavored product | `@material/web` + material design tokens tokens | Official, theme-able via Material Theming |
 | IBM-style B2B / enterprise analytics | `@carbon/react` + `@carbon/styles` | Official Carbon, mature data-density patterns |
-| Shopify app surfaces | `polaris.js` web components / Polaris React | Required for Shopify admin UI |
-| Atlassian / Jira-style product | `@atlaskit/*` + `@atlaskit/tokens` | Official Atlassian DS |
-| GitHub-style devtool / community page | `@primer/css` or `@primer/react-brand` | Official Primer; Brand variant for marketing |
+| commerce platform app surfaces | `polaris.js` web components / Polaris React | Required for commerce platform admin UI |
+| enterprise software provider / Jira-style product | `@atlaskit/*` + `@atlaskit/tokens` | Official enterprise software provider DS |
+| repository platform-style devtool / community page | `@primer/css` or `@primer/react-brand` | Official developer-tool design system; Brand variant for marketing |
 | Public-sector UK service | `govuk-frontend` | Legally / regulatorily expected |
 | US public-sector / trust-first | `uswds` | Same |
 | Fast local-business / agency MVP | Bootstrap 5.3 | Boring, fast, works |
@@ -101,7 +101,7 @@ Once you have the design read (Section 0) and dials (Section 1), pick the right 
 
 **Honesty rule:** if the brief reads as one of the systems above, install and use the **official** package. Do not recreate its CSS by hand. Do not import a system's tokens but then override 90% of them.
 
-**One system per project.** Do not mix Fluent React with Carbon in the same tree. Do not import shadcn/ui components into a Material 3 app.
+**One system per project.** Do not mix Fluent React with Carbon in the same tree. Do not import shadcn/ui components into a material design tokens app.
 
 ### 2.B When the brief is an aesthetic, not a system
 For these directions, there is **no single official package**. Build with native CSS + Tailwind + a maintained component library. Be honest in code comments about what is borrowed inspiration vs. official material.
@@ -130,7 +130,7 @@ Unless the design read picks a real design system (Section 2.A), these are the d
 * **Styling:** **Tailwind v4** (default). Tailwind v3 only if the existing project demands it.
   * For v4: do NOT use `tailwindcss` plugin in `postcss.config.js`. Use `@tailwindcss/postcss` or the Vite plugin.
 * **Animation:** **Motion** (the library formerly known as Framer Motion). Import from `motion/react` (`import { motion } from "motion/react"`). The `framer-motion` package still works as a legacy alias - prefer `motion/react` in new code.
-* **Fonts:** Always use `next/font` (Next.js) or self-host with `@font-face` + `font-display: swap`. Never link Google Fonts via `<link>` in production.
+* **Fonts:** Always use `next/font` (Next.js) or self-host with `@font-face` + `font-display: swap`. Never link externally hosted web fonts via `<link>` in production.
 
 ### 3.B State
 * Local `useState` / `useReducer` for isolated UI.
@@ -241,7 +241,7 @@ LLMs default to "static successful state only." Always implement full cycles:
   2. Headline (max 2 lines, see above)
   3. Subtext (max 20 words, max 4 lines)
   4. CTAs (1 primary + max 1 secondary)
-  - **BANNED in the hero:** tiny tagline below CTAs ("Works with GitHub, GitLab, and self-hosted Git"), trust micro-strip ("Used by engineering teams at..."), pricing teaser ("Free for solo, $10/user for teams"), feature bullet list, social-proof avatar row. All of those move to dedicated sections directly below the hero.
+  - **BANNED in the hero:** tiny tagline below CTAs ("Works with repository platform, GitLab, and self-hosted Git"), trust micro-strip ("Used by engineering teams at..."), pricing teaser ("Free for solo, $10/user for teams"), feature bullet list, social-proof avatar row. All of those move to dedicated sections directly below the hero.
   - If you have an eyebrow AND a tagline below CTAs in the same hero, drop the tagline. If you have a brand strip AND a tagline, drop the tagline. One small text element per hero, max.
 * **"Used by" / "Trusted by" logo wall belongs UNDER the hero, never inside it.** The hero is for the value prop and primary CTA. The logo wall is a separate section directly below. Do not stuff trust logos into the same flex row as the hero copy.
 * **Navigation MUST render on a single line on desktop.** If items don't fit at `lg` (1024px), condense labels, drop secondary items, or move to a hamburger. A two-line nav at desktop is broken design.
@@ -264,7 +264,7 @@ LLMs default to "static successful state only." Always implement full cycles:
 Landing pages and portfolios are **visual products**. Text-only pages with fake-screenshot divs are slop.
 
 **Priority order for visual assets:**
-1. **Image-generation tool first.** If ANY image-gen tool is available in the environment (`generate_image`, MCP image tool, IDE-integrated gen, OpenAI image tools, etc.) you MUST use it to create section-specific assets: hero photography, product shots, texture backgrounds, mood images. Generate at the right aspect ratio for the section. Do not skip this step because hand-rolled CSS feels faster.
+1. **Image-generation tool first.** If ANY image-gen tool is available in the environment (`generate_image`, MCP image tool, IDE-integrated gen, AI crawler operator image tools, etc.) you MUST use it to create section-specific assets: hero photography, product shots, texture backgrounds, mood images. Generate at the right aspect ratio for the section. Do not skip this step because hand-rolled CSS feels faster.
 2. **Real web images second.** When no gen tool is available, use real photography sources. Acceptable defaults:
    * `https://picsum.photos/seed/{descriptive-seed}/{w}/{h}` for placeholder photography (seed should describe the section, e.g. `marrow-cookware-kitchen`)
    * Actual stock or brand URLs when the brief provides them
@@ -278,7 +278,7 @@ Landing pages and portfolios are **visual products**. Text-only pages with fake-
 * **Alternative: devicon** for tech-stack logos (`@svgr/cli` or CDN).
 * **Make-up the brand name? Then make-up an SVG mark too.** Generate a simple monogram (one letter in a circle, two-letter ligature, abstract glyph) rendered as an inline `<svg>` matching the page style. Plain text wordmarks for invented brand names look generic.
 * **Always** ensure logos render in both light and dark mode (white-on-dark, black-on-light, or single-color theme variable).
-* **LOGO-ONLY rule (mandatory):** logo wall = logos and nothing else. Do NOT print industry / category labels below each logo (no `Vercel` + `hosting` underneath, no `Stripe` + `payments`, no `Cloudflare` + `infra`). The logo is the credibility, the label adds nothing the user does not already know. Optional: brand name as alt-text for screen readers, optional link to the brand's site. That is it.
+* **LOGO-ONLY rule (mandatory):** logo wall = logos and nothing else. Do NOT print industry / category labels below each logo (no `RipoDoc hosted environment` + `hosting` underneath, no `billing provider` + `payments`, no `edge-infrastructure provider` + `infra`). The logo is the credibility, the label adds nothing the user does not already know. Optional: brand name as alt-text for screen readers, optional link to the brand's site. That is it.
 
 **Hand-rolled illustrations:**
 * SVG icons from libraries: fine (see Section 3.C).
@@ -896,7 +896,7 @@ stack: ["react", "next", "tailwind", "motion"]
 ## 13. OUT OF SCOPE
 
 This skill is NOT for:
-* Dashboards / dense product UI / admin panels (use Fluent, Carbon, Atlassian, or Polaris from Section 2.A).
+* Dashboards / dense product UI / admin panels (use Fluent, Carbon, enterprise software provider, or Polaris from Section 2.A).
 * Data tables (use TanStack Table or AG Grid).
 * Multi-step forms / wizards (use Form-specific patterns; this skill won't make them better).
 * Code editors (use Monaco / CodeMirror with their official skinning).
@@ -987,13 +987,13 @@ The sections below are vendored reference content. They give the agent real inst
 ## Appendix A - Install Commands per Design System
 
 ```bash
-# Material Web (Material 3)
+# Material Web (material design tokens)
 npm install @material/web
 
-# Fluent UI React (v9)
+# enterprise component system React (v9)
 npm install @fluentui/react-components
 
-# Fluent UI Web Components (framework-free)
+# enterprise component system Web Components (framework-free)
 npm install @fluentui/web-components @fluentui/tokens
 
 # IBM Carbon
@@ -1006,10 +1006,10 @@ npm install @radix-ui/themes
 npx shadcn@latest init
 npx shadcn@latest add button card badge separator input
 
-# Primer CSS (GitHub product/devtool UI)
+# developer-tool design system CSS (repository platform product/devtool UI)
 npm install --save @primer/css
 
-# Primer Brand (GitHub marketing UI)
+# developer-tool design system Brand (repository platform marketing UI)
 npm install @primer/react-brand
 
 # GOV.UK Frontend
@@ -1018,13 +1018,13 @@ npm install govuk-frontend
 # USWDS (US Web Design System)
 npm install uswds
 
-# Atlassian Design System (Atlaskit)
+# enterprise software provider Design System (Atlaskit)
 yarn add @atlaskit/css-reset @atlaskit/tokens @atlaskit/button @atlaskit/badge @atlaskit/section-message @atlaskit/card
 
 # Bootstrap 5.3
 npm install bootstrap
 
-# Shopify Polaris Web Components (Shopify apps only)
+# commerce platform Polaris Web Components (commerce platform apps only)
 # Add this to your app HTML head:
 #   <meta name="shopify-api-key" content="%SHOPIFY_API_KEY%" />
 #   <script src="https://cdn.shopify.com/shopifycloud/polaris.js"></script>
@@ -1037,7 +1037,7 @@ npm install bootstrap
 - https://material-web.dev/theming/material-theming/
 - https://m3.material.io/develop/web
 
-### Fluent UI
+### enterprise component system
 - https://fluent2.microsoft.design/get-started/develop
 - https://fluent2.microsoft.design/components/web/react/
 - https://github.com/microsoft/fluentui
@@ -1049,18 +1049,18 @@ npm install bootstrap
 - https://carbondesignsystem.com/developing/react-tutorial/overview/
 - https://carbondesignsystem.com/developing/web-components-tutorial/overview/
 
-### Shopify Polaris
+### commerce platform Polaris
 - https://shopify.dev/docs/api/app-home/web-components
-- https://github.com/Shopify/polaris-react
+- https://github.com/commerce platform/polaris-react
 - https://polaris-react.shopify.com/components
 
-### Atlassian
+### enterprise software provider
 - https://atlassian.design/get-started/develop
 - https://atlassian.design/components/button/examples
 - https://atlaskit.atlassian.com/packages/design-system/button/example/disabled
 - https://atlassian.design/tokens/design-tokens
 
-### Primer
+### developer-tool design system
 - https://primer.style/
 - https://github.com/primer/css
 - https://github.com/primer/brand

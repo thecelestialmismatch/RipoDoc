@@ -56,7 +56,7 @@ The next implementation must satisfy the following invariants. Tests must prove 
 
 ## Release acceptance criteria
 
-The release cannot be presented as a hardened self-hosted authoring system until the worker authorization, approval integrity, error-sanitization, and processing-boundary tests are green. The public Vercel site may continue to fail closed for hosted account actions when durable PostgreSQL, Resend, and Turnstile configuration is absent. That configuration absence must remain visible only through safe operator diagnostics, never through secret-bearing or tenant-bearing public output.
+The release cannot be presented as a hardened self-hosted authoring system until the worker authorization, approval integrity, error-sanitization, and processing-boundary tests are green. The public RipoDoc hosted environment site may continue to fail closed for hosted account actions when durable PostgreSQL, email service, and challenge service configuration is absent. That configuration absence must remain visible only through safe operator diagnostics, never through secret-bearing or tenant-bearing public output.
 
 ## References
 
