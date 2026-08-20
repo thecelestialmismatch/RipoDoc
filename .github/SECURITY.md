@@ -8,15 +8,15 @@ The public hosted site is an evaluation and documentation surface. Hosted accoun
 
 ## Reporting a vulnerability
 
-Please **do not** report a vulnerability through a public GitHub issue, discussion, pull request, social-media post, or public chat.
+Please **do not** report a vulnerability through a public repository platform issue, discussion, pull request, social-media post, or public chat.
 
-Use GitHub’s private vulnerability-reporting flow for this repository:
+Use repository platform’s private vulnerability-reporting flow for this repository:
 
 1. Open the repository’s **Security** tab.
 2. Select **Report a vulnerability**.
 3. Provide a minimal, reproducible description and wait for maintainer acknowledgement.
 
-If private reporting is unavailable in the repository interface, contact the repository owner privately through their [GitHub profile](https://github.com/thecelestialmismatch) and include `RipoDoc security report` in the subject or first line. Do not send active credentials, production report PDFs, recipient information, one-time codes, signed evidence links, database exports, or other customer data.
+If private reporting is unavailable in the repository interface, contact the repository owner privately through their [repository platform profile](https://github.com/thecelestialmismatch) and include `RipoDoc security report` in the subject or first line. Do not send active credentials, production report PDFs, recipient information, one-time codes, signed evidence links, database exports, or other customer data.
 
 ## What to include
 

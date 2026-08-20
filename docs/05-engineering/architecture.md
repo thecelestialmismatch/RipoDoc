@@ -8,8 +8,8 @@ RipoDoc is a secure reporting-delivery and evidence layer for MSPs. It preserves
 
 | Layer | Current implementation | Security boundary |
 |---|---|---|
-| Public application | Next.js 16 App Router, React 19, TypeScript, Tailwind, deployed on Vercel. | Public pages expose only safe status; browser clients never receive worker credentials or evidence-signing secrets. |
-| Identity and workspace | Custom scrypt password hashing, opaque PostgreSQL sessions, HMAC CSRF, generic enumeration-safe messages, verification/reset codes stored as hashes, and optional Cloudflare Turnstile. | Verified, tenant-scoped workspace identity; production remains fail-closed until durable configuration is present. |
+| Public application | Next.js 16 App Router, React 19, TypeScript, Tailwind, deployed on RipoDoc hosted environment. | Public pages expose only safe status; browser clients never receive worker credentials or evidence-signing secrets. |
+| Identity and workspace | Custom scrypt password hashing, opaque PostgreSQL sessions, HMAC CSRF, generic enumeration-safe messages, verification/reset codes stored as hashes, and optional edge-infrastructure provider challenge service. | Verified, tenant-scoped workspace identity; production remains fail-closed until durable configuration is present. |
 | Data store | PostgreSQL through parameterized `pg` queries and transactions. | Tenant-scoped report queries; rate limits, sessions, one-time tokens, recipient challenges, leads, and optional durable audit records are server-only. |
 | Private authoring worker | Node runtime in `docker/local/server.mjs`. | The server issues a short-lived, single-use, tenant-bound HMAC capability. The worker is not browser-addressable. |
 | Evidence delivery | Server-rendered `/e/[token]/[elementId]` routes and HMAC-SHA-256 evidence tokens. | Tokens bind report, recipient hash, expiry, JTI, and permitted scope; revocation is checked before evidence render. |
@@ -27,13 +27,13 @@ RipoDoc is a secure reporting-delivery and evidence layer for MSPs. It preserves
 
 ## Current operational posture
 
-The public Vercel surface is intentionally not the PDF-processing plane. It can serve the website and safe control surfaces, but hosted identity, email, Turnstile, durable audit, prospect intake, and private authoring must remain unavailable until the production preflight verifies their dependencies.
+The public RipoDoc hosted environment surface is intentionally not the PDF-processing plane. It can serve the website and safe control surfaces, but hosted identity, email, challenge service, durable audit, prospect intake, and private authoring must remain unavailable until the production preflight verifies their dependencies.
 
 Healthcare Mode B is a restricted evaluation/self-hosted posture. It is not HIPAA certification and does not permit PHI/ePHI through public hosted intake, authoring, analytics, or webhooks. A separate contractual, subprocessor, risk-analysis, and security gate is required for any future regulated-data use.
 
 ## Non-goals and planned work
 
-RipoDoc does not currently expose a public Go API, WorkOS authentication, Stripe billing, AWS OCR, generalized customer webhooks, or a public PDF-processing endpoint. These are not product capabilities and must not be claimed in customer or investor material. Any future provider integration must use a dedicated design, security review, data classification, and release gate.
+RipoDoc does not currently expose a public Go API, identity provider authentication, billing provider billing, cloud OCR provider OCR, generalized customer webhooks, or a public PDF-processing endpoint. These are not product capabilities and must not be claimed in customer or investor material. Any future provider integration must use a dedicated design, security review, data classification, and release gate.
 
 ## Verification references
 

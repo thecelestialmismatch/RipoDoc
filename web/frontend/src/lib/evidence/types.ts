@@ -82,7 +82,7 @@ export interface ReportRecipient {
  * manifests that predate the authoring studio.
  */
 export interface DataSource {
-  /** e.g. "PSA — ConnectWise Manage", "RMM — NinjaOne", "Excel export". */
+  /** e.g. "PSA — approved service-management system", "RMM — endpoint-management system", "Excel export". */
   readonly system: string;
   /** Free-text description of the source, e.g. "Ticket export, Q2 2026". */
   readonly description: string;

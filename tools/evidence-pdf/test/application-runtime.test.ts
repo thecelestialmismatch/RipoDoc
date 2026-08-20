@@ -100,7 +100,7 @@ test('evidence delivery receipt is manifest-derived, aggregate-only, and safe fo
   const manifest: ReportManifest = {
     ...createManifest('rpt-receipt-0001', '2026-07-02T10:00:00Z'),
     source: {
-      system: 'PSA — ConnectWise Manage',
+      system: 'PSA — approved service-management system',
       description: 'Ticket export, Q2 2026',
       capturedAt: '2026-07-01T09:00:00Z',
     },
@@ -126,7 +126,7 @@ test('evidence delivery receipt is manifest-derived, aggregate-only, and safe fo
     reviewer: 'Priya Raman',
     approvedAt: '2026-07-01T10:00:00Z',
   });
-  assert.equal(receipt.sourceDeclaration, 'PSA — ConnectWise Manage · Ticket export, Q2 2026');
+  assert.equal(receipt.sourceDeclaration, 'PSA — approved service-management system · Ticket export, Q2 2026');
   assert.equal(receipt.recipientReference, 'Dana Whitfield · recipient configured');
   assert.equal(receipt.audit, audit);
   assert.equal(serialized.includes(manifest.recipient.email), false);
@@ -163,10 +163,10 @@ test('founding-partner conversion path is server-protected and avoids arbitrary 
   const page = await readFile(new URL('../../../web/frontend/src/app/founding-partners/page.tsx', import.meta.url), 'utf8');
   const route = await readFile(new URL('../../../web/frontend/src/app/api/founding-partners/route.ts', import.meta.url), 'utf8');
   const service = await readFile(new URL('../../../web/frontend/src/lib/founder/leads.ts', import.meta.url), 'utf8');
-  const crm = await readFile(new URL('../../../web/frontend/src/lib/founder/espocrm.ts', import.meta.url), 'utf8');
-  const crmContract = await readFile(new URL('../../../web/frontend/src/lib/founder/espocrm-contract.ts', import.meta.url), 'utf8');
+  const crm = await readFile(new URL('../../../web/frontend/src/lib/founder/crm.ts', import.meta.url), 'utf8');
+  const crmContract = await readFile(new URL('../../../web/frontend/src/lib/founder/crm-contract.ts', import.meta.url), 'utf8');
   const crmMigration = await readFile(new URL('../../../migrations/010_create_founding_partner_crm_sync.sql', import.meta.url), 'utf8');
-  assert.match(page, /Turnstile/);
+  assert.match(page, /Optional business-contact follow-up consent/);
   assert.match(page, /name="csrf"/);
   assert.doesNotMatch(page, /name="message"/);
   assert.match(route, /assertSameOriginAndCsrf/);
@@ -177,10 +177,10 @@ test('founding-partner conversion path is server-protected and avoids arbitrary 
   assert.match(service, /ON CONFLICT \(email_hash\)/);
   assert.match(page, /name="crmSyncConsent"/);
   assert.match(route, /crmSyncConsent: form\.get\('crmSyncConsent'\) === 'yes'/);
-  assert.match(route, /syncConsentedLeadToEspoCrm/);
+  assert.match(route, /syncConsentedLeadToCrm/);
   assert.match(service, /crm_sync_consent/);
   assert.match(crmMigration, /founding_partner_crm_syncs/);
-  assert.match(crm, /RIPODOC_ESPOCRM_ALLOWED_HOSTS/);
+  assert.match(crm, /RIPODOC_CRM_ALLOWED_HOSTS/);
   assert.match(crm, /isBlockedCrmAddress/);
   assert.doesNotMatch(crmContract, /evidenceToken|recipientHash|reportId|sourceRows/);
 });
@@ -233,10 +233,10 @@ test('self-hosted environment template and operations guidance preserve the comp
   assert.match(operations, /node --experimental-strip-types tools\/production-preflight\.ts/);
 });
 
-test('isolated EspoCRM template uses a versioned application image rather than a floating latest tag', async () => {
-  const template = await readFile(new URL('../../../deploy/espocrm/.env.example', import.meta.url), 'utf8');
-  assert.match(template, /^ESPOCRM_IMAGE=espocrm\/espocrm:\d+\.\d+\.\d+-apache$/m);
-  assert.doesNotMatch(template, /^ESPOCRM_IMAGE=.*:latest$/m);
+test('isolated RipoDoc CRM template uses a versioned application image rather than a floating latest tag', async () => {
+  const template = await readFile(new URL('../../../deploy/crm/.env.example', import.meta.url), 'utf8');
+  assert.match(template, /^CRM_IMAGE=crm\/crm:\d+\.\d+\.\d+-apache$/m);
+  assert.doesNotMatch(template, /^CRM_IMAGE=.*:latest$/m);
 });
 
 test('founding-partner contact encryption authenticates encrypted email at rest with a dedicated key', async () => {

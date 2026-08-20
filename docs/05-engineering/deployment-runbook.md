@@ -10,14 +10,14 @@
 
 | Service | Public exposure | Authorization boundary | Current state |
 | --- | --- | --- | --- |
-| Next.js web application | HTTPS reverse proxy or Vercel | Workspace session, CSRF guard, tenant-scoped data helpers, recipient mailbox proof | Shipped |
+| Next.js web application | HTTPS reverse proxy or RipoDoc hosted environment | Workspace session, CSRF guard, tenant-scoped data helpers, recipient mailbox proof | Shipped |
 | Private PDF authoring worker | Internal Compose network and optional loopback host port only | Short-lived, single-use, purpose- and tenant-bound HMAC capability issued by the trusted web service | Shipped |
 | PostgreSQL | Internal Compose network only | Database authentication plus application tenant queries; durable users, sessions, tokens, rate limits, and report metadata | Shipped |
 | Go/River managed architecture | Not deployed in this repository | Planned managed-service architecture only | Planned, not a present security claim |
 
 The browser never receives the worker URL or its authorization secret. The web application calls the worker through server-only `RIPODOC_LOCAL_WORKER_URL` and `RIPODOC_WORKER_AUTH_SECRET`; direct browser, unsigned, replayed, wrong-purpose, and cross-tenant worker requests are rejected.
 
-## Public Vercel release
+## Public RipoDoc hosted environment release
 
 1. Run the complete release gate from the repository root.
 
@@ -27,11 +27,11 @@ The browser never receives the worker URL or its authorization secret. The web a
    npm audit --omit=dev
    ```
 
-2. Push a reviewed merge to `main`. The connected Vercel project deploys the public web application.
+2. Push a reviewed merge to `main`. The connected RipoDoc hosted environment project deploys the public web application.
 
-3. Configure server-only Vercel values before enabling workspace account actions. At minimum, configure `RIPODOC_DATABASE_URL`, `RIPODOC_AUTH_SECRET`, `RIPODOC_EVIDENCE_SECRET`, `RIPODOC_APP_ORIGIN`, Resend, and Turnstile. The hosted application intentionally fails closed for account actions when these durable prerequisites are absent.
+3. Configure server-only RipoDoc hosted environment values before enabling workspace account actions. At minimum, configure `RIPODOC_DATABASE_URL`, `RIPODOC_AUTH_SECRET`, `RIPODOC_EVIDENCE_SECRET`, `RIPODOC_APP_ORIGIN`, email service, and challenge service. The hosted application intentionally fails closed for account actions when these durable prerequisites are absent.
 
-4. Keep `RIPODOC_LOCAL_WORKER_URL` and `RIPODOC_WORKER_AUTH_SECRET` server-only. A public Vercel deployment should not proxy customer PDFs to an untrusted, internet-facing worker.
+4. Keep `RIPODOC_LOCAL_WORKER_URL` and `RIPODOC_WORKER_AUTH_SECRET` server-only. A public RipoDoc hosted environment deployment should not proxy customer PDFs to an untrusted, internet-facing worker.
 
 5. Verify the public routes, the no-store `/api/health` response, unauthenticated redirects for `/dashboard` and `/admin`, safe `/security` posture, and no broken public navigation. Perform authenticated/authoring smoke tests only in a properly configured environment with no customer data used as a test fixture.
 

@@ -28,7 +28,7 @@ This document is a **technical control crosswalk**, not a compliance certificate
 
 | Criteria | Technical support | Verification evidence | Important boundary |
 | --- | --- | --- | --- |
-| **CC6.1 — Logical access** | Turnstile production anti-automation checks, scrypt credential hashing, opaque sessions, and server-managed `HttpOnly`, production `Secure`, and SameSite cookies. | `auth-primitives.test.ts`, `token.test.ts`, authentication routes, request proxy. | Turnstile is not multi-factor authentication; deployed configuration is required. |
+| **CC6.1 — Logical access** | challenge service production anti-automation checks, scrypt credential hashing, opaque sessions, and server-managed `HttpOnly`, production `Secure`, and SameSite cookies. | `auth-primitives.test.ts`, `token.test.ts`, authentication routes, request proxy. | challenge service is not multi-factor authentication; deployed configuration is required. |
 | **CC6.3 — Access boundary** | Tenant-scoped report queries and recipient-side proof flow protect report/evidence access. | Workspace-report, recipient-proof, and application-runtime coverage. | Requires production database and end-to-end tenant testing. |
 | **CC6.6 — Boundary protection** | Browser-to-worker proxy model; short-lived, single-use HMAC capability requests; no direct browser worker credential. | `docker/local/server.test.mjs`, authoring-worker sources. | Requires actual private deployment topology and network enforcement. |
 | **CC7.1 — Vulnerability management** | Production dependency audit, supported lockfile remediation for the identified `nanoid` advisory, and reproducible build gates. | Fresh frontend production dependency audit reported zero findings after remediation. | A point-in-time advisory result is not complete supply-chain or container assurance. |
@@ -38,9 +38,9 @@ This document is a **technical control crosswalk**, not a compliance certificate
 
 ## Verification baseline
 
-The release gate consists of strict type checking, the Node test suite, and the optimized frontend build. The fresh observed result was **169 passed, 0 failed, 0 skipped, 0 cancelled, and 0 pending test markers**. The suite includes the private-worker integration flow and mock-server coverage for consent-gated EspoCRM lookup/create/update, rejection, timeout, and outbox behavior.
+The release gate consists of strict type checking, the Node test suite, and the optimized frontend build. The fresh observed result was **169 passed, 0 failed, 0 skipped, 0 cancelled, and 0 pending test markers**. The suite includes the private-worker integration flow and mock-server coverage for consent-gated RipoDoc CRM lookup/create/update, rejection, timeout, and outbox behavior.
 
-> **Critical limitation.** The current test result verifies the checked code contract. It does not prove that a real hosted customer workflow, a real EspoCRM tenant, a configured production identity system, backup/restore, alerting, or an independent auditor’s operating-effectiveness test has occurred.
+> **Critical limitation.** The current test result verifies the checked code contract. It does not prove that a real hosted customer workflow, a real RipoDoc CRM tenant, a configured production identity system, backup/restore, alerting, or an independent auditor’s operating-effectiveness test has occurred.
 
 ## Use of this document
 

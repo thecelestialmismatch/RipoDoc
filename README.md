@@ -120,7 +120,7 @@ Read the [self-hosted operations runbook](docs/05-engineering/self-hosted-operat
 
 ### Optional: isolated sales CRM
 
-RipoDoc can optionally synchronize an explicitly consented founding-partner contact request to a separately deployed EspoCRM instance. That CRM is not co-hosted with RipoDoc and is not part of the evidence-delivery path. It receives only business-development fields; it never receives report content, source rows, evidence tokens, recipient proof, audit records, or application secrets. Read the [EspoCRM deployment runbook](deploy/espocrm/README.md) and [operator/API integration guide](docs/05-engineering/espocrm-integration-guide.md) before enabling it.
+RipoDoc can optionally synchronize an explicitly consented founding-partner contact request to a separately deployed RipoDoc CRM instance. That CRM is not co-hosted with RipoDoc and is not part of the evidence-delivery path. It receives only business-development fields; it never receives report content, source rows, evidence tokens, recipient proof, audit records, or application secrets. Read the [RipoDoc CRM deployment runbook](deploy/crm/README.md) and [operator/API integration guide](docs/05-engineering/crm-integration-guide.md) before enabling it.
 
 ## Security model
 
@@ -132,7 +132,7 @@ RipoDoc can optionally synchronize an explicitly consented founding-partner cont
 | Revocation and expiry | Token identifiers can be revoked and evidence claims have explicit expiry. |
 | Audit integrity | Access events can be written to a SHA-256 hash chain and verified offline; receipts use aggregate report-level data only when durable summaries are configured. |
 | Workspace identity | Passwords use scrypt; sessions and codes are stored as keyed hashes; state-changing actions require same-origin and CSRF validation. |
-| Abuse resistance | Production auth actions are rate-limited and use server-verified Turnstile when configured; generic lifecycle responses reduce account-enumeration signals. |
+| Abuse resistance | Production auth actions are rate-limited and use server-verified challenge service when configured; generic lifecycle responses reduce account-enumeration signals. |
 | PDF authoring boundary | A private worker accepts only single-use, short-lived, tenant-bound server capabilities. |
 
 Read the [public security-control page](https://www.ripodoc.com/security), [authentication and test coverage](docs/05-security/authentication-and-test-coverage.md), and [worker hardening threat model](docs/05-security/worker-hardening-threat-model.md) for the complete, verifiable boundary.
@@ -163,8 +163,8 @@ tools/evidence-pdf/                   PDF generation, overlay engine, fixtures a
 docker/local/                         Private local/self-hosted PDF authoring worker
 migrations/                           PostgreSQL durable identity and evidence-record schema
 docs/05-security/                     Threat models, test coverage, advisory and supply-chain evidence
-docs/05-engineering/                  Self-hosted operations and EspoCRM integration guides
-deploy/espocrm/                       Separate EspoCRM Compose deployment and CRM integration runbook
+docs/05-engineering/                  Self-hosted operations and RipoDoc CRM integration guides
+deploy/crm/                       Separate RipoDoc CRM Compose deployment and CRM integration runbook
 ```
 
 ## Repository and public-claims boundary

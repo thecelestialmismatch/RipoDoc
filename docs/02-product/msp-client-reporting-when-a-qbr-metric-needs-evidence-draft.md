@@ -13,7 +13,7 @@
 
 A quarterly business review should help a client make a decision about priorities, risk, and the next 90 days. It should not ask an executive to read a spreadsheet or navigate an unfamiliar operational portal just to understand one number.
 
-That principle appears in common MSP QBR guidance. ScalePad describes the QBR as a strategic conversation rather than a report-reading session, while ConnectWise recommends clear agendas and warns against getting the meeting bogged down in statistics. [1] [2]
+That principle appears in common MSP QBR guidance. independent MSP QBR guidance describes the QBR as a strategic conversation rather than a report-reading session, while service-management system recommends clear agendas and warns against getting the meeting bogged down in statistics. [1] [2]
 
 But concise does not have to mean unanswerable.
 
@@ -130,7 +130,7 @@ The goal is not to overload a QBR with technical detail. It is to ensure that th
 
 ## Keep the QBR strategic, and make the proof reachable
 
-A well-run QBR still needs an executive agenda, context, goals, recommended actions, and follow-up ownership. ScalePad’s QBR guidance emphasizes business planning and outcome-focused conversation; ConnectWise likewise recommends a clear agenda, executive participation, goal-setting, and not getting bogged down in statistics. [1] [2]
+A well-run QBR still needs an executive agenda, context, goals, recommended actions, and follow-up ownership. independent MSP QBR guidance’s QBR guidance emphasizes business planning and outcome-focused conversation; service-management system likewise recommends a clear agenda, executive participation, goal-setting, and not getting bogged down in statistics. [1] [2]
 
 A claim-to-evidence path complements that objective:
 
@@ -190,9 +190,9 @@ Before turning this draft into a live canonical page, confirm the following:
 
 ## References
 
-[1]: [ScalePad — The action plan for MSP quarterly business reviews](https://www.scalepad.com/blog/quarterly-business-reviews-qbr-action-plan)
+[1]: [independent MSP QBR guidance — The action plan for MSP quarterly business reviews](https://www.scalepad.com/blog/quarterly-business-reviews-qbr-action-plan)
 
-[2]: [ConnectWise — 8 best practices for client QBRs](https://www.connectwise.com/blog/8-best-practices-for-client-qbrs)
+[2]: [service-management system — 8 best practices for client QBRs](https://www.connectwise.com/blog/8-best-practices-for-client-qbrs)
 
 [3]: [RipoDoc — The method](https://www.ripodoc.com/how-it-works)
 

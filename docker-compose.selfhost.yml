@@ -45,10 +45,10 @@ services:
       RIPODOC_AUTH_SECRET: ${RIPODOC_AUTH_SECRET:?Set a 32+ character auth secret}
       RIPODOC_EVIDENCE_SECRET: ${RIPODOC_EVIDENCE_SECRET:?Set a 32+ character evidence secret}
       RIPODOC_APP_ORIGIN: ${RIPODOC_APP_ORIGIN:?Set the HTTPS public application origin}
-      RIPODOC_RESEND_API_KEY: ${RIPODOC_RESEND_API_KEY:?Set a Resend API key}
+      RIPODOC_RESEND_API_KEY: ${RIPODOC_RESEND_API_KEY:?Set a email service API key}
       RIPODOC_EMAIL_FROM: ${RIPODOC_EMAIL_FROM:?Set the verified sender address}
-      RIPODOC_TURNSTILE_SECRET: ${RIPODOC_TURNSTILE_SECRET:?Set Cloudflare Turnstile secret}
-      NEXT_PUBLIC_RIPODOC_TURNSTILE_SITE_KEY: ${NEXT_PUBLIC_RIPODOC_TURNSTILE_SITE_KEY:?Set Cloudflare Turnstile site key}
+      RIPODOC_TURNSTILE_SECRET: ${RIPODOC_TURNSTILE_SECRET:?Set edge-infrastructure provider challenge service secret}
+      NEXT_PUBLIC_RIPODOC_TURNSTILE_SITE_KEY: ${NEXT_PUBLIC_RIPODOC_TURNSTILE_SITE_KEY:?Set edge-infrastructure provider challenge service site key}
       # Optional anonymous field-performance logging. Client-side reporting is set at build time by the build arg above.
       RIPODOC_WEB_VITALS_LOG: ${RIPODOC_WEB_VITALS_LOG:-false}
       RIPODOC_LOCAL_WORKER_URL: http://worker:4000/api/local

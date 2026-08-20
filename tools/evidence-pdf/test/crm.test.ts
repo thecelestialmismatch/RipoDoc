@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
 import test from 'node:test';
-import { espocrmAuthorization, espocrmLeadPayload, isBlockedCrmAddress } from '../../../web/frontend/src/lib/founder/espocrm-contract.ts';
+import { crmAuthorization, crmLeadPayload, isBlockedCrmAddress } from '../../../web/frontend/src/lib/founder/crm-contract.ts';
 
 const consentedLead = {
   leadId: 'b415ad2e-761d-4636-8ec8-0e39004877aa',
@@ -22,17 +22,17 @@ test('blocks loopback, private, link-local, carrier-grade, multicast, and non-IP
   assert.equal(isBlockedCrmAddress('2001:4860:4860::8888'), false);
 });
 
-test('constructs EspoCRM HMAC authorization over the exact method and request URI', () => {
+test('constructs RipoDoc CRM HMAC authorization over the exact method and request URI', () => {
   const apiKey = 'api-key-example-that-is-long-enough';
   const secret = 'server-side-secret-that-is-long-enough-for-test';
   const uri = 'Lead?searchParams=%7B%7D';
   const expectedSignature = createHmac('sha256', secret).update(`GET /${uri}`).digest('hex');
-  const decoded = Buffer.from(espocrmAuthorization('GET', uri, apiKey, secret), 'base64').toString('utf8');
+  const decoded = Buffer.from(crmAuthorization('GET', uri, apiKey, secret), 'base64').toString('utf8');
   assert.equal(decoded, `${apiKey}:${expectedSignature}`);
 });
 
 test('maps only consented business-development fields and omits all evidence-delivery data', () => {
-  const payload = espocrmLeadPayload(consentedLead);
+  const payload = crmLeadPayload(consentedLead);
   assert.deepEqual(payload, {
     firstName: 'Ada',
     lastName: 'Lovelace',

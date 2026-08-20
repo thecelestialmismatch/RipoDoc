@@ -1,17 +1,17 @@
-import type { CrmSyncLead } from './espocrm-contract.ts';
-import { espocrmLeadPayload } from './espocrm-contract.ts';
+import type { CrmSyncLead } from './crm-contract.ts';
+import { crmLeadPayload } from './crm-contract.ts';
 
-export type EspoCrmMethod = 'GET' | 'POST' | 'PUT';
+export type CrmMethod = 'GET' | 'POST' | 'PUT';
 
-export interface EspoCrmRequest {
-  <T>(method: EspoCrmMethod, uri: string, body?: unknown): Promise<T>;
+export interface CrmRequest {
+  <T>(method: CrmMethod, uri: string, body?: unknown): Promise<T>;
 }
 
 export interface EspoRecordList {
   readonly list?: ReadonlyArray<{ readonly id?: unknown }>;
 }
 
-/** A non-2xx response from the remote EspoCRM API. The message never contains remote response data. */
+/** A non-2xx response from the remote RipoDoc CRM API. The message never contains remote response data. */
 export class CrmRemoteError extends Error {
   public readonly status: number;
 
@@ -26,10 +26,10 @@ export const crmFailureCode = (error: unknown): 'remote_rejected' | 'transport_f
   error instanceof CrmRemoteError && error.status >= 400 && error.status < 500 ? 'remote_rejected' : 'transport_failed';
 
 /**
- * Performs the EspoCRM email lookup followed by one create or update operation.
+ * Performs the RipoDoc CRM email lookup followed by one create or update operation.
  * It accepts a narrow request transport so network and storage behavior remain outside this pure protocol flow.
  */
-export const upsertEspoCrmLead = async (lead: CrmSyncLead, request: EspoCrmRequest): Promise<string> => {
+export const upsertCrmLead = async (lead: CrmSyncLead, request: CrmRequest): Promise<string> => {
   const searchParams = encodeURIComponent(JSON.stringify({
     maxSize: 1,
     select: ['id'],
@@ -37,13 +37,13 @@ export const upsertEspoCrmLead = async (lead: CrmSyncLead, request: EspoCrmReque
   }));
   const existing = await request<EspoRecordList>('GET', `Lead?searchParams=${searchParams}`);
   const id = existing.list?.[0]?.id;
-  const payload = espocrmLeadPayload(lead);
+  const payload = crmLeadPayload(lead);
   if (typeof id === 'string' && id.length > 0) {
     await request('PUT', `Lead/${encodeURIComponent(id)}`, payload);
     return id;
   }
   const created = await request<{ readonly id?: unknown }>('POST', 'Lead', payload);
-  if (typeof created.id !== 'string' || created.id.length === 0) throw new Error('EspoCRM did not return a lead id.');
+  if (typeof created.id !== 'string' || created.id.length === 0) throw new Error('RipoDoc CRM did not return a lead id.');
   return created.id;
 };
 

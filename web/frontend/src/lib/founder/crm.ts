@@ -3,24 +3,24 @@ import { request as httpsRequest } from 'node:https';
 import { isIP } from 'node:net';
 import { query, transaction } from '@/lib/auth/database.ts';
 import {
-  espocrmAuthorization,
+  crmAuthorization,
   isBlockedCrmAddress,
   type CrmSyncLead,
-} from './espocrm-contract.ts';
+} from './crm-contract.ts';
 import {
   CrmRemoteError,
   runCrmOutboxAttempt,
-  upsertEspoCrmLead,
-  type EspoCrmRequest,
-} from './espocrm-sync-contract.ts';
+  upsertCrmLead,
+  type CrmRequest,
+} from './crm-sync-contract.ts';
 
-export { espocrmAuthorization, espocrmLeadPayload, isBlockedCrmAddress, type CrmSyncLead } from './espocrm-contract.ts';
-export { CrmRemoteError, crmFailureCode, runCrmOutboxAttempt, upsertEspoCrmLead, type CrmOutboxAttemptDependencies, type EspoCrmRequest } from './espocrm-sync-contract.ts';
+export { crmAuthorization, crmLeadPayload, isBlockedCrmAddress, type CrmSyncLead } from './crm-contract.ts';
+export { CrmRemoteError, crmFailureCode, runCrmOutboxAttempt, upsertCrmLead, type CrmOutboxAttemptDependencies, type CrmRequest } from './crm-sync-contract.ts';
 
 const REQUEST_TIMEOUT_MS = 5_000;
 const STALE_SYNC_MINUTES = 15;
 
-interface EspoCrmConfig {
+interface CrmConfig {
   readonly baseUrl: URL;
   readonly apiKey: string;
   readonly hmacSecret: string;
@@ -30,33 +30,33 @@ interface EspoCrmConfig {
 const splitHosts = (value: string | undefined): string[] =>
   (value ?? '').split(',').map((host) => host.trim().toLowerCase()).filter(Boolean);
 
-const configFrom = (environment: NodeJS.ProcessEnv = process.env): EspoCrmConfig | undefined => {
-  const rawUrl = environment.RIPODOC_ESPOCRM_URL?.trim();
-  const apiKey = environment.RIPODOC_ESPOCRM_API_KEY?.trim();
-  const hmacSecret = environment.RIPODOC_ESPOCRM_HMAC_SECRET?.trim();
+const configFrom = (environment: NodeJS.ProcessEnv = process.env): CrmConfig | undefined => {
+  const rawUrl = environment.RIPODOC_CRM_URL?.trim();
+  const apiKey = environment.RIPODOC_CRM_API_KEY?.trim();
+  const hmacSecret = environment.RIPODOC_CRM_HMAC_SECRET?.trim();
   if (!rawUrl && !apiKey && !hmacSecret) return undefined;
-  if (!rawUrl || !apiKey || !hmacSecret) throw new Error('EspoCRM configuration is incomplete.');
-  if (apiKey.length < 24 || hmacSecret.length < 32) throw new Error('EspoCRM API credentials do not meet minimum length requirements.');
+  if (!rawUrl || !apiKey || !hmacSecret) throw new Error('RipoDoc CRM configuration is incomplete.');
+  if (apiKey.length < 24 || hmacSecret.length < 32) throw new Error('RipoDoc CRM API credentials do not meet minimum length requirements.');
 
   let baseUrl: URL;
   try {
     baseUrl = new URL(rawUrl);
   } catch {
-    throw new Error('EspoCRM URL is not valid.');
+    throw new Error('RipoDoc CRM URL is not valid.');
   }
   if (baseUrl.protocol !== 'https:' || baseUrl.username || baseUrl.password || baseUrl.hash || baseUrl.pathname !== '/' || baseUrl.search) {
-    throw new Error('EspoCRM URL must be an HTTPS origin without credentials, path, query, or fragment.');
+    throw new Error('RipoDoc CRM URL must be an HTTPS origin without credentials, path, query, or fragment.');
   }
-  if (isIP(baseUrl.hostname)) throw new Error('EspoCRM URL must use an approved DNS hostname, not an IP address.');
-  const allowedHosts = splitHosts(environment.RIPODOC_ESPOCRM_ALLOWED_HOSTS);
+  if (isIP(baseUrl.hostname)) throw new Error('RipoDoc CRM URL must use an approved DNS hostname, not an IP address.');
+  const allowedHosts = splitHosts(environment.RIPODOC_CRM_ALLOWED_HOSTS);
   if (allowedHosts.length !== 1 || allowedHosts[0] !== baseUrl.hostname.toLowerCase()) {
-    throw new Error('EspoCRM URL hostname is not explicitly allowlisted.');
+    throw new Error('RipoDoc CRM URL hostname is not explicitly allowlisted.');
   }
   return { baseUrl, apiKey, hmacSecret, allowedHost: allowedHosts[0] };
 };
 
 /** True only when all required, server-only configuration is valid. */
-export const espocrmConfigured = (): boolean => {
+export const crmConfigured = (): boolean => {
   try {
     return configFrom() !== undefined;
   } catch {
@@ -67,14 +67,14 @@ export const espocrmConfigured = (): boolean => {
 const resolvePublicAddress = async (hostname: string): Promise<{ readonly address: string; readonly family: 4 | 6 }> => {
   const addresses = await lookup(hostname, { all: true, verbatim: true });
   if (addresses.length === 0 || addresses.some(({ address }) => isBlockedCrmAddress(address))) {
-    throw new Error('EspoCRM hostname resolved to a blocked network address.');
+    throw new Error('RipoDoc CRM hostname resolved to a blocked network address.');
   }
   const selected = addresses[0];
-  if (!selected || (selected.family !== 4 && selected.family !== 6)) throw new Error('EspoCRM hostname did not resolve to a usable public address.');
+  if (!selected || (selected.family !== 4 && selected.family !== 6)) throw new Error('RipoDoc CRM hostname did not resolve to a usable public address.');
   return { address: selected.address, family: selected.family };
 };
 
-const requestJson = async <T>(config: EspoCrmConfig, method: 'GET' | 'POST' | 'PUT', uri: string, body?: unknown): Promise<T> => {
+const requestJson = async <T>(config: CrmConfig, method: 'GET' | 'POST' | 'PUT', uri: string, body?: unknown): Promise<T> => {
   const { address, family } = await resolvePublicAddress(config.allowedHost);
   const payload = body === undefined ? undefined : JSON.stringify(body);
   return new Promise<T>((resolve, reject) => {
@@ -89,7 +89,7 @@ const requestJson = async <T>(config: EspoCrmConfig, method: 'GET' | 'POST' | 'P
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'X-Hmac-Authorization': espocrmAuthorization(method, uri, config.apiKey, config.hmacSecret),
+        'X-Hmac-Authorization': crmAuthorization(method, uri, config.apiKey, config.hmacSecret),
         ...(payload ? { 'Content-Length': Buffer.byteLength(payload) } : {}),
       },
       timeout: REQUEST_TIMEOUT_MS,
@@ -104,11 +104,11 @@ const requestJson = async <T>(config: EspoCrmConfig, method: 'GET' | 'POST' | 'P
         try {
           resolve(JSON.parse(raw) as T);
         } catch {
-          reject(new Error('EspoCRM returned invalid JSON.'));
+          reject(new Error('RipoDoc CRM returned invalid JSON.'));
         }
       });
     });
-    request.on('timeout', () => request.destroy(new Error('EspoCRM request timed out.')));
+    request.on('timeout', () => request.destroy(new Error('RipoDoc CRM request timed out.')));
     request.on('error', reject);
     if (payload) request.write(payload);
     request.end();
@@ -151,8 +151,8 @@ const markSync = async (leadId: string, result: { readonly status: 'synced'; rea
  * Attempts a single server-side sync for a lead that has already supplied explicit
  * CRM consent. It is idempotent by email lookup and cannot affect public form success.
  */
-export const syncConsentedLeadToEspoCrm = async (lead: CrmSyncLead): Promise<void> => {
-  let config: EspoCrmConfig | undefined;
+export const syncConsentedLeadToCrm = async (lead: CrmSyncLead): Promise<void> => {
+  let config: CrmConfig | undefined;
   try {
     config = configFrom();
   } catch {
@@ -160,10 +160,10 @@ export const syncConsentedLeadToEspoCrm = async (lead: CrmSyncLead): Promise<voi
   }
   if (!config) return;
 
-  const request: EspoCrmRequest = (method, uri, body) => requestJson(config, method, uri, body);
+  const request: CrmRequest = (method, uri, body) => requestJson(config, method, uri, body);
   await runCrmOutboxAttempt({
     claim: () => claimSync(lead.leadId),
-    upsert: () => upsertEspoCrmLead(lead, request),
+    upsert: () => upsertCrmLead(lead, request),
     mark: (result) => markSync(lead.leadId, result),
   });
 };

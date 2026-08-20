@@ -13,7 +13,7 @@ const report = (overrides: Record<string, unknown> = {}) => parseManifest({
   publishedAt: '2026-07-02T09:15:00Z',
   recipient: { name: 'Dana Whitfield', email: 'dana@example.com' },
   source: {
-    system: 'PSA — ConnectWise Manage',
+    system: 'PSA — approved service-management system',
     description: 'Closed tickets export for Q2 2026',
     method: 'manual export',
     capturedAt: '2026-07-01T16:40:00Z',
@@ -28,7 +28,7 @@ const report = (overrides: Record<string, unknown> = {}) => parseManifest({
       summary: 'Approved rows supporting the published figure.',
       table: { columns: [{ key: 'id', label: 'Ticket ID' }], rows: [{ id: 'T-1' }] },
       provenance: {
-        sourceSystem: 'PSA — ConnectWise Manage',
+        sourceSystem: 'PSA — approved service-management system',
         sourceQuery: 'status = closed',
         approvedBy: 'Priya Raman',
         approvedAt: '2026-07-01T16:40:00Z',

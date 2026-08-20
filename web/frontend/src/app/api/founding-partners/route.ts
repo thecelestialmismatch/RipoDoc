@@ -4,7 +4,7 @@ import { verifyCaptcha } from '@/lib/auth/captcha.ts';
 import { assertSameOriginAndCsrf, clientIp } from '@/lib/auth/server.ts';
 import { leadIntakeConfigured } from '@/lib/founder/lead-crypto.ts';
 import { submitFoundingPartnerLead } from '@/lib/founder/leads.ts';
-import { syncConsentedLeadToEspoCrm } from '@/lib/founder/espocrm.ts';
+import { syncConsentedLeadToCrm } from '@/lib/founder/crm.ts';
 import { healthcareModeBEnabled } from '@/lib/launch/healthcare-webhooks.ts';
 
 export const runtime = 'nodejs';
@@ -38,7 +38,7 @@ export async function POST(request: Request): Promise<Response> {
       crmSyncConsent: form.get('crmSyncConsent') === 'yes',
       ip,
     });
-    if (consentedLead) await syncConsentedLeadToEspoCrm(consentedLead);
+    if (consentedLead) await syncConsentedLeadToCrm(consentedLead);
   } catch {
     return destination(request, 'unavailable');
   }
