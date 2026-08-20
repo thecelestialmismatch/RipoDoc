@@ -11,6 +11,7 @@ import {
   Download,
   Eye,
   FileCheck2,
+  FileSearch,
   FileText,
   Filter,
   FolderLock,
@@ -20,6 +21,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { EvidenceDeliveryReceipt } from '@/components/dashboard/EvidenceDeliveryReceipt.tsx';
+import { LocalEvidenceComposer } from '@/components/dashboard/LocalEvidenceComposer.tsx';
 import { assessProofOperations, createEvidenceDeliveryReceipt, type ProofOperationsSnapshot, type ReportAuditSummary } from '@/lib/evidence/operations.ts';
 import type { ReportManifest } from '@/lib/evidence/types.ts';
 
@@ -54,7 +56,7 @@ export function WorkspaceCommandCenter({ user, reports, auditByReport }: Workspa
   const selectedAudit = selectedReport ? (auditByReport[selectedReport.reportId] ?? unavailableAudit) : unavailableAudit;
   const newestReport = reports[0];
 
-  return <div className="min-h-[calc(100vh-76px)] bg-[#f8f0df] text-[#141111]">
+  return <div className="workspace-control-room min-h-[calc(100vh-76px)] bg-[#f8f0df] text-[#141111]">
     <section className="relative overflow-hidden border-b border-[#141111] bg-[#e8442e] text-[#f8f0df]">
       <div className="pointer-events-none absolute -top-12 right-0 text-[13rem] font-black leading-none tracking-[-0.15em] text-transparent [-webkit-text-stroke:1px_rgba(248,240,223,0.45)]" aria-hidden="true">ACT IV</div>
       <div className="relative mx-auto max-w-7xl px-5 py-10 sm:px-6 lg:px-8 lg:py-12">
@@ -66,7 +68,7 @@ export function WorkspaceCommandCenter({ user, reports, auditByReport }: Workspa
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Link href="/download" className="inline-flex min-h-11 items-center justify-center gap-2 border border-[#f8f0df] px-4 py-2.5 text-sm font-bold text-[#f8f0df] transition hover:bg-[#141111]"><Download className="h-4 w-4" aria-hidden="true" /> Self-host RipoDoc</Link>
-            <Link href="/upload" className="inline-flex min-h-11 items-center justify-center gap-2 bg-[#141111] px-5 py-2.5 text-sm font-bold text-[#f8f0df] transition hover:bg-[#2a2421]"><Sparkles className="h-4 w-4" aria-hidden="true" /> Create reviewed report</Link>
+            <div className="flex flex-col gap-3 sm:flex-row"><a href="#evidence-composer" className="inline-flex min-h-11 items-center justify-center gap-2 border border-[#f8f0df] px-4 py-2.5 text-sm font-bold text-[#f8f0df] transition hover:bg-[#f8f0df] hover:text-[#141111]"><FileSearch className="h-4 w-4" aria-hidden="true" /> Local Evidence Composer</a><Link href="/upload" className="inline-flex min-h-11 items-center justify-center gap-2 bg-[#141111] px-5 py-2.5 text-sm font-bold text-[#f8f0df] transition hover:bg-[#2a2421]"><Sparkles className="h-4 w-4" aria-hidden="true" /> Create reviewed report</Link></div>
           </div>
         </div>
       </div>
@@ -111,6 +113,7 @@ export function WorkspaceCommandCenter({ user, reports, auditByReport }: Workspa
         </article>
         <aside className="space-y-6">{selectedReport && selectedSnapshot ? <ProofOperationsInspector key={selectedReport.reportId} report={selectedReport} snapshot={selectedSnapshot} audit={selectedAudit} /> : <WorkspaceSetup />}<WorkspaceBoundary user={user} /></aside>
       </section>
+      <LocalEvidenceComposer reports={reports} />
     </main>
   </div>;
 }

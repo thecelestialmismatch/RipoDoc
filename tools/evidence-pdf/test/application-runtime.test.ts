@@ -544,9 +544,10 @@ test('public brand lockups preserve the approved mark and Clear Proof light/dark
 
 
 test('Monte Carlo Scenario Lab remains a seeded browser-only public fixture tool with live controls and explicit boundaries', async () => {
-  const [page, lab, nav, footer, styles] = await Promise.all([
+  const [page, lab, pdf, nav, footer, styles] = await Promise.all([
     readFile(new URL('../../../web/frontend/src/app/monte-carlo-scenario-lab/page.tsx', import.meta.url), 'utf8'),
     readFile(new URL('../../../web/frontend/src/components/marketing/MonteCarloScenarioLab.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../../../web/frontend/src/components/marketing/scenarioComparisonPdf.ts', import.meta.url), 'utf8'),
     readFile(new URL('../../../web/frontend/src/components/Navbar.tsx', import.meta.url), 'utf8'),
     readFile(new URL('../../../web/frontend/src/components/Footer.tsx', import.meta.url), 'utf8'),
     readFile(new URL('../../../web/frontend/src/app/globals.css', import.meta.url), 'utf8'),
@@ -554,6 +555,7 @@ test('Monte Carlo Scenario Lab remains a seeded browser-only public fixture tool
   assert.match(page, /MonteCarloScenarioLab/);
   assert.match(page, /Monte Carlo Scenario Lab/);
   assert.match(page, /canonical: '\/monte-carlo-scenario-lab'/);
+  assert.match(page, /browser-generated comparison report/);
   assert.match(lab, /mulberry32/);
   assert.match(lab, /const PATH_OPTIONS = \[1000, 2500, 5000, 10000\]/);
   assert.match(lab, /MULTI-SCENARIO MONTE CARLO LAB/);
@@ -565,8 +567,17 @@ test('Monte Carlo Scenario Lab remains a seeded browser-only public fixture tool
   assert.match(lab, /global-financial-crisis/);
   assert.match(lab, /covid-market-shock/);
   assert.match(lab, /Federal Reserve History, Great Recession/);
-  assert.match(lab, /Export comparison state/);
-  assert.match(lab, /All calculations remain in this browser/);
+  assert.match(lab, /CUSTOM STRESS PROFILE/);
+  assert.match(lab, /custom-profile-name/);
+  assert.match(lab, /value="custom">Custom local profile/);
+  assert.match(lab, /Download PDF report/);
+  assert.match(lab, /scenario-pdf-export/);
+  assert.match(lab, /downloadScenarioComparisonPdf/);
+  assert.match(lab, /All calculations and both exports remain in this browser/);
+  assert.match(pdf, /await import\('jspdf'\)/);
+  assert.match(pdf, /browser-generated report/);
+  assert.match(pdf, /not a forecast, probability, customer record/);
+  assert.doesNotMatch(pdf, /fetch\(|\/api\/|process\.env|github\.com\/thecelestialmismatch\/RipoDoc/);
   assert.match(lab, /not imported market data, predictions, customer evidence/);
   assert.match(lab, /role="img"/);
   assert.match(lab, /aria-live="polite"/);
@@ -577,5 +588,35 @@ test('Monte Carlo Scenario Lab remains a seeded browser-only public fixture tool
   assert.match(styles, /\.scenario-controls \{/);
   assert.match(styles, /\.scenario-comparison-grid \{/);
   assert.match(styles, /\.scenario-stress-suite \{/);
+  assert.match(styles, /\.scenario-custom-profile \{/);
+  assert.match(styles, /\.scenario-pdf-export \{/);
   assert.match(styles, /@media \(max-width:980px\)/);
+});
+
+
+test('Evidence Composer is an authenticated dashboard capability with a strict browser-local document boundary', async () => {
+  const [dashboard, composer, parser, matcher, exporter] = await Promise.all([
+    readFile(new URL('../../../web/frontend/src/components/dashboard/WorkspaceCommandCenter.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../../../web/frontend/src/components/dashboard/LocalEvidenceComposer.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../../../web/frontend/src/lib/composer/local-pdf.ts', import.meta.url), 'utf8'),
+    readFile(new URL('../../../web/frontend/src/lib/composer/local-evidence.ts', import.meta.url), 'utf8'),
+    readFile(new URL('../../../web/frontend/src/lib/composer/local-composer-pdf.ts', import.meta.url), 'utf8'),
+  ]);
+  assert.match(dashboard, /<LocalEvidenceComposer reports=\{reports\} \/>/);
+  assert.match(dashboard, /href="#evidence-composer"/);
+  assert.match(composer, /LOCAL-ONLY BOUNDARY ACTIVE/i);
+  assert.match(composer, /Clear local session/);
+  assert.match(composer, /Local PDF register/);
+  assert.match(composer, /Only evidence already approved in this signed-in workspace is eligible for matching/);
+  assert.match(composer, /disabled=\{draft\.strength !== 'strong'\}/);
+  assert.match(parser, /PDF_HEADER/);
+  assert.match(parser, /LOCAL_COMPOSER_MAX_BYTES/);
+  assert.match(parser, /LOCAL_COMPOSER_MAX_PAGES/);
+  assert.match(parser, /bytes\.fill\(0\)/);
+  assert.match(parser, /does not send image-only or scanned PDFs to cloud OCR/);
+  assert.match(matcher, /approvedSourcesFromReports/);
+  assert.match(matcher, /No approved evidence record/);
+  assert.match(matcher, /Approval blocked/);
+  assert.match(exporter, /LOCAL-ONLY EVIDENCE COMPOSER/);
+  for (const source of [composer, parser, matcher, exporter]) assert.doesNotMatch(source, /fetch\(|\/api\/|process\.env|localStorage|sessionStorage|indexedDB|github\.com\/thecelestialmismatch\/RipoDoc/);
 });
