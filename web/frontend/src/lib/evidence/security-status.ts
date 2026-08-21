@@ -4,6 +4,7 @@ import { verifyAuditLog, type VerifyAuditResult } from './audit-log.ts';
 import { postgresAuditConfigured } from './audit-postgres.ts';
 import { leadIntakeConfigured } from '../founder/lead-crypto.ts';
 import { listPublishedManifests } from './store.ts';
+import { privateWorkerConfigured } from '../authoring/worker-url.ts';
 
 export interface AuditLogStatus {
   readonly mode: 'file' | 'postgres' | 'stdout';
@@ -53,18 +54,6 @@ const emailConfigured = (): boolean => Boolean(process.env.RIPODOC_RESEND_API_KE
 
 const captchaConfigured = (): boolean =>
   process.env.NODE_ENV !== 'production' || Boolean(process.env.RIPODOC_TURNSTILE_SECRET && process.env.NEXT_PUBLIC_RIPODOC_TURNSTILE_SITE_KEY);
-
-const privateWorkerConfigured = (): boolean => {
-  const url = process.env.RIPODOC_LOCAL_WORKER_URL;
-  const secret = process.env.RIPODOC_WORKER_AUTH_SECRET;
-  if (!url || !secret || secret.length < 32) return false;
-  try {
-    const parsed = new URL(url);
-    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
-  } catch {
-    return false;
-  }
-};
 
 const auditLogStatus = async (): Promise<AuditLogStatus> => {
   if (postgresAuditConfigured()) {

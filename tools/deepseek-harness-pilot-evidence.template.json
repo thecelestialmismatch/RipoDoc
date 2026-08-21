@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "purpose": "synthetic-internal-engineering-only",
+  "authorization": "conditional-pilot-not-production-approval",
+  "sourceCommit": "REPLACE_WITH_FULL_40_CHARACTER_IMMUTABLE_COMMIT_SHA",
+  "archiveSha256": "REPLACE_WITH_64_CHARACTER_ARCHIVE_SHA256",
+  "lockfileSha256": "REPLACE_WITH_64_CHARACTER_LOCKFILE_SHA256",
+  "workspaceClassification": "synthetic-read-only",
+  "gates": {
+    "isolation": { "passed": false, "evidence": "REPLACE_WITH_VM_OR_CONTAINER_ISOLATION_RECORD" },
+    "pinning": { "passed": false, "evidence": "REPLACE_WITH_COMMIT_HASH_SBOM_AND_SCAN_RECORD" },
+    "lifecycle-scripts": { "passed": false, "evidence": "REPLACE_WITH_IGNORE_SCRIPTS_INSTALL_AND_REVIEW_RECORD" },
+    "effective-configuration": { "passed": false, "evidence": "REPLACE_WITH_RESOLVED_PROFILE_DENYLIST_REVIEW" },
+    "file-boundary": { "passed": false, "evidence": "REPLACE_WITH_SYNTHETIC_READ_ONLY_MOUNT_RECORD" },
+    "network-boundary": { "passed": false, "evidence": "REPLACE_WITH_DEFAULT_DENY_PROXY_OR_FIREWALL_LOG" },
+    "model-contract": { "passed": false, "evidence": "REPLACE_WITH_APPROVED_PROVIDER_DATA_PROCESSING_RECORD" },
+    "credentials": { "passed": false, "evidence": "REPLACE_WITH_DISPOSABLE_KEY_AND_REVOCATION_RECORD" },
+    "prompt-injection": { "passed": false, "evidence": "REPLACE_WITH_HOSTILE_FIXTURE_TEST_RECORD" },
+    "log-destruction": { "passed": false, "evidence": "REPLACE_WITH_DESTRUCTION_RECORD" }
+  }
+}

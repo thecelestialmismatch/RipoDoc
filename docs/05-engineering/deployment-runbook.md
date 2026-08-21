@@ -15,7 +15,7 @@
 | PostgreSQL | Internal Compose network only | Database authentication plus application tenant queries; durable users, sessions, tokens, rate limits, and report metadata | Shipped |
 | Go/River managed architecture | Not deployed in this repository | Planned managed-service architecture only | Planned, not a present security claim |
 
-The browser never receives the worker URL or its authorization secret. The web application calls the worker through server-only `RIPODOC_LOCAL_WORKER_URL` and `RIPODOC_WORKER_AUTH_SECRET`; direct browser, unsigned, replayed, wrong-purpose, and cross-tenant worker requests are rejected.
+The browser never receives the worker URL or its authorization secret. The web application calls the worker through server-only `RIPODOC_LOCAL_WORKER_URL` and `RIPODOC_WORKER_AUTH_SECRET`; direct browser, unsigned, replayed, wrong-purpose, and cross-tenant worker requests are rejected. In production, the worker URL must use the `/api/local` path on a hostname explicitly listed in `RIPODOC_INTERNAL_WORKER_HOSTS`; the shipped self-hosted topology allowlists only the internal `worker` service.
 
 ## Public RipoDoc hosted environment release
 
@@ -31,7 +31,7 @@ The browser never receives the worker URL or its authorization secret. The web a
 
 3. Configure server-only RipoDoc hosted environment values before enabling workspace account actions. At minimum, configure `RIPODOC_DATABASE_URL`, `RIPODOC_AUTH_SECRET`, `RIPODOC_EVIDENCE_SECRET`, `RIPODOC_APP_ORIGIN`, email service, and challenge service. The hosted application intentionally fails closed for account actions when these durable prerequisites are absent.
 
-4. Keep `RIPODOC_LOCAL_WORKER_URL` and `RIPODOC_WORKER_AUTH_SECRET` server-only. A public RipoDoc hosted environment deployment should not proxy customer PDFs to an untrusted, internet-facing worker.
+4. Keep `RIPODOC_LOCAL_WORKER_URL`, `RIPODOC_INTERNAL_WORKER_HOSTS`, and `RIPODOC_WORKER_AUTH_SECRET` server-only. A public RipoDoc hosted environment deployment should not proxy customer PDFs to an untrusted, internet-facing worker; production startup refuses a worker host outside the explicit internal allowlist.
 
 5. Verify the public routes, the no-store `/api/health` response, unauthenticated redirects for `/dashboard` and `/admin`, safe `/security` posture, and no broken public navigation. Perform authenticated/authoring smoke tests only in a properly configured environment with no customer data used as a test fixture.
 

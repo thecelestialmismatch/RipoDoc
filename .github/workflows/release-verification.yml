@@ -1,0 +1,65 @@
+name: Verify RipoDoc release
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ripodoc-release-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-release:
+    name: Full release verification
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Set up Node 22
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            web/frontend/package-lock.json
+            docker/local/package-lock.json
+
+      - name: Install Chromium for browser-local verification
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes chromium
+
+      - name: Install all lockfile-scoped dependencies
+        run: |
+          npm ci
+          npm --prefix web/frontend ci
+          npm --prefix docker/local ci --omit=dev --ignore-scripts
+
+      - name: Run full application release gate
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+        run: npm run verify
+
+      - name: Enforce zero-warning lint
+        run: npm run lint
+
+      - name: Audit all production dependency scopes
+        run: |
+          npm audit --omit=dev --audit-level=high
+          npm --prefix web/frontend audit --omit=dev --audit-level=high
+          npm --prefix docker/local audit --omit=dev --audit-level=high
+
+      - name: Build hardened web container
+        run: docker build --file docker/web.Dockerfile --tag ripodoc-web-ci:${{ github.sha }} .
+
+      - name: Build hardened private-worker container
+        run: docker build --file docker/local/Dockerfile --tag ripodoc-worker-ci:${{ github.sha }} .

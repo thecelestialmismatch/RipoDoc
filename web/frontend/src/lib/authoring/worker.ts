@@ -1,5 +1,6 @@
 import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import type { AuthUser } from '@/lib/auth/service.ts';
+import { configuredPrivateWorkerBaseUrl, privateWorkerConfigured } from './worker-url.ts';
 
 export const AUTHORING_SCOPES = [
   'upload',
@@ -37,19 +38,9 @@ const capabilitySecret = (): string | undefined => {
   return value && value.length >= 32 ? value : undefined;
 };
 
-const workerBaseUrl = (): string | undefined => {
-  const raw = process.env.RIPODOC_LOCAL_WORKER_URL ?? (process.env.NODE_ENV === 'production' ? undefined : 'http://127.0.0.1:4000/api/local');
-  if (!raw) return undefined;
-  try {
-    const parsed = new URL(raw);
-    if (!['http:', 'https:'].includes(parsed.protocol)) return undefined;
-    return parsed.toString().replace(/\/$/, '');
-  } catch {
-    return undefined;
-  }
-};
+const workerBaseUrl = (): string | undefined => configuredPrivateWorkerBaseUrl();
 
-export const authoringConfigured = (): boolean => Boolean(capabilitySecret() && workerBaseUrl());
+export const authoringConfigured = (): boolean => Boolean(capabilitySecret() && privateWorkerConfigured());
 
 export const canAuthorReports = (user: AuthUser | undefined): user is AuthUser => Boolean(
   user && user.emailVerifiedAt && !user.disabledAt && allowedRoles.has(user.role) && authoringConfigured(),

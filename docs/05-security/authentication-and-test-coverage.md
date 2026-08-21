@@ -2,7 +2,7 @@
 
 **Maintainer:** Manus AI
 
-**Release baseline:** Main branch after PR #36, plus locally verified CSP and dependency remediation pending this release
+**Release baseline:** Main branch after PR #64, including the fail-closed browser-egress matrix and production dependency remediation.
 
 **Validation command:** `npm run verify`
 
@@ -24,7 +24,7 @@ Signup and recovery are enumeration-resistant: they use one generic response and
 
 ## Automated verification results
 
-The repository uses Node’s built-in test runner. The fresh release gate completed **171 tests**, with **171 passed**, **0 failed**, **0 skipped**, **0 cancelled**, and **0 pending test markers**. The complete release gate adds strict TypeScript checking and the Next.js production build through `npm run verify`.[3]
+The repository uses Node’s built-in test runner. The current release gate completed **194 tests**, with **194 passed**, **0 failed**, **0 skipped**, **0 cancelled**, and **0 pending test markers**. The complete release gate adds strict TypeScript checking, the Next.js production build, three browser E2E checks, six fail-closed CLI contracts, the production baseline zero-egress audit, the internal-worker URL policy, and the DeepSeek Harness pilot-evidence policy through `npm run verify`.[3]
 
 | Coverage area | What the current regression suite proves |
 | --- | --- |
@@ -37,10 +37,12 @@ The repository uses Node’s built-in test runner. The fresh release gate comple
 | Private worker authorization | The worker rejects direct browser and unsigned requests, validates a server-issued tenant/scope/draft capability, prevents cross-tenant proposal access, records the server reviewer, validates PDF bytes, and yields only a digest-checked approved artifact. |
 | RipoDoc CRM consent boundary and protocol | CRM payloads exclude evidence data; loopback/private targets are blocked; HMAC authorization and least-data mapping are covered; a local mock server exercises lookup/create/update, remote rejection, timeout classification, and non-blocking outbox outcomes. |
 | Discovery and telemetry safety | IndexNow payload validation and privacy-preserving Web Vitals request validation are covered. |
+| Browser-local Evidence Composer | Production baseline evidence verifies zero external/API requests and browser persistence; expected-failure simulations prove local aborts for CDN, external API, and same-origin API fallback attempts. |
+| Internal worker endpoint policy | Production accepts only explicit internal `/api/local` worker origins; public, credential-bearing, malformed, and non-approved endpoints are refused. |
 
 ## File-by-file test inventory
 
-The current release command executes **19 TypeScript test files** plus **one private-worker Node integration test file**. Test count is reported from the executed release gate rather than manually summed from this inventory, because individual test files can evolve independently.
+The current release command executes the TypeScript contract suite, browser E2E tests, and a private-worker Node integration test. Test count is reported from the executed release gate rather than manually summed from this inventory, because individual test files can evolve independently.
 
 | Test file | Security and product coverage |
 | --- | --- |
@@ -75,7 +77,7 @@ npm run build:web
 npm run verify
 ```
 
-The canonical `verify` command runs strict type checking, the **169-test** suite, and the production frontend build. It is the minimum pre-merge gate for a change that affects authorization, identity, evidence claims, manifests, audit behavior, PDF rendering, worker ingress, private operations, CRM boundaries, telemetry, or protected dashboard/download workflows.[3]
+The canonical `verify` command runs strict type checking, the **194-test** suite, the production frontend build, browser E2E coverage, fail-closed egress simulation tests, and the production baseline egress audit. It is the minimum pre-merge gate for a change that affects authorization, identity, evidence claims, manifests, audit behavior, PDF rendering, worker ingress, private operations, CRM boundaries, telemetry, protected dashboard/download workflows, or the DeepSeek Harness conditional-pilot evidence policy.[3]
 
 > **Scope limit.** Passing tests prove the checked contract. They do not establish that the public hosted environment has all production configuration, that a real customer has completed the workflow, that a real RipoDoc CRM tenant has been configured, or that an independent security assessment has occurred.
 

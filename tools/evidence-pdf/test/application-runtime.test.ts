@@ -204,6 +204,8 @@ test('production preflight makes durable hosted dependencies explicit without se
   assert.match(preflight, /evidence_access_audit_records/);
   assert.match(preflight, /founding_partner_crm_syncs/);
   assert.match(preflight, /private worker reachability/);
+  assert.match(preflight, /approved internal \/api\/local origin/);
+  assert.match(preflight, /configuredPrivateWorkerBaseUrl/);
   assert.match(preflight, /RIPODOC_AUDIT_BACKEND/);
   assert.match(preflight, /founding-partner contact encryption/);
   assert.match(preflight, /RIPODOC_LEAD_ENCRYPTION_KEY/);
@@ -221,6 +223,7 @@ test('self-hosted environment template and operations guidance preserve the comp
     'RIPODOC_AUTH_SECRET',
     'RIPODOC_EVIDENCE_SECRET',
     'RIPODOC_WORKER_AUTH_SECRET',
+    'RIPODOC_INTERNAL_WORKER_HOSTS',
     'RIPODOC_LEAD_ENCRYPTION_KEY',
     'RIPODOC_APP_ORIGIN',
     'RIPODOC_RESEND_API_KEY',

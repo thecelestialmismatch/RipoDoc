@@ -3,9 +3,9 @@
 FROM node:22-alpine AS runtime
 
 WORKDIR /app
-COPY docker/local/package.json ./docker/local/package.json
+COPY docker/local/package.json docker/local/package-lock.json ./docker/local/
 WORKDIR /app/docker/local
-RUN npm install --omit=dev --no-audit --no-fund
+RUN npm ci --omit=dev --ignore-scripts --no-audit --no-fund
 
 WORKDIR /app
 RUN apk add --no-cache su-exec \
