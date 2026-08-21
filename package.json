@@ -11,7 +11,7 @@
     "node": ">=22.6.0"
   },
   "scripts": {
-    "test": "node --test --experimental-strip-types \"tools/evidence-pdf/test/*.test.ts\" \"docker/local/server.test.mjs\"",
+    "test": "node --test --experimental-strip-types \"tools/evidence-pdf/test/*.test.ts\" \"tools/deepseek-harness-pilot-policy.test.ts\" \"docker/local/server.test.mjs\"",
     "typecheck": "npm run typecheck:web && npm run typecheck:tools",
     "typecheck:web": "cd web/frontend && npx tsc --noEmit",
     "typecheck:tools": "cd tools && ../web/frontend/node_modules/.bin/tsc --noEmit -p tsconfig.json",
@@ -27,6 +27,7 @@
     "audit:zero-egress": "node --experimental-strip-types tools/zero-egress-audit-cli.ts",
     "audit:zero-egress:ci": "npm run build:web && npm run audit:zero-egress -- --mode production --out build/zero-egress-audit/evidence-composer.json",
     "preflight:production": "node --experimental-strip-types tools/production-preflight.ts",
+    "preflight:deepseek-harness-pilot": "node --experimental-strip-types tools/deepseek-harness-pilot-policy.ts",
     "test:e2e": "node --test --experimental-strip-types tools/evidence-pdf/test/scenario-lab-and-composer.e2e.test.ts",
     "test:zero-egress-cli": "node --test --experimental-strip-types tools/zero-egress-audit-cli.test.ts",
     "verify:zero-egress": "npm run audit:zero-egress -- --mode production --out build/zero-egress-audit/evidence-composer.json",

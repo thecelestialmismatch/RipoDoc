@@ -52,6 +52,7 @@ services:
       # Optional anonymous field-performance logging. Client-side reporting is set at build time by the build arg above.
       RIPODOC_WEB_VITALS_LOG: ${RIPODOC_WEB_VITALS_LOG:-false}
       RIPODOC_LOCAL_WORKER_URL: http://worker:4000/api/local
+      RIPODOC_INTERNAL_WORKER_HOSTS: ${RIPODOC_INTERNAL_WORKER_HOSTS:-worker}
       RIPODOC_WORKER_AUTH_SECRET: ${RIPODOC_WORKER_AUTH_SECRET:?Set a 32+ character private worker authorization secret}
       RIPODOC_AUDIT_BACKEND: postgres
       RIPODOC_LEAD_ENCRYPTION_KEY: ${RIPODOC_LEAD_ENCRYPTION_KEY:?Set a base64url-encoded 32-byte lead-contact encryption key}

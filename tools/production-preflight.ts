@@ -1,6 +1,7 @@
 import { database } from '../web/frontend/src/lib/auth/database.ts';
 import { authConfigured } from '../web/frontend/src/lib/auth/primitives.ts';
 import { leadIntakeConfigured } from '../web/frontend/src/lib/founder/lead-crypto.ts';
+import { configuredPrivateWorkerBaseUrl } from '../web/frontend/src/lib/authoring/worker-url.ts';
 
 type Check = {
   readonly name: string;
@@ -23,15 +24,8 @@ const validHttpsOrigin = (): boolean => {
 };
 
 const configuredWorker = (): string | undefined => {
-  const url = process.env.RIPODOC_LOCAL_WORKER_URL;
   const secret = process.env.RIPODOC_WORKER_AUTH_SECRET;
-  if (!url || !secret || secret.length < 32) return undefined;
-  try {
-    const parsed = new URL(url);
-    return parsed.protocol === 'http:' || parsed.protocol === 'https:' ? parsed.toString().replace(/\/$/, '') : undefined;
-  } catch {
-    return undefined;
-  }
+  return secret && secret.length >= 32 ? configuredPrivateWorkerBaseUrl() : undefined;
 };
 
 const run = async (): Promise<void> => {
@@ -42,7 +36,7 @@ const run = async (): Promise<void> => {
   add('founding-partner contact encryption', leadIntakeConfigured(), 'RIPODOC_LEAD_ENCRYPTION_KEY decodes to a dedicated 32-byte base64url key.');
 
   const worker = configuredWorker();
-  add('private worker configuration', Boolean(worker), 'RIPODOC_LOCAL_WORKER_URL and a 32+ character server-only worker secret are configured.');
+  add('private worker configuration', Boolean(worker), 'RIPODOC_LOCAL_WORKER_URL is an approved internal /api/local origin and the server-only worker secret has at least 32 characters.');
 
   if (process.env.RIPODOC_DATABASE_URL) {
     try {
